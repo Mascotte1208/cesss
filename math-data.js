@@ -352,6 +352,7 @@ var CAT_COLOR = {
     complexes:'--vert'
 };
 
+
 var CAT_COLOR_LIGHT = {
     algebre:'--rouge-clair',
     geometrie:'--bleu-clair',
@@ -362,16 +363,40 @@ var CAT_COLOR_LIGHT = {
     complexes:'--vert-clair'
 };
 
+
 var ANNEE_COLOR = {
-    '3e':{c:'#1c5fa8', l:'#e8f0fe'},
-    '4e':{c:'#6b46c1', l:'#f1ebfb'},
-    '5e':{c:'#0e7c86', l:'#e4f5f6'},
-    '6e':{c:'#c81e2c', l:'#fdecea'}
+    '3e':{
+        c:'#1c5fa8',
+        l:'#e8f0fe'
+    },
+
+    '4e':{
+        c:'#6b46c1',
+        l:'#f1ebfb'
+    },
+
+    '5e':{
+        c:'#0e7c86',
+        l:'#e4f5f6'
+    },
+
+    '6e':{
+        c:'#c81e2c',
+        l:'#fdecea'
+    }
 };
 
+
 var ANNEE_DESC = {
-    '3e':'Fonctions, Algèbre, Géométrie, Trigonométrie…',
-    '4e':'Fonctions de référence, 2nd degré, Vecteurs…',
-    '5e':'Analyse, Complexes, Géométrie analytique…',
-    '6e':'Dérivées, Intégrales, Probabilités, Suites…'
+    '3e':
+        'Fonctions, Algèbre, Géométrie, Trigonométrie…',
+
+    '4e':
+        'Fonctions de référence, 2nd degré, Vecteurs…',
+
+    '5e':
+        'Analyse, Complexes, Géométrie analytique…',
+
+    '6e':
+        'Dérivées, Intégrales, Probabilités, Suites…'
 };
