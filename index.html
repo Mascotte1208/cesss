@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Carnet CESS — Révision</title>
+    <meta
+        name="description"
+        content="Carnet de révision CESS — Mathématiques et Géographie"
+    >
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         BARRE DE NAVIGATION
+    ========================== -->
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">📚</div>
+            <div>
+                <strong>Carnet CESS</strong>
+                <span>Révision & entraînement</span>
+            </div>
+        </div>
+
+        <nav class="main-nav" aria-label="Navigation principale">
+            <button class="nav-btn active" data-section="home">
+                🏠 Accueil
+            </button>
+
+            <button class="nav-btn" data-section="maths">
+                📐 Maths
+            </button>
+
+            <button class="nav-btn" data-section="geo">
+                🌍 Géographie
+            </button>
+
+            <button class="nav-btn" data-section="memo">
+                📖 Mémo
+            </button>
+
+            <button class="nav-btn" data-section="games">
+                🎮 Jeux
+            </button>
+
+            <button class="nav-btn" data-section="exams">
+                📝 Examens
+            </button>
+
+            <button class="nav-btn" data-section="progress">
+                📊 Progression
+            </button>
+        </nav>
+
+        <button
+            id="themeToggle"
+            class="theme-toggle"
+            type="button"
+            aria-label="Changer le thème"
+        >
+            🌙
+        </button>
+    </header>
+
+
+    <!-- =========================
+         CONTENU PRINCIPAL
+    ========================== -->
+    <main class="container">
+
+        <!-- =====================
+             ACCUEIL
+        ====================== -->
+        <section id="home" class="page-section active">
+
+            <div class="hero">
+                <div>
+                    <span class="eyebrow">TON ESPACE DE RÉVISION</span>
+
+                    <h1>
+                        Prépare ton <span>CESS</span><br>
+                        à ton rythme.
+                    </h1>
+
+                    <p>
+                        Révise les mathématiques et la géographie,
+                        entraîne-toi avec des jeux et suis ta progression.
+                    </p>
+
+                    <div class="hero-actions">
+                        <button
+                            class="primary-btn"
+                            data-section="maths"
+                        >
+                            📐 Réviser les maths
+                        </button>
+
+                        <button
+                            class="secondary-btn"
+                            data-section="geo"
+                        >
+                            🌍 Réviser la géographie
+                        </button>
+                    </div>
+                </div>
+
+                <div class="hero-card">
+                    <div class="hero-card-icon">🎯</div>
+
+                    <h3>Objectif CESS</h3>
+
+                    <p>
+                        Avance chapitre par chapitre et
+                        consolide les notions importantes.
+                    </p>
+
+                    <div class="mini-progress">
+                        <div class="progress-bar">
+                            <div
+                                id="homeProgressBar"
+                                class="progress-fill"
+                                style="width: 0%"
+                            ></div>
+                        </div>
+
+                        <span id="homeProgressText">0 %</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Matières -->
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">MES MATIÈRES</span>
+                    <h2>Par où commencer ?</h2>
+                </div>
+            </div>
+
+            <div class="subject-grid">
+
+                <article class="subject-card maths-card">
+
+                    <div class="subject-icon">📐</div>
+
+                    <div class="subject-content">
+                        <span class="subject-label">MATHÉMATIQUES</span>
+
+                        <h3>Maths</h3>
+
+                        <p>
+                            Formules, notions, exercices et
+                            entraînement par année.
+                        </p>
+
+                        <div class="subject-stats">
+                            <span>
+                                <strong id="mathsChapterCount">0</strong>
+                                chapitres
+                            </span>
+
+                            <span>
+                                <strong id="mathsProgress">0%</strong>
+                                maîtrisé
+                            </span>
+                        </div>
+
+                        <button
+                            class="card-btn"
+                            data-section="maths"
+                        >
+                            Ouvrir les maths →
+                        </button>
+                    </div>
+                </article>
+
+
+                <article class="subject-card geo-card">
+
+                    <div class="subject-icon">🌍</div>
+
+                    <div class="subject-content">
+                        <span class="subject-label">GÉOGRAPHIE</span>
+
+                        <h3>Géographie</h3>
+
+                        <p>
+                            Cours, vocabulaire, cartes,
+                            exercices et révisions.
+                        </p>
+
+                        <div class="subject-stats">
+                            <span>
+                                <strong id="geoChapterCount">0</strong>
+                                chapitres
+                            </span>
+
+                            <span>
+                                <strong id="geoProgress">0%</strong>
+                                maîtrisé
+                            </span>
+                        </div>
+
+                        <button
+                            class="card-btn"
+                            data-section="geo"
+                        >
+                            Ouvrir la géographie →
+                        </button>
+                    </div>
+                </article>
+
+            </div>
+
+
+            <!-- Révision rapide -->
+            <div class="quick-grid">
+
+                <article class="quick-card">
+                    <span class="quick-icon">⚡</span>
+
+                    <div>
+                        <h3>Révision express</h3>
+                        <p>
+                            Une session rapide pour revoir
+                            l'essentiel.
+                        </p>
+                    </div>
+
+                    <button
+                        class="small-btn"
+                        id="quickRevisionBtn"
+                    >
+                        10 min
+                    </button>
+                </article>
+
+
+                <article class="quick-card">
+                    <span class="quick-icon">🎮</span>
+
+                    <div>
+                        <h3>Entraînement</h3>
+                        <p>
+                            Teste tes connaissances avec
+                            les mini-jeux.
+                        </p>
+                    </div>
+
+                    <button
+                        class="small-btn"
+                        data-section="games"
+                    >
+                        Jouer
+                    </button>
+                </article>
+
+
+                <article class="quick-card">
+                    <span class="quick-icon">📊</span>
+
+                    <div>
+                        <h3>Ma progression</h3>
+                        <p>
+                            Consulte tes résultats et
+                            tes chapitres à revoir.
+                        </p>
+                    </div>
+
+                    <button
+                        class="small-btn"
+                        data-section="progress"
+                    >
+                        Voir
+                    </button>
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             MATHS
+        ========================== -->
+        <section id="maths" class="page-section">
+
+            <div class="page-header">
+                <div>
+                    <span class="eyebrow">MATHÉMATIQUES</span>
+                    <h1>Réviser les maths</h1>
+
+                    <p>
+                        Choisis ton année et travaille
+                        chapitre par chapitre.
+                    </p>
+                </div>
+
+                <div class="page-header-icon">📐</div>
+            </div>
+
+
+            <!-- Années -->
+            <div
+                id="mathYearTabs"
+                class="year-tabs"
+                role="tablist"
+                aria-label="Années de mathématiques"
+            >
+                <button
+                    class="year-tab active"
+                    data-year="3e"
+                    role="tab"
+                >
+                    3e
+                </button>
+
+                <button
+                    class="year-tab"
+                    data-year="4e"
+                    role="tab"
+                >
+                    4e
+                </button>
+
+                <button
+                    class="year-tab"
+                    data-year="5e"
+                    role="tab"
+                >
+                    5e
+                </button>
+
+                <button
+                    class="year-tab"
+                    data-year="6e"
+                    role="tab"
+                >
+                    6e
+                </button>
+            </div>
+
+
+            <!-- Formules -->
+            <div class="formula-strip">
+
+                <div class="formula-strip-title">
+                    <span>📌</span>
+
+                    <div>
+                        <strong>Formules essentielles</strong>
+                        <small>
+                            À retrouver dans le mémo
+                        </small>
+                    </div>
+                </div>
+
+                <button
+                    class="secondary-btn"
+                    data-section="memo"
+                >
+                    Voir les formules →
+                </button>
+
+            </div>
+
+
+            <!-- Chapitres -->
+            <div
+                id="mathChapters"
+                class="chapter-grid"
+            ></div>
+
+        </section>
+
+
+        <!-- =========================
+             GÉOGRAPHIE
+        ========================== -->
+        <section id="geo" class="page-section">
+
+            <div class="page-header">
+                <div>
+                    <span class="eyebrow">GÉOGRAPHIE</span>
+                    <h1>Réviser la géographie</h1>
+
+                    <p>
+                        Retrouve tes chapitres, ton vocabulaire
+                        et les exercices.
+                    </p>
+                </div>
+
+                <div class="page-header-icon">🌍</div>
+            </div>
+
+
+            <!-- Années -->
+            <div
+                id="geoYearTabs"
+                class="year-tabs"
+                role="tablist"
+                aria-label="Années de géographie"
+            >
+                <button
+                    class="year-tab active"
+                    data-year="3e"
+                    role="tab"
+                >
+                    3e
+                </button>
+
+                <button
+                    class="year-tab"
+                    data-year="4e"
+                    role="tab"
+                >
+                    4e
+                </button>
+
+                <button
+                    class="year-tab"
+                    data-year="5e"
+                    role="tab"
+                >
+                    5e
+                </button>
+
+                <button
+                    class="year-tab"
+                    data-year="6e"
+                    role="tab"
+                >
+                    6e
+                </button>
+            </div>
+
+
+            <!-- Vocabulaire -->
+            <div class="formula-strip">
+
+                <div class="formula-strip-title">
+                    <span>📚</span>
+
+                    <div>
+                        <strong>Vocabulaire utile</strong>
+                        <small>
+                            Les mots importants du CESS
+                        </small>
+                    </div>
+                </div>
+
+                <button
+                    class="secondary-btn"
+                    data-section="memo"
+                >
+                    Voir le vocabulaire →
+                </button>
+
+            </div>
+
+
+            <!-- Chapitres -->
+            <div
+                id="geoChapters"
+                class="chapter-grid"
+            ></div>
+
+        </section>
+
+
+        <!-- =========================
+             MÉMO
+        ========================== -->
+        <section id="memo" class="page-section">
+
+            <div class="page-header">
+
+                <div>
+                    <span class="eyebrow">MÉMO</span>
+
+                    <h1>
+                        Formules & vocabulaire
+                    </h1>
+
+                    <p>
+                        L'essentiel à connaître avant
+                        de passer aux exercices.
+                    </p>
+                </div>
+
+                <div class="page-header-icon">
+                    📖
+                </div>
+
+            </div>
+
+
+            <div class="memo-tools">
+
+                <div class="search-box">
+                    <span>🔎</span>
+
+                    <input
+                        type="search"
+                        id="memoSearch"
+                        placeholder="Rechercher une formule ou un mot..."
+                        autocomplete="off"
+                    >
+                </div>
+
+
+                <select id="memoSubject">
+                    <option value="all">
+                        Toutes les matières
+                    </option>
+
+                    <option value="maths">
+                        📐 Mathématiques
+                    </option>
+
+                    <option value="geo">
+                        🌍 Géographie
+                    </option>
+                </select>
+
+
+                <select id="memoYear">
+
+                    <option value="all">
+                        Toutes les années
+                    </option>
+
+                    <option value="3e">3e</option>
+                    <option value="4e">4e</option>
+                    <option value="5e">5e</option>
+                    <option value="6e">6e</option>
+
+                </select>
+
+            </div>
+
+
+            <div
+                id="memoContent"
+                class="memo-grid"
+            ></div>
+
+        </section>
+
+
+        <!-- =========================
+             JEUX
+        ========================== -->
+        <section id="games" class="page-section">
+
+            <div class="page-header">
+
+                <div>
+                    <span class="eyebrow">ENTRAÎNEMENT</span>
+
+                    <h1>
+                        Apprendre en jouant
+                    </h1>
+
+                    <p>
+                        Teste tes connaissances de manière
+                        rapide et ludique.
+                    </p>
+                </div>
+
+                <div class="page-header-icon">
+                    🎮
+                </div>
+
+            </div>
+
+
+            <div class="game-grid">
+
+                <article class="game-card">
+
+                    <div class="game-icon">
+                        🧠
+                    </div>
+
+                    <h3>
+                        Quiz
+                    </h3>
+
+                    <p>
+                        Une série de questions pour
+                        tester tes connaissances.
+                    </p>
+
+                    <button
+                        class="primary-btn"
+                        data-game="quiz"
+                    >
+                        Commencer
+                    </button>
+
+                </article>
+
+
+                <article class="game-card">
+
+                    <div class="game-icon">
+                        ✔️
+                    </div>
+
+                    <h3>
+                        Vrai ou faux
+                    </h3>
+
+                    <p>
+                        Réponds rapidement aux affirmations.
+                    </p>
+
+                    <button
+                        class="primary-btn"
+                        data-game="truefalse"
+                    >
+                        Commencer
+                    </button>
+
+                </article>
+
+
+                <article class="game-card">
+
+                    <div class="game-icon">
+                        🔎
+                    </div>
+
+                    <h3>
+                        Trouve l'erreur
+                    </h3>
+
+                    <p>
+                        Repère l'erreur dans une
+                        réponse ou un raisonnement.
+                    </p>
+
+                    <button
+                        class="primary-btn"
+                        data-game="error"
+                    >
+                        Commencer
+                    </button>
+
+                </article>
+
+
+                <article class="game-card">
+
+                    <div class="game-icon">
+                        🗺️
+                    </div>
+
+                    <h3>
+                        Capitales
+                    </h3>
+
+                    <p>
+                        Entraîne-toi à reconnaître
+                        les capitales du monde.
+                    </p>
+
+                    <button
+                        class="primary-btn"
+                        data-game="capitals"
+                    >
+                        Commencer
+                    </button>
+
+                </article>
+
+            </div>
+
+
+            <!-- Zone de jeu -->
+            <div
+                id="gameArea"
+                class="game-area hidden"
+            ></div>
+
+        </section>
+
+
+        <!-- =========================
+             EXAMENS
+        ========================== -->
+        <section id="exams" class="page-section">
+
+            <div class="page-header">
+
+                <div>
+                    <span class="eyebrow">
+                        EXAMENS BLANCS
+                    </span>
+
+                    <h1>
+                        En conditions réelles
+                    </h1>
+
+                    <p>
+                        Entraîne-toi avec des séries
+                        plus longues.
+                    </p>
+                </div>
+
+                <div class="page-header-icon">
+                    📝
+                </div>
+
+            </div>
+
+
+            <div class="exam-grid">
+
+                <article class="exam-card">
+
+                    <span class="exam-number">
+                        01
+                    </span>
+
+                    <div>
+                        <span class="subject-label">
+                            MATHÉMATIQUES
+                        </span>
+
+                        <h3>
+                            Examen blanc Maths
+                        </h3>
+
+                        <p>
+                            Une série complète d'exercices
+                            de mathématiques.
+                        </p>
+
+                        <button
+                            class="primary-btn"
+                            data-exam="maths"
+                        >
+                            Lancer l'examen
+                        </button>
+                    </div>
+
+                </article>
+
+
+                <article class="exam-card">
+
+                    <span class="exam-number">
+                        02
+                    </span>
+
+                    <div>
+                        <span class="subject-label">
+                            GÉOGRAPHIE
+                        </span>
+
+                        <h3>
+                            Examen blanc Géographie
+                        </h3>
+
+                        <p>
+                            Teste tes connaissances sur
+                            l'ensemble des chapitres.
+                        </p>
+
+                        <button
+                            class="primary-btn"
+                            data-exam="geo"
+                        >
+                            Lancer l'examen
+                        </button>
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- Zone examen -->
+            <div
+                id="examArea"
+                class="exam-area hidden"
+            ></div>
+
+        </section>
+
+
+        <!-- =========================
+             PROGRESSION
+        ========================== -->
+        <section id="progress" class="page-section">
+
+            <div class="page-header">
+
+                <div>
+                    <span class="eyebrow">
+                        MON SUIVI
+                    </span>
+
+                    <h1>
+                        Ma progression
+                    </h1>
+
+                    <p>
+                        Vois ce que tu maîtrises et
+                        ce que tu dois encore revoir.
+                    </p>
+                </div>
+
+                <div class="page-header-icon">
+                    📊
+                </div>
+
+            </div>
+
+
+            <!-- Statistiques -->
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <span class="stat-icon">🎯</span>
+
+                    <strong id="statMastery">
+                        0%
+                    </strong>
+
+                    <span>
+                        Maîtrise globale
+                    </span>
+                </div>
+
+
+                <div class="stat-card">
+                    <span class="stat-icon">📚</span>
+
+                    <strong id="statChapters">
+                        0
+                    </strong>
+
+                    <span>
+                        Chapitres étudiés
+                    </span>
+                </div>
+
+
+                <div class="stat-card">
+                    <span class="stat-icon">🧠</span>
+
+                    <strong id="statQuizzes">
+                        0
+                    </strong>
+
+                    <span>
+                        Quiz réalisés
+                    </span>
+                </div>
+
+
+                <div class="stat-card">
+                    <span class="stat-icon">🏆</span>
+
+                    <strong id="statBest">
+                        0%
+                    </strong>
+
+                    <span>
+                        Meilleur score
+                    </span>
+                </div>
+
+            </div>
+
+
+            <!-- Matières -->
+            <div class="progress-panels">
+
+                <article class="progress-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <span class="subject-label">
+                                MATHÉMATIQUES
+                            </span>
+
+                            <h3>
+                                Progression Maths
+                            </h3>
+                        </div>
+
+                        <strong id="progressMathsValue">
+                            0%
+                        </strong>
+
+                    </div>
+
+                    <div class="progress-bar large">
+                        <div
+                            id="progressMathsBar"
+                            class="progress-fill"
+                            style="width: 0%"
+                        ></div>
+                    </div>
+
+                </article>
+
+
+                <article class="progress-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <span class="subject-label">
+                                GÉOGRAPHIE
+                            </span>
+
+                            <h3>
+                                Progression Géographie
+                            </h3>
+                        </div>
+
+                        <strong id="progressGeoValue">
+                            0%
+                        </strong>
+
+                    </div>
+
+                    <div class="progress-bar large">
+                        <div
+                            id="progressGeoBar"
+                            class="progress-fill"
+                            style="width: 0%"
+                        ></div>
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- Chapitres à revoir -->
+            <div class="section-heading">
+
+                <div>
+                    <span class="eyebrow">
+                        À REVOIR
+                    </span>
+
+                    <h2>
+                        Tes points faibles
+                    </h2>
+                </div>
+
+            </div>
+
+            <div
+                id="reviewList"
+                class="review-list"
+            ></div>
+
+        </section>
+
+
+        <!-- =========================
+             VUE CHAPITRE
+        ========================== -->
+        <section
+            id="chapterDetail"
+            class="page-section"
+        >
+
+            <button
+                id="backToSubject"
+                class="back-btn"
+                type="button"
+            >
+                ← Retour
+            </button>
+
+            <div
+                id="chapterDetailContent"
+                class="chapter-detail"
+            ></div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         MODALE
+    ========================== -->
+    <div
+        id="modal"
+        class="modal hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+    >
+
+        <div class="modal-backdrop"></div>
+
+        <div class="modal-box">
+
+            <button
+                id="closeModal"
+                class="modal-close"
+                type="button"
+                aria-label="Fermer"
+            >
+                ×
+            </button>
+
+            <h2 id="modalTitle">
+                Carnet CESS
+            </h2>
+
+            <div id="modalContent"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         DONNÉES
+    ========================== -->
+
+    <script src="js/math-data.js"></script>
+    <script src="js/geo-data.js"></script>
+    <script src="js/geo-vocab.js"></script>
+
+    <!-- =========================
+         APPLICATION
+    ========================== -->
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>
