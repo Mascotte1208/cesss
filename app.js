@@ -828,11 +828,29 @@ function renderQuiz() {
         const total = quizState ? quizState.qs.length : 0;
         const percentage = total ? Math.round(score / total * 100) : 0;
 
+        // On n'enregistre le résultat qu'une seule fois, quand le quiz vient
+        // de se terminer (et non à chaque question répondue).
+        if (quizState && !quizState.recorded) {
+            state.results.push({
+                date: Date.now(),
+                score: score,
+                total: total,
+                mode: quizState.mode
+            });
+            quizState.recorded = true;
+            save();
+        }
+
+        const replayMode = quizState ? quizState.mode : 'mixed';
+        const replayAction = replayMode === 'capitales'
+            ? 'startCapitals()'
+            : `startQuiz('${replayMode === 'chapter' ? 'mixed' : replayMode}')`;
+
         panel.innerHTML = `
             <div class="result">
                 <b>${percentage}%</b>
                 <p>${score} bonne(s) réponse(s) sur ${total}</p>
-                <button class="primary" onclick="startQuiz('${quizState && quizState.mode === 'chapter' ? 'mixed' : (quizState ? quizState.mode : 'mixed')}')">
+                <button class="primary" onclick="${replayAction}">
                     Rejouer
                 </button>
             </div>
@@ -880,13 +898,6 @@ function answerQuiz(index) {
     }
 
     quizState.index++;
-
-    state.results.push({
-        date: Date.now(),
-        score: quizState.score,
-        total: quizState.index,
-        mode: quizState.mode
-    });
 
     save();
     renderQuiz();
@@ -989,7 +1000,9 @@ function renderMemo() {
                         (item.definition || item.def || '') + ' ' + 
                         (item.exemple || '') + ' ' + 
                         (item.categorie || item.theme || '');
-            return text.toLowerCase().includes(term);
+            const matchesTerm = text.toLowerCase().includes(term);
+            const matchesYear = year === 'all' || (item.niveau || item.annee) === year;
+            return matchesTerm && matchesYear;
         });
 
         box.innerHTML = filtered.length
