@@ -1,6 +1,8 @@
+```javascript
 /* =========================================================
-   CARNET CESS — V2
-   Interface + navigation + progression + quiz + examens
+   CARNET CESS
+   APPLICATION PRINCIPALE
+   VERSION STABLE
    ========================================================= */
 
 var CESS_DBKEY = 'carnetCESSv4';
@@ -9,7 +11,6 @@ var cessState = {
     progress: {},
     results: [],
     mistakes: [],
-    activity: [],
     streak: 0,
     theme: 'light'
 };
@@ -20,10 +21,58 @@ var cessSelectedYear = {
 };
 
 var cessMemoMode = 'formules';
-var cessCurrentChapter = null;
-var cessChapterTab = 'cours';
 var cessQuizState = null;
 var cessExamState = null;
+
+
+/* =========================================================
+   CHARGEMENT / SAUVEGARDE
+   ========================================================= */
+
+(function loadState() {
+    try {
+        var saved = localStorage.getItem(CESS_DBKEY);
+
+        if (saved) {
+            var parsed = JSON.parse(saved);
+
+            if (parsed && typeof parsed === 'object') {
+                cessState = {
+                    progress: parsed.progress || {},
+                    results: Array.isArray(parsed.results)
+                        ? parsed.results
+                        : [],
+                    mistakes: Array.isArray(parsed.mistakes)
+                        ? parsed.mistakes
+                        : [],
+                    streak: Number(parsed.streak || 0),
+                    theme: parsed.theme === 'dark'
+                        ? 'dark'
+                        : 'light'
+                };
+            }
+        }
+    } catch (error) {
+        console.warn(
+            'Impossible de charger les données sauvegardées.',
+            error
+        );
+    }
+})();
+
+function cessSave() {
+    try {
+        localStorage.setItem(
+            CESS_DBKEY,
+            JSON.stringify(cessState)
+        );
+    } catch (error) {
+        console.warn(
+            'Impossible de sauvegarder les données.',
+            error
+        );
+    }
+}
 
 
 /* =========================================================
@@ -33,45 +82,38 @@ var cessExamState = null;
 var CESS_SUBJECTS = {
 
     maths: {
-
         label: 'Mathématiques',
-        short: 'Maths',
         icon: '📐',
-        accent: 'primary',
 
         getData: function () {
-
-            return (
+            if (
                 typeof CHAPITRES !== 'undefined' &&
-                CHAPITRES
-            )
-                ? CHAPITRES
-                : {};
+                CHAPITRES &&
+                typeof CHAPITRES === 'object'
+            ) {
+                return CHAPITRES;
+            }
 
+            return {};
         }
-
     },
 
     geo: {
-
         label: 'Géographie',
-        short: 'Géo',
         icon: '🌍',
-        accent: 'green',
 
         getData: function () {
-
-            return (
+            if (
                 typeof GEO_CHAPITRES !== 'undefined' &&
-                GEO_CHAPITRES
-            )
-                ? GEO_CHAPITRES
-                : {};
+                GEO_CHAPITRES &&
+                typeof GEO_CHAPITRES === 'object'
+            ) {
+                return GEO_CHAPITRES;
+            }
 
+            return {};
         }
-
     }
-
 };
 
 
@@ -79,530 +121,131 @@ var CESS_SUBJECTS = {
    UTILITAIRES
    ========================================================= */
 
-function esc(value) {
+function escapeHtml(value) {
+    if (value === null || value === undefined) {
+        return '';
+    }
 
-    return String(
-        value == null ? '' : value
-    )
+    return String(value)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
-
 }
 
-
-function shuffle(arr) {
-
-    var copy = Array.isArray(arr)
-        ? arr.slice()
+function shuffle(array) {
+    var copy = Array.isArray(array)
+        ? array.slice()
         : [];
 
-    for (
-        var i = copy.length - 1;
-        i > 0;
-        i--
-    ) {
+    for (var i = copy.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
 
-        var j = Math.floor(
-            Math.random() * (i + 1)
-        );
-
-        var tmp = copy[i];
-
+        var temp = copy[i];
         copy[i] = copy[j];
-        copy[j] = tmp;
-
+        copy[j] = temp;
     }
 
     return copy;
-
 }
 
-
-function formatDate(timestamp) {
-
-    if (!timestamp) {
-        return '';
-    }
-
-    try {
-
-        return new Intl.DateTimeFormat(
-            'fr-BE',
-            {
-                day: '2-digit',
-                month: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-            }
-        ).format(
-            new Date(timestamp)
-        );
-
-    } catch (error) {
-
-        return '';
-
-    }
-
+function getChapterProgress(id) {
+    return Number(
+        cessState.progress[id] || 0
+    );
 }
-
-
-/* =========================================================
-   SAUVEGARDE
-   ========================================================= */
-
-function saveState() {
-
-    try {
-
-        localStorage.setItem(
-            CESS_DBKEY,
-            JSON.stringify(cessState)
-        );
-
-    } catch (error) {
-
-        console.warn(
-            'Impossible de sauvegarder.',
-            error
-        );
-
-    }
-
-}
-
-
-(function loadState() {
-
-    try {
-
-        var raw =
-            localStorage.getItem(
-                CESS_DBKEY
-            );
-
-        if (!raw) {
-            return;
-        }
-
-        var parsed =
-            JSON.parse(raw);
-
-        if (
-            !parsed ||
-            typeof parsed !== 'object'
-        ) {
-            return;
-        }
-
-        cessState.progress =
-            parsed.progress || {};
-
-        cessState.results =
-            Array.isArray(parsed.results)
-                ? parsed.results
-                : [];
-
-        cessState.mistakes =
-            Array.isArray(parsed.mistakes)
-                ? parsed.mistakes
-                : [];
-
-        cessState.activity =
-            Array.isArray(parsed.activity)
-                ? parsed.activity
-                : [];
-
-        cessState.streak =
-            Number(parsed.streak || 0);
-
-        cessState.theme =
-            parsed.theme === 'dark'
-                ? 'dark'
-                : 'light';
-
-    } catch (error) {
-
-        console.warn(
-            'Etat sauvegardé illisible.',
-            error
-        );
-
-    }
-
-})();
-
-
-function recordActivity(
-    type,
-    label,
-    detail
-) {
-
-    cessState.activity.unshift({
-
-        type: type,
-
-        label: label,
-
-        detail: detail || '',
-
-        date: Date.now()
-
-    });
-
-    cessState.activity =
-        cessState.activity.slice(0, 12);
-
-    saveState();
-
-}
-
-
-/* =========================================================
-   DONNEES
-   ========================================================= */
-
-function dataFor(subject) {
-
-    if (!CESS_SUBJECTS[subject]) {
-        return {};
-    }
-
-    return CESS_SUBJECTS[
-        subject
-    ].getData();
-
-}
-
 
 function allChaps(subject) {
+    var subjectData = CESS_SUBJECTS[subject];
 
-    var data =
-        dataFor(subject);
+    if (!subjectData) {
+        return [];
+    }
 
-    var output = [];
+    var data = subjectData.getData();
 
-    Object.keys(
-        data || {}
-    ).forEach(function (year) {
+    if (!data || typeof data !== 'object') {
+        return [];
+    }
 
-        if (
-            !Array.isArray(
-                data[year]
-            )
-        ) {
-            return;
+    var result = [];
+    var years = Object.keys(data);
+
+    for (var i = 0; i < years.length; i++) {
+        var year = years[i];
+        var chapters = data[year];
+
+        if (!Array.isArray(chapters)) {
+            continue;
         }
 
-        data[year].forEach(
-            function (chapter) {
+        for (var j = 0; j < chapters.length; j++) {
+            var chapter = chapters[j];
 
-                if (
-                    !chapter ||
-                    typeof chapter !== 'object'
-                ) {
-                    return;
-                }
-
-                var copy = {};
-
-                Object.keys(
-                    chapter
-                ).forEach(function (key) {
-
-                    copy[key] =
-                        chapter[key];
-
-                });
-
-                copy.annee =
-                    chapter.annee ||
-                    chapter.niveau ||
-                    year;
-
-                copy.matiere =
-                    subject;
-
-                output.push(copy);
-
+            if (!chapter || typeof chapter !== 'object') {
+                continue;
             }
-        );
 
-    });
+            var copy = {};
 
-    return output;
+            for (var key in chapter) {
+                if (
+                    Object.prototype.hasOwnProperty.call(
+                        chapter,
+                        key
+                    )
+                ) {
+                    copy[key] = chapter[key];
+                }
+            }
 
+            copy.annee = chapter.annee || year;
+            copy.matiere = subject;
+
+            result.push(copy);
+        }
+    }
+
+    return result;
 }
 
-
 function findChapter(id) {
+    var chapters = allChaps('maths')
+        .concat(allChaps('geo'));
 
-    var chapters =
-        allChaps('maths')
-            .concat(
-                allChaps('geo')
-            );
-
-    for (
-        var i = 0;
-        i < chapters.length;
-        i++
-    ) {
-
+    for (var i = 0; i < chapters.length; i++) {
         if (
             String(chapters[i].id) ===
             String(id)
         ) {
-
             return chapters[i];
-
         }
-
     }
 
     return null;
-
 }
 
-
-function progressOf(chapter) {
-
-    return Math.max(
-        0,
-        Math.min(
-            100,
-            Number(
-                cessState.progress[
-                    chapter.id
-                ] || 0
-            )
-        )
-    );
-
-}
-
-
-function subjectStats(subject) {
-
-    var chapters =
-        allChaps(subject);
-
-    var done =
-        chapters.filter(
-            function (chapter) {
-
-                return (
-                    progressOf(chapter) >=
-                    100
-                );
-
-            }
-        ).length;
-
-    var started =
-        chapters.filter(
-            function (chapter) {
-
-                var p =
-                    progressOf(chapter);
-
-                return (
-                    p > 0 &&
-                    p < 100
-                );
-
-            }
-        ).length;
-
-    var avg =
-        chapters.length
-            ? Math.round(
-                chapters.reduce(
-                    function (
-                        total,
-                        chapter
-                    ) {
-
-                        return (
-                            total +
-                            progressOf(
-                                chapter
-                            )
-                        );
-
-                    },
-                    0
-                ) / chapters.length
-            )
-            : 0;
-
-    var questions =
-        flattenQuestions(subject).length;
-
-    return {
-
-        total: chapters.length,
-
-        done: done,
-
-        started: started,
-
-        avg: avg,
-
-        questions: questions
-
-    };
-
-}
-
-
-function yearStats(
-    subject,
-    year
-) {
-
-    var data =
-        dataFor(subject);
-
-    var chapters =
-        Array.isArray(
-            data[year]
-        )
-            ? data[year]
-            : [];
-
-    var done =
-        chapters.filter(
-            function (chapter) {
-
-                return (
-                    progressOf(chapter) >=
-                    100
-                );
-
-            }
-        ).length;
-
-    var avg =
-        chapters.length
-            ? Math.round(
-                chapters.reduce(
-                    function (
-                        total,
-                        chapter
-                    ) {
-
-                        return (
-                            total +
-                            progressOf(
-                                chapter
-                            )
-                        );
-
-                    },
-                    0
-                ) / chapters.length
-            )
-            : 0;
-
-    return {
-
-        total: chapters.length,
-
-        done: done,
-
-        avg: avg
-
-    };
-
-}
-
-
-function pctGlobal() {
-
-    var chapters =
-        allChaps('maths')
-            .concat(
-                allChaps('geo')
-            );
+function pctSubject(subject) {
+    var chapters = allChaps(subject);
 
     if (!chapters.length) {
         return 0;
     }
 
+    var done = 0;
+
+    for (var i = 0; i < chapters.length; i++) {
+        if (
+            getChapterProgress(chapters[i].id) >= 100
+        ) {
+            done++;
+        }
+    }
+
     return Math.round(
-        chapters.reduce(
-            function (
-                total,
-                chapter
-            ) {
-
-                return (
-                    total +
-                    progressOf(chapter)
-                );
-
-            },
-            0
-        ) / chapters.length
+        done / chapters.length * 100
     );
-
-}
-
-
-/* =========================================================
-   THEME
-   ========================================================= */
-
-function toggleTheme() {
-
-    document.body.classList.toggle(
-        'dark'
-    );
-
-    cessState.theme =
-        document.body.classList.contains(
-            'dark'
-        )
-            ? 'dark'
-            : 'light';
-
-    saveState();
-
-    updateThemeButton();
-
-}
-
-
-function updateThemeButton() {
-
-    var button =
-        document.getElementById(
-            'themeButton'
-        );
-
-    if (!button) {
-        return;
-    }
-
-    if (
-        cessState.theme === 'dark'
-    ) {
-
-        button.innerHTML =
-            '☀️ <span>Mode clair</span>';
-
-    } else {
-
-        button.innerHTML =
-            '🌙 <span>Mode sombre</span>';
-
-    }
-
 }
 
 
@@ -611,45 +254,37 @@ function updateThemeButton() {
    ========================================================= */
 
 function showView(id) {
-
-    var target =
-        document.getElementById(id);
+    var target = document.getElementById(id);
 
     if (!target) {
+        console.warn('Vue introuvable :', id);
         return;
     }
 
-    document
-        .querySelectorAll('.view')
-        .forEach(function (view) {
+    var views =
+        document.querySelectorAll('.view');
 
-            view.classList.remove(
-                'active'
-            );
+    for (var i = 0; i < views.length; i++) {
+        views[i].classList.remove('active');
+    }
 
+    target.classList.add('active');
+
+    var navButtons =
+        document.querySelectorAll('nav button');
+
+    for (var n = 0; n < navButtons.length; n++) {
+        navButtons[n].classList.remove('active');
+    }
+
+    try {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
         });
-
-
-    target.classList.add(
-        'active'
-    );
-
-
-    document
-        .querySelectorAll(
-            '[data-view]'
-        )
-        .forEach(function (button) {
-
-            button.classList.toggle(
-                'active',
-                button.getAttribute(
-                    'data-view'
-                ) === id
-            );
-
-        });
-
+    } catch (error) {
+        window.scrollTo(0, 0);
+    }
 
     if (id === 'home') {
         renderHome();
@@ -667,40 +302,33 @@ function showView(id) {
         renderMemo();
     }
 
-    if (id === 'games') {
-        renderGamesHome();
-    }
-
-    if (id === 'exam') {
-        renderExamHome();
-    }
-
     if (id === 'progress') {
         renderProgress();
     }
-
-
-    window.scrollTo(
-        0,
-        0
-    );
-
 }
 
 
-function setYear(
-    subject,
-    year
-) {
+/* =========================================================
+   THEME
+   ========================================================= */
 
-    cessSelectedYear[
-        subject
-    ] = year;
+function toggleTheme() {
+    document.body.classList.toggle('dark');
 
-    renderSubject(
-        subject
-    );
+    cessState.theme =
+        document.body.classList.contains('dark')
+            ? 'dark'
+            : 'light';
 
+    cessSave();
+}
+
+function applyTheme() {
+    if (cessState.theme === 'dark') {
+        document.body.classList.add('dark');
+    } else {
+        document.body.classList.remove('dark');
+    }
 }
 
 
@@ -709,386 +337,221 @@ function setYear(
    ========================================================= */
 
 function renderHome() {
-
-    var maths =
-        subjectStats('maths');
-
-    var geo =
-        subjectStats('geo');
-
-    var total =
-        maths.total +
-        geo.total;
-
-    var done =
-        maths.done +
-        geo.done;
-
-    var global =
-        pctGlobal();
-
     var stats =
-        document.getElementById(
-            'homeStats'
-        );
+        document.getElementById('homeStats');
 
-    if (stats) {
-
-        stats.innerHTML = [
-
-            [
-                '📚',
-                total,
-                'Chapitres'
-            ],
-
-            [
-                '🏆',
-                done,
-                'Maîtrisés'
-            ],
-
-            [
-                '🎯',
-                cessState.results.length,
-                'Quiz réalisés'
-            ],
-
-            [
-                '📈',
-                global + '%',
-                'Progression globale'
-            ]
-
-        ]
-            .map(function (item) {
-
-                return `
-
-                    <div class="home-stat">
-
-                        <span class="home-stat-icon">
-                            ${item[0]}
-                        </span>
-
-                        <strong class="home-stat-value">
-                            ${item[1]}
-                        </strong>
-
-                        <span class="home-stat-label">
-                            ${item[2]}
-                        </span>
-
-                    </div>
-
-                `;
-
-            })
-            .join('');
-
+    if (!stats) {
+        return;
     }
 
+    var mathsCount =
+        allChaps('maths').length;
 
-    var subjects =
+    var geoCount =
+        allChaps('geo').length;
+
+    var total =
+        mathsCount + geoCount;
+
+    stats.innerHTML = [
+        [
+            '📚',
+            total,
+            'Chapitres'
+        ],
+        [
+            '📐',
+            pctSubject('maths') + '%',
+            'Maîtrise Maths'
+        ],
+        [
+            '🌍',
+            pctSubject('geo') + '%',
+            'Maîtrise Géo'
+        ],
+        [
+            '🎯',
+            cessState.results.length,
+            'Quiz réalisés'
+        ]
+    ].map(function (item) {
+
+        return `
+            <div class="stat">
+                <b>${item[0]} ${item[1]}</b>
+                <span>${item[2]}</span>
+            </div>
+        `;
+
+    }).join('');
+
+
+    var progress =
         document.getElementById(
-            'homeSubjects'
+            'subjectProgress'
         );
 
-    if (subjects) {
+    if (progress) {
 
-        subjects.innerHTML =
-            renderSubjectHomeCard(
-                'maths',
-                maths
-            ) +
-            renderSubjectHomeCard(
-                'geo',
-                geo
-            );
+        progress.innerHTML = [
+            'maths',
+            'geo'
+        ].map(function (subject) {
 
+            var percentage =
+                pctSubject(subject);
+
+            return `
+                <div class="progress-row">
+
+                    <div class="progress-label">
+                        <span>
+                            ${CESS_SUBJECTS[subject].icon}
+                            ${CESS_SUBJECTS[subject].label}
+                        </span>
+
+                        <span>
+                            ${percentage}%
+                        </span>
+                    </div>
+
+                    <div class="bar">
+                        <i style="width:${percentage}%"></i>
+                    </div>
+
+                </div>
+            `;
+
+        }).join('');
     }
 
 
     var priorities =
         document.getElementById(
-            'homePriorities'
+            'priorities'
         );
 
     if (priorities) {
 
-        var todo =
+        var chapters =
             allChaps('maths')
-                .concat(
-                    allChaps('geo')
-                )
-                .filter(
-                    function (chapter) {
+                .concat(allChaps('geo'))
+                .filter(function (chapter) {
+                    return getChapterProgress(
+                        chapter.id
+                    ) < 100;
+                })
+                .slice(0, 6);
 
-                        return (
-                            progressOf(
-                                chapter
-                            ) < 100
-                        );
-
-                    }
-                )
-                .sort(
-                    function (a, b) {
-
-                        return (
-                            progressOf(a) -
-                            progressOf(b)
-                        );
-
-                    }
-                )
-                .slice(0, 5);
-
-
-        if (!todo.length) {
+        if (!chapters.length) {
 
             priorities.innerHTML =
-                '<div class="empty-state">🎉 Tous les chapitres sont maîtrisés.</div>';
+                '<div class="empty">🎉 Tout est maîtrisé !</div>';
 
         } else {
 
             priorities.innerHTML =
-                '<div class="simple-list">' +
+                chapters.map(function (chapter) {
 
-                todo.map(
-                    function (chapter) {
+                    return `
+                        <button
+                            type="button"
+                            class="priority"
+                            onclick="openChapter('${chapter.id}')">
 
-                        return `
+                            <span>
+                                ${chapter.icone || '📘'}
+                                ${escapeHtml(
+                                    chapter.titre ||
+                                    'Chapitre'
+                                )}
+                            </span>
 
-                            <div class="simple-list-item">
+                            <b>
+                                ${escapeHtml(
+                                    chapter.annee || ''
+                                )}
+                            </b>
 
-                                <span class="simple-list-icon">
-                                    ${chapter.icone || '📘'}
-                                </span>
+                        </button>
+                    `;
 
-                                <div class="simple-list-main">
-
-                                    <strong>
-                                        ${esc(
-                                            chapter.titre ||
-                                            'Chapitre'
-                                        )}
-                                    </strong>
-
-                                    <small>
-                                        ${esc(
-                                            chapter.annee
-                                        )}
-                                        ·
-                                        ${progressOf(
-                                            chapter
-                                        )}%
-                                        parcouru
-                                    </small>
-
-                                </div>
-
-                                <button
-                                    class="simple-list-action"
-                                    onclick="openChapter('${esc(chapter.id)}')"
-                                    type="button"
-                                >
-                                    Ouvrir →
-                                </button>
-
-                            </div>
-
-                        `;
-
-                    }
-                ).join('') +
-
-                '</div>';
-
+                }).join('');
         }
-
     }
-
-
-    var activity =
-        document.getElementById(
-            'homeActivity'
-        );
-
-    if (activity) {
-
-        var items =
-            cessState.activity.slice(
-                0,
-                5
-            );
-
-        if (!items.length) {
-
-            activity.innerHTML =
-                '<div class="empty-state">Ton activité apparaîtra ici après tes premières révisions.</div>';
-
-        } else {
-
-            activity.innerHTML =
-                '<div class="simple-list">' +
-
-                items.map(
-                    function (item) {
-
-                        var icon =
-                            item.type === 'quiz'
-                                ? '🎯'
-                                : item.type === 'chapter'
-                                    ? '📖'
-                                    : '📝';
-
-                        return `
-
-                            <div class="simple-list-item">
-
-                                <span class="simple-list-icon">
-                                    ${icon}
-                                </span>
-
-                                <div class="simple-list-main">
-
-                                    <strong>
-                                        ${esc(
-                                            item.label
-                                        )}
-                                    </strong>
-
-                                    <small>
-                                        ${esc(
-                                            item.detail
-                                        )}
-                                        ·
-                                        ${formatDate(
-                                            item.date
-                                        )}
-                                    </small>
-
-                                </div>
-
-                            </div>
-
-                        `;
-
-                    }
-                ).join('') +
-
-                '</div>';
-
-        }
-
-    }
-
-
-    var daily =
-        document.getElementById(
-            'dailyText'
-        );
-
-    if (daily) {
-
-        daily.textContent =
-            flattenQuestions('all').length +
-            ' questions sont prêtes pour une session rapide.';
-
-    }
-
-}
-
-
-function renderSubjectHomeCard(
-    subject,
-    stats
-) {
-
-    var info =
-        CESS_SUBJECTS[
-            subject
-        ];
-
-    return `
-
-        <article
-            class="subject-card ${
-                subject === 'geo'
-                    ? 'geo-card'
-                    : 'maths-card'
-            }"
-        >
-
-            <div class="subject-card-top">
-
-                <span class="subject-icon">
-                    ${info.icon}
-                </span>
-
-                <span class="subject-arrow">
-                    →
-                </span>
-
-            </div>
-
-            <h3>
-                ${info.label}
-            </h3>
-
-            <p>
-                ${stats.total}
-                chapitres ·
-                ${stats.questions}
-                questions disponibles
-            </p>
-
-            <div class="progress-line">
-
-                <span
-                    style="width:${stats.avg}%"
-                ></span>
-
-            </div>
-
-            <div class="subject-card-footer">
-
-                <span>
-                    ${stats.avg}% maîtrisé
-                </span>
-
-                <button
-                    onclick="showView('${subject}')"
-                    type="button"
-                >
-                    Voir les cours →
-                </button>
-
-            </div>
-
-        </article>
-
-    `;
-
 }
 
 
 /* =========================================================
-   MATIERE
+   REVISION RAPIDE
    ========================================================= */
 
-function renderSubject(
-    subject
-) {
+function quickRevision() {
+    var questions =
+        flattenQuestions('all');
+
+    if (!questions.length) {
+        alert(
+            'Aucune question disponible pour le moment.'
+        );
+        return;
+    }
+
+    showView('games');
+
+    startQuiz('mixed');
+}
+
+
+/* =========================================================
+   MATIERES
+   ========================================================= */
+
+function renderSubject(subject) {
+
+    if (!CESS_SUBJECTS[subject]) {
+        return;
+    }
 
     var data =
-        dataFor(subject);
+        CESS_SUBJECTS[subject].getData();
 
-    var info =
-        CESS_SUBJECTS[
-            subject
-        ];
+    var totalElement =
+        document.getElementById(
+            subject === 'maths'
+                ? 'mathsTotal'
+                : 'geoTotal'
+        );
+
+    var yearsElement =
+        document.getElementById(
+            subject === 'maths'
+                ? 'mathYears'
+                : 'geoYears'
+        );
+
+    var contentElement =
+        document.getElementById(
+            subject === 'maths'
+                ? 'mathContent'
+                : 'geoContent'
+        );
+
+    if (
+        !totalElement ||
+        !yearsElement ||
+        !contentElement
+    ) {
+        return;
+    }
+
+    var chaptersAll =
+        allChaps(subject);
+
+    totalElement.textContent =
+        chaptersAll.length +
+        ' chapitres';
+
 
     var years = [
         '3e',
@@ -1097,394 +560,171 @@ function renderSubject(
         '6e'
     ];
 
-    var total =
-        document.getElementById(
-            subject === 'maths'
-                ? 'mathsTotal'
-                : 'geoTotal'
-        );
+    yearsElement.innerHTML =
+        years.map(function (year) {
 
-    var yearsBox =
-        document.getElementById(
-            subject === 'maths'
-                ? 'mathYears'
-                : 'geoYears'
-        );
+            var chapters =
+                Array.isArray(data[year])
+                    ? data[year]
+                    : [];
 
-    var content =
-        document.getElementById(
-            subject === 'maths'
-                ? 'mathContent'
-                : 'geoContent'
-        );
+            var done = 0;
 
+            for (
+                var i = 0;
+                i < chapters.length;
+                i++
+            ) {
 
-    if (
-        !yearsBox ||
-        !content
-    ) {
-        return;
-    }
-
-
-    if (total) {
-
-        total.textContent =
-            allChaps(subject).length +
-            ' chapitres · ' +
-            subjectStats(subject).avg +
-            '% maîtrisé';
-
-    }
-
-
-    yearsBox.innerHTML =
-        years.map(
-            function (year) {
-
-                var stats =
-                    yearStats(
-                        subject,
-                        year
-                    );
-
-                var active =
-                    cessSelectedYear[
-                        subject
-                    ] === year
-                        ? 'active'
-                        : '';
-
-                return `
-
-                    <button
-                        class="year-button ${active}"
-                        onclick="setYear('${subject}','${year}')"
-                        type="button"
-                    >
-
-                        <strong>
-                            ${year}
-                        </strong>
-
-                        <small>
-                            ${stats.total}
-                            chapitres ·
-                            ${stats.avg}%
-                        </small>
-
-                    </button>
-
-                `;
-
+                if (
+                    getChapterProgress(
+                        chapters[i].id
+                    ) >= 100
+                ) {
+                    done++;
+                }
             }
-        ).join('');
+
+            var percentage =
+                chapters.length
+                    ? Math.round(
+                        done /
+                        chapters.length *
+                        100
+                    )
+                    : 0;
+
+            var active =
+                cessSelectedYear[subject] === year
+                    ? 'active'
+                    : '';
+
+            return `
+                <button
+                    type="button"
+                    class="year-card ${active}"
+                    onclick="
+                        cessSelectedYear['${subject}']='${year}';
+                        renderSubject('${subject}');
+                    ">
+
+                    <b>${year}</b>
+
+                    <small>
+                        ${chapters.length}
+                        chapitres ·
+                        ${percentage}%
+                        maîtrisé
+                    </small>
+
+                </button>
+            `;
+
+        }).join('');
 
 
     var selected =
-        cessSelectedYear[
-            subject
-        ];
-
+        cessSelectedYear[subject];
 
     var chapters =
-        Array.isArray(
-            data[selected]
-        )
+        Array.isArray(data[selected])
             ? data[selected]
             : [];
 
-
-    var stats =
-        yearStats(
-            subject,
-            selected
-        );
-
-
     if (!chapters.length) {
 
-        content.innerHTML = `
-
-            <div class="content-card">
-
-                <div class="empty-state">
-                    Aucun chapitre disponible
-                    pour ${selected}.
-                </div>
-
+        contentElement.innerHTML = `
+            <div class="empty">
+                Aucun chapitre disponible
+                pour cette année.
             </div>
-
         `;
 
         return;
-
     }
 
 
-    var groups = {};
+    contentElement.innerHTML = `
+        <div class="chapter-list">
 
+            ${chapters.map(function (chapter) {
 
-    chapters.forEach(
-        function (chapter) {
+                var progress =
+                    getChapterProgress(
+                        chapter.id
+                    );
 
-            var key =
-                chapter.domaine ||
-                chapter.domain ||
-                chapter.categorie ||
-                chapter.theme ||
-                'Programme';
+                var done =
+                    progress >= 100;
 
-            if (!groups[key]) {
-                groups[key] = [];
-            }
+                return `
+                    <article class="chapter">
 
-            groups[key].push(
-                chapter
-            );
+                        <span
+                            style="font-size:30px">
+                            ${chapter.icone || '📘'}
+                        </span>
 
-        }
-    );
+                        <div class="chapter-main">
 
+                            <h3>
+                                ${escapeHtml(
+                                    chapter.titre ||
+                                    'Chapitre'
+                                )}
+                            </h3>
 
-    var keys =
-        Object.keys(groups);
+                            <p>
+                                ${escapeHtml(
+                                    chapter.desc ||
+                                    ''
+                                )}
+                            </p>
 
+                            <div class="mini-progress">
+                                <i
+                                    style="
+                                        width:${progress}%
+                                    ">
+                                </i>
+                            </div>
 
-    var domainHTML =
-        keys.length > 1
+                        </div>
 
-            ? `
+                        <span
+                            class="badge ${
+                                done
+                                    ? 'done'
+                                    : ''
+                            }">
 
-                <div class="domain-grid">
+                            ${
+                                done
+                                    ? '✓ Maîtrisé'
+                                    : progress > 0
+                                        ? progress + '%'
+                                        : 'À revoir'
+                            }
 
-                    ${keys.map(
-                        function (key) {
+                        </span>
 
-                            var list =
-                                groups[key];
+                        <button
+                            type="button"
+                            onclick="
+                                openChapter('${chapter.id}')
+                            ">
 
-                            var average =
-                                Math.round(
-                                    list.reduce(
-                                        function (
-                                            total,
-                                            chapter
-                                        ) {
+                            Ouvrir
 
-                                            return (
-                                                total +
-                                                progressOf(
-                                                    chapter
-                                                )
-                                            );
+                        </button>
 
-                                        },
-                                        0
-                                    ) /
-                                    list.length
-                                );
+                    </article>
+                `;
 
-                            return `
-
-                                <section class="domain-card">
-
-                                    <div class="domain-header">
-
-                                        <span class="domain-icon">
-                                            ${
-                                                list[0].icone ||
-                                                info.icon
-                                            }
-                                        </span>
-
-                                        <div class="domain-title">
-
-                                            <strong>
-                                                ${esc(key)}
-                                            </strong>
-
-                                            <small>
-                                                ${list.length}
-                                                chapitre${
-                                                    list.length > 1
-                                                        ? 's'
-                                                        : ''
-                                                }
-                                            </small>
-
-                                        </div>
-
-                                        <span class="domain-count">
-                                            ${average}%
-                                        </span>
-
-                                    </div>
-
-                                    <div class="chapter-list">
-
-                                        ${
-                                            list
-                                                .map(
-                                                    renderChapterItem
-                                                )
-                                                .join('')
-                                        }
-
-                                    </div>
-
-                                </section>
-
-                            `;
-
-                        }
-                    ).join('')}
-
-                </div>
-
-            `
-
-            : `
-
-                <div class="content-card">
-
-                    <div class="chapter-list">
-
-                        ${
-                            chapters
-                                .map(
-                                    renderChapterItem
-                                )
-                                .join('')
-                        }
-
-                    </div>
-
-                </div>
-
-            `;
-
-
-    content.innerHTML = `
-
-        <div class="year-summary">
-
-            <div>
-
-                <strong>
-                    ${selected}
-                </strong>
-
-                <span>
-                    ${stats.total}
-                    chapitres
-                </span>
-
-            </div>
-
-            <div>
-
-                <strong>
-                    ${stats.done}/${stats.total}
-                </strong>
-
-                <span>
-                    maîtrisés
-                </span>
-
-            </div>
-
-            <div>
-
-                <strong>
-                    ${stats.avg}%
-                </strong>
-
-                <span>
-                    progression
-                </span>
-
-            </div>
+            }).join('')}
 
         </div>
-
-        ${domainHTML}
-
     `;
-
-}
-
-
-function renderChapterItem(
-    chapter
-) {
-
-    var p =
-        progressOf(chapter);
-
-    var status;
-
-
-    if (p >= 100) {
-
-        status =
-            '<span class="chapter-status status-done">✓ Maîtrisé</span>';
-
-    } else if (p > 0) {
-
-        status =
-            '<span class="chapter-status status-progress">' +
-            p +
-            '%</span>';
-
-    } else {
-
-        status =
-            '<span class="chapter-status status-new">Nouveau</span>';
-
-    }
-
-
-    return `
-
-        <button
-            class="chapter-item"
-            onclick="openChapter('${esc(chapter.id)}')"
-            type="button"
-        >
-
-            <span class="chapter-icon">
-                ${chapter.icone || '📘'}
-            </span>
-
-            <span class="chapter-main">
-
-                <strong>
-                    ${esc(
-                        chapter.titre ||
-                        'Chapitre'
-                    )}
-                </strong>
-
-                <small>
-                    ${esc(
-                        chapter.desc ||
-                        'Cours et exercices'
-                    )}
-                </small>
-
-            </span>
-
-            ${status}
-
-            <span>
-                →
-            </span>
-
-        </button>
-
-    `;
-
 }
 
 
@@ -1498,897 +738,563 @@ function openChapter(id) {
         findChapter(id);
 
     if (!chapter) {
+        alert(
+            'Impossible de trouver ce chapitre.'
+        );
         return;
     }
 
-    cessCurrentChapter =
-        chapter;
+    var subject =
+        chapter.matiere || 'maths';
 
-    cessChapterTab =
-        'cours';
-
-    renderChapterModal();
-
-}
-
-
-function closeChapter() {
-
-    var modal =
-        document.getElementById(
-            'chapterModal'
-        );
-
-    if (modal) {
-        modal.remove();
-    }
-
-    cessCurrentChapter =
-        null;
-
-}
-
-
-function chapterTab(tab) {
-
-    cessChapterTab =
-        tab;
-
-    renderChapterModal();
-
-}
-
-
-function renderChapterModal() {
-
-    if (!cessCurrentChapter) {
-        return;
-    }
-
-
-    var chapter =
-        cessCurrentChapter;
-
-    var p =
-        progressOf(chapter);
-
-    var info =
-        CESS_SUBJECTS[
-            chapter.matiere
-        ];
-
-
-    var old =
-        document.getElementById(
-            'chapterModal'
-        );
-
-    if (old) {
-        old.remove();
-    }
-
-
-    var modal =
-        document.createElement(
-            'div'
-        );
-
-    modal.id =
-        'chapterModal';
-
-    modal.className =
-        'modal';
-
+    var subjectInfo =
+        CESS_SUBJECTS[subject] ||
+        CESS_SUBJECTS.maths;
 
     var objectives =
-        Array.isArray(
-            chapter.objectifs
-        )
+        Array.isArray(chapter.objectifs)
             ? chapter.objectifs
             : [];
 
-
     var matieres =
-        Array.isArray(
-            chapter.matieres
-        )
+        Array.isArray(chapter.matieres)
             ? chapter.matieres
             : [];
 
-
-    var exercises =
-        Array.isArray(
-            chapter.exercices
-        )
+    var exercices =
+        Array.isArray(chapter.exercices)
             ? chapter.exercices
             : [];
 
-
-    var topics =
-        matieres.length
-            ? matieres
-            : objectives;
+    var progress =
+        getChapterProgress(chapter.id);
 
 
-    var body = '';
+    var content =
+        document.createElement('div');
+
+    content.className =
+        'detail';
 
 
-    if (
-        cessChapterTab ===
-        'cours'
-    ) {
+    content.innerHTML = `
 
-        body = `
+        <div class="detail-top">
 
-            <div class="chapter-layout">
+            <div>
 
-                <div>
-
-                    <article
-                        class="content-card course-content"
-                    >
-
-                        <h3>
-                            📖 Cours
-                        </h3>
-
-                        ${
-                            chapter.cours ||
-                            '<p>Le cours détaillé n’est pas renseigné dans les données de ce chapitre.</p>'
-                        }
-
-                    </article>
-
+                <div class="eyebrow">
+                    ${subjectInfo.icon}
+                    ${subjectInfo.label}
+                    · ${escapeHtml(
+                        chapter.annee || ''
+                    )}
                 </div>
 
-                ${renderChapterSidebar(
-                    chapter,
-                    objectives,
-                    topics
-                )}
+                <h2>
+                    ${chapter.icone || ''}
+                    ${escapeHtml(
+                        chapter.titre ||
+                        'Chapitre'
+                    )}
+                </h2>
+
+                <p>
+                    ${escapeHtml(
+                        chapter.desc || ''
+                    )}
+                </p>
 
             </div>
-
-        `;
-
-    } else if (
-        cessChapterTab ===
-        'retenir'
-    ) {
-
-        body = `
-
-            <div class="chapter-layout">
-
-                <div>
-
-                    <article class="content-card">
-
-                        <div class="section-heading">
-
-                            <span class="eyebrow">
-                                L’essentiel
-                            </span>
-
-                            <h2>
-                                À retenir
-                            </h2>
-
-                        </div>
-
-                        <div class="goal-list">
-
-                            ${
-                                objectives.length
-
-                                    ? objectives.map(
-                                        function (item) {
-
-                                            return `
-
-                                                <div class="goal-item">
-
-                                                    <span>
-                                                        ✓
-                                                    </span>
-
-                                                    <span>
-                                                        ${esc(item)}
-                                                    </span>
-
-                                                </div>
-
-                                            `;
-
-                                        }
-                                    ).join('')
-
-                                    : `
-                                        <div class="empty-state">
-                                            Aucun objectif renseigné.
-                                        </div>
-                                    `
-                            }
-
-                        </div>
-
-                    </article>
-
-
-                    ${
-                        matieres.length
-
-                            ? `
-
-                                <article class="content-card">
-
-                                    <div class="section-heading">
-
-                                        <span class="eyebrow">
-                                            Notions
-                                        </span>
-
-                                        <h2>
-                                            Mots-clés
-                                        </h2>
-
-                                    </div>
-
-                                    <div class="topic-list">
-
-                                        ${
-                                            matieres.map(
-                                                function (item) {
-
-                                                    return `
-                                                        <div class="topic-item">
-                                                            ${esc(item)}
-                                                        </div>
-                                                    `;
-
-                                                }
-                                            ).join('')
-                                        }
-
-                                    </div>
-
-                                </article>
-
-                            `
-
-                            : ''
-                    }
-
-                </div>
-
-                ${renderChapterSidebar(
-                    chapter,
-                    objectives,
-                    topics
-                )}
-
-            </div>
-
-        `;
-
-    } else {
-
-        body = `
-
-            <div class="chapter-layout">
-
-                <div>
-
-                    <article class="content-card">
-
-                        <div class="section-heading">
-
-                            <span class="eyebrow">
-                                Entraînement
-                            </span>
-
-                            <h2>
-                                Exercices du chapitre
-                            </h2>
-
-                        </div>
-
-                        ${renderExercises(
-                            exercises
-                        )}
-
-                    </article>
-
-                </div>
-
-                ${renderChapterSidebar(
-                    chapter,
-                    objectives,
-                    topics
-                )}
-
-            </div>
-
-        `;
-
-    }
-
-
-    modal.innerHTML = `
-
-        <div class="modal-box chapter-modal-box">
 
             <button
-                class="modal-close"
-                onclick="closeChapter()"
-                aria-label="Fermer"
                 type="button"
-            >
-                ×
+                class="close"
+                onclick="
+                    this.closest('.detail').remove()
+                ">
+
+                ✕
+
             </button>
 
-
-            <div class="chapter-top">
-
-                <div class="chapter-breadcrumb">
-
-                    <button
-                        onclick="closeChapter()"
-                        type="button"
-                    >
-                        ← Retour
-                    </button>
-
-                    <span>›</span>
-
-                    <span>
-                        ${info.icon}
-                        ${info.short}
-                    </span>
-
-                    <span>›</span>
-
-                    <span>
-                        ${esc(
-                            chapter.annee
-                        )}
-                    </span>
-
-                </div>
+        </div>
 
 
-                <div class="chapter-hero">
+        <div class="chapter-progress-box">
 
-                    <div>
-
-                        <div class="chapter-title-row">
-
-                            <span class="chapter-big-icon">
-                                ${
-                                    chapter.icone ||
-                                    info.icon
-                                }
-                            </span>
-
-                            <div class="chapter-title">
-
-                                <span class="eyebrow">
-                                    ${info.label}
-                                    ·
-                                    ${esc(
-                                        chapter.annee
-                                    )}
-                                </span>
-
-                                <h1>
-                                    ${esc(
-                                        chapter.titre ||
-                                        'Chapitre'
-                                    )}
-                                </h1>
-
-                                <p>
-                                    ${esc(
-                                        chapter.desc ||
-                                        ''
-                                    )}
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="chapter-progress-box">
-
-                        <span class="chapter-progress-number">
-                            ${p}%
-                        </span>
-
-                        <span class="chapter-progress-label">
-                            progression
-                        </span>
-
-                        <div class="progress-line">
-
-                            <span
-                                style="width:${p}%"
-                            ></span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="chapter-tabs">
-
-                    <button
-                        class="chapter-tab ${
-                            cessChapterTab ===
-                            'cours'
-                                ? 'active'
-                                : ''
-                        }"
-                        onclick="chapterTab('cours')"
-                        type="button"
-                    >
-                        📖 Cours
-                    </button>
-
-                    <button
-                        class="chapter-tab ${
-                            cessChapterTab ===
-                            'retenir'
-                                ? 'active'
-                                : ''
-                        }"
-                        onclick="chapterTab('retenir')"
-                        type="button"
-                    >
-                        ⭐ À retenir
-                    </button>
-
-                    <button
-                        class="chapter-tab ${
-                            cessChapterTab ===
-                            'exercices'
-                                ? 'active'
-                                : ''
-                        }"
-                        onclick="chapterTab('exercices')"
-                        type="button"
-                    >
-                        🎯 Exercices
-                        (${exercises.length})
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            ${body}
-
-
-            <div class="chapter-footer">
+            <div>
+                <strong>
+                    Progression
+                </strong>
 
                 <span>
-
-                    ${
-                        p >= 100
-
-                            ? '✓ Chapitre maîtrisé'
-
-                            : 'Continue à t’entraîner pour le maîtriser.'
-                    }
-
+                    ${progress}%
                 </span>
+            </div>
+
+            <div class="bar">
+                <i
+                    style="
+                        width:${progress}%
+                    ">
+                </i>
+            </div>
+
+        </div>
 
 
-                <div class="footer-actions">
+        <div class="chapter-tabs">
 
-                    <button
-                        class="button secondary"
-                        onclick="closeChapter()"
-                        type="button"
-                    >
-                        Fermer
-                    </button>
+            <button
+                type="button"
+                class="active"
+                onclick="
+                    switchChapterTab(
+                        'course',
+                        this
+                    )
+                ">
 
-                    <button
-                        class="button primary"
-                        onclick="markDone('${esc(chapter.id)}')"
-                        type="button"
-                    >
-                        ${
-                            p >= 100
-                                ? '✓ Maîtrisé'
-                                : '✓ Marquer maîtrisé'
-                        }
-                    </button>
+                📖 Cours
 
+            </button>
+
+            <button
+                type="button"
+                onclick="
+                    switchChapterTab(
+                        'remember',
+                        this
+                    )
+                ">
+
+                🧠 À retenir
+
+            </button>
+
+            <button
+                type="button"
+                onclick="
+                    switchChapterTab(
+                        'exercise',
+                        this
+                    )
+                ">
+
+                🎯 Exercices
+
+            </button>
+
+        </div>
+
+
+        <div
+            class="chapter-tab-content active"
+            data-tab="course">
+
+            ${
+                matieres.length
+                    ? `
+                        <div class="content-card">
+
+                            <h3>
+                                📚 À savoir
+                            </h3>
+
+                            <ul>
+                                ${matieres.map(
+                                    function (item) {
+                                        return `
+                                            <li>
+                                                ${escapeHtml(
+                                                    item
+                                                )}
+                                            </li>
+                                        `;
+                                    }
+                                ).join('')}
+                            </ul>
+
+                        </div>
+                    `
+                    : ''
+            }
+
+
+            <div class="content-card course-content">
+
+                <h3>
+                    📖 Cours
+                </h3>
+
+                <div>
+                    ${
+                        chapter.cours ||
+                        '<p>Le cours sera bientôt disponible.</p>'
+                    }
                 </div>
 
             </div>
 
         </div>
 
-    `;
 
+        <div
+            class="chapter-tab-content"
+            data-tab="remember">
 
-    document.body.appendChild(
-        modal
-    );
-
-
-    modal.addEventListener(
-        'click',
-        function (event) {
-
-            if (
-                event.target ===
-                modal
-            ) {
-
-                closeChapter();
-
-            }
-
-        }
-    );
-
-}
-
-
-function renderChapterSidebar(
-    chapter,
-    objectives,
-    topics
-) {
-
-    return `
-
-        <aside class="chapter-sidebar">
-
-            <div class="chapter-sidebar-card">
+            <div class="content-card">
 
                 <h3>
-                    🎯 Objectifs
+                    🧠 Objectifs
                 </h3>
 
-                <div class="goal-list">
-
-                    ${
-                        objectives.length
-
-                            ? objectives
-                                .slice(0, 5)
-                                .map(
+                ${
+                    objectives.length
+                        ? `
+                            <ul>
+                                ${objectives.map(
                                     function (item) {
-
                                         return `
-
-                                            <div class="goal-item">
-
-                                                <span>
-                                                    ✓
-                                                </span>
-
-                                                <span>
-                                                    ${esc(item)}
-                                                </span>
-
-                                            </div>
-
+                                            <li>
+                                                ${escapeHtml(
+                                                    item
+                                                )}
+                                            </li>
                                         `;
-
                                     }
-                                )
-                                .join('')
-
-                            : `
-                                <div class="empty-state">
-                                    Aucun objectif.
-                                </div>
-                            `
-                    }
-
-                </div>
+                                ).join('')}
+                            </ul>
+                        `
+                        : `
+                            <p>
+                                Aucun objectif
+                                renseigné.
+                            </p>
+                        `
+                }
 
             </div>
 
 
+            <div class="content-card">
+
+                <h3>
+                    ⭐ Les points essentiels
+                </h3>
+
+                <p>
+                    Relis les notions importantes
+                    du cours puis teste-toi avec
+                    les exercices.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="chapter-tab-content"
+            data-tab="exercise">
+
             ${
-                topics.length
-
+                exercices.length
                     ? `
+                        <div class="exercise-list">
 
-                        <div class="chapter-sidebar-card">
+                            ${exercices.map(
+                                function (
+                                    exercise,
+                                    index
+                                ) {
 
-                            <h3>
-                                📌 À connaître
-                            </h3>
+                                    return `
+                                        <div
+                                            class="exercise-card">
 
-                            <div class="topic-list">
+                                            <span>
+                                                Exercice
+                                                ${index + 1}
+                                            </span>
 
-                                ${
-                                    topics
-                                        .slice(0, 8)
-                                        .map(
-                                            function (item) {
+                                            <h3>
+                                                ${escapeHtml(
+                                                    exercise.question ||
+                                                    'Question'
+                                                )}
+                                            </h3>
 
-                                                return `
-                                                    <div class="topic-item">
-                                                        ${esc(item)}
-                                                    </div>
-                                                `;
+                                            ${
+                                                Array.isArray(
+                                                    exercise.options
+                                                )
+                                                    ? `
+                                                        <div>
+                                                            ${exercise.options.map(
+                                                                function (
+                                                                    option,
+                                                                    optionIndex
+                                                                ) {
 
+                                                                    return `
+                                                                        <button
+                                                                            type="button"
+                                                                            onclick="
+                                                                                answerChapterExercise(
+                                                                                    this,
+                                                                                    '${chapter.id}',
+                                                                                    ${index},
+                                                                                    ${optionIndex}
+                                                                                )
+                                                                            ">
+
+                                                                            ${escapeHtml(
+                                                                                option
+                                                                            )}
+
+                                                                        </button>
+                                                                    `;
+
+                                                                }
+                                                            ).join('')}
+                                                        </div>
+                                                    `
+                                                    : ''
                                             }
-                                        )
-                                        .join('')
-                                }
 
-                            </div>
+                                            <div
+                                                class="exercise-feedback">
+                                            </div>
+
+                                        </div>
+                                    `;
+
+                                }
+                            ).join('')}
 
                         </div>
-
                     `
+                    : `
+                        <div class="empty">
+                            Aucun exercice disponible
+                            pour ce chapitre.
+                        </div>
+                    `
+            }
 
+        </div>
+
+
+        <div class="detail-actions">
+
+            <button
+                type="button"
+                class="success"
+                onclick="
+                    markDone('${chapter.id}')
+                ">
+
+                ✓ Marquer maîtrisé
+
+            </button>
+
+            ${
+                exercices.length
+                    ? `
+                        <button
+                            type="button"
+                            class="primary"
+                            onclick="
+                                quizChapter(
+                                    '${chapter.id}'
+                                )
+                            ">
+
+                            🎯 Faire le quiz
+
+                        </button>
+                    `
                     : ''
             }
 
-        </aside>
+        </div>
 
     `;
 
+
+    var host =
+        document.getElementById(
+            subject === 'geo'
+                ? 'geoContent'
+                : 'mathContent'
+        );
+
+    if (!host) {
+        return;
+    }
+
+    var previous =
+        host.querySelector('.detail');
+
+    if (previous) {
+        previous.remove();
+    }
+
+    host.prepend(content);
+
+    try {
+        content.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    } catch (error) {
+        content.scrollIntoView();
+    }
+}
+
+
+function switchChapterTab(
+    tab,
+    button
+) {
+
+    var detail =
+        button.closest('.detail');
+
+    if (!detail) {
+        return;
+    }
+
+    var buttons =
+        detail.querySelectorAll(
+            '.chapter-tabs button'
+        );
+
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove(
+            'active'
+        );
+    }
+
+    button.classList.add('active');
+
+
+    var contents =
+        detail.querySelectorAll(
+            '.chapter-tab-content'
+        );
+
+    for (
+        var j = 0;
+        j < contents.length;
+        j++
+    ) {
+
+        if (
+            contents[j].getAttribute(
+                'data-tab'
+            ) === tab
+        ) {
+            contents[j].classList.add(
+                'active'
+            );
+        } else {
+            contents[j].classList.remove(
+                'active'
+            );
+        }
+    }
 }
 
 
 /* =========================================================
-   EXERCICES
+   EXERCICE DANS CHAPITRE
    ========================================================= */
-
-function renderExercises(
-    exercises
-) {
-
-    if (!exercises.length) {
-
-        return `
-
-            <div class="empty-state">
-                Aucun exercice à choix multiple
-                n’est renseigné pour ce chapitre.
-            </div>
-
-        `;
-
-    }
-
-
-    return `
-
-        <div class="exercise-list">
-
-            ${
-                exercises.map(
-                    function (
-                        question,
-                        index
-                    ) {
-
-                        var options =
-                            Array.isArray(
-                                question.options
-                            )
-                                ? question.options
-                                : [];
-
-
-                        if (!options.length) {
-
-                            return `
-
-                                <div class="exercise-card">
-
-                                    <span class="exercise-number">
-                                        Exercice ${index + 1}
-                                    </span>
-
-                                    <div class="exercise-question">
-                                        ${esc(
-                                            question.question ||
-                                            ''
-                                        )}
-                                    </div>
-
-                                    <div class="correction">
-                                        ${esc(
-                                            question.correction ||
-                                            'Voir la correction du sujet.'
-                                        )}
-                                    </div>
-
-                                </div>
-
-                            `;
-
-                        }
-
-
-                        return `
-
-                            <div
-                                class="exercise-card"
-                                data-exercise="${index}"
-                            >
-
-                                <span class="exercise-number">
-                                    Exercice ${index + 1}
-                                </span>
-
-                                <div class="exercise-question">
-                                    ${esc(
-                                        question.question ||
-                                        ''
-                                    )}
-                                </div>
-
-
-                                <div class="exercise-options">
-
-                                    ${
-                                        options.map(
-                                            function (
-                                                option,
-                                                optionIndex
-                                            ) {
-
-                                                return `
-
-                                                    <button
-                                                        class="exercise-option"
-                                                        onclick="
-                                                            answerChapterExercise(
-                                                                this,
-                                                                ${index},
-                                                                ${optionIndex},
-                                                                ${Number(
-                                                                    question.correct ||
-                                                                    0
-                                                                )}
-                                                            )
-                                                        "
-                                                        type="button"
-                                                    >
-                                                        ${esc(option)}
-                                                    </button>
-
-                                                `;
-
-                                            }
-                                        ).join('')
-                                    }
-
-                                </div>
-
-
-                                <div
-                                    class="correction hidden"
-                                    id="corr-${index}"
-                                >
-                                    💡
-                                    ${esc(
-                                        question.correction ||
-                                        ''
-                                    )}
-                                </div>
-
-                            </div>
-
-                        `;
-
-                    }
-                ).join('')
-            }
-
-        </div>
-
-    `;
-
-}
-
 
 function answerChapterExercise(
     button,
-    qIndex,
-    choice,
-    correct
+    chapterId,
+    exerciseIndex,
+    optionIndex
 ) {
 
+    var chapter =
+        findChapter(chapterId);
+
+    if (!chapter) {
+        return;
+    }
+
+    var exercise =
+        Array.isArray(chapter.exercices)
+            ? chapter.exercices[exerciseIndex]
+            : null;
+
+    if (!exercise) {
+        return;
+    }
+
     var card =
-        button.closest(
-            '.exercise-card'
-        );
+        button.closest('.exercise-card');
 
     if (!card) {
         return;
     }
 
-    if (
-        card.getAttribute(
-            'data-answered'
-        ) === '1'
-    ) {
-        return;
-    }
-
-
-    card.setAttribute(
-        'data-answered',
-        '1'
-    );
-
-
     var buttons =
-        card.querySelectorAll(
-            '.exercise-option'
-        );
+        card.querySelectorAll('button');
 
-
-    buttons.forEach(
-        function (
-            current,
-            index
-        ) {
-
-            current.disabled =
-                true;
-
-            if (
-                index ===
-                correct
-            ) {
-
-                current.classList.add(
-                    'correct'
-                );
-
-            }
-
-        }
-    );
-
-
-    if (
-        choice !==
-        correct
-    ) {
-
-        button.classList.add(
-            'wrong'
-        );
-
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = true;
     }
 
-
-    var correction =
+    var feedback =
         card.querySelector(
-            '.correction'
+            '.exercise-feedback'
         );
 
-    if (correction) {
+    var correct =
+        Number(exercise.correct || 0);
 
-        correction.classList.remove(
-            'hidden'
-        );
+    var good =
+        optionIndex === correct;
 
+    if (good) {
+
+        button.classList.add('correct');
+
+        feedback.innerHTML =
+            '<strong>✓ Bonne réponse !</strong>' +
+            (
+                exercise.correction
+                    ? '<p>' +
+                        exercise.correction +
+                      '</p>'
+                    : ''
+            );
+
+    } else {
+
+        button.classList.add('wrong');
+
+        if (buttons[correct]) {
+            buttons[correct].classList.add(
+                'correct'
+            );
+        }
+
+        feedback.innerHTML =
+            '<strong>✗ Pas tout à fait.</strong>' +
+            (
+                exercise.correction
+                    ? '<p>' +
+                        exercise.correction +
+                      '</p>'
+                    : ''
+            );
     }
-
 }
 
 
@@ -2405,35 +1311,45 @@ function markDone(id) {
         return;
     }
 
+    cessState.progress[id] = 100;
 
-    cessState.progress[id] =
-        100;
-
-
-    recordActivity(
-        'chapter',
-        chapter.titre ||
-            'Chapitre',
-        'Chapitre marqué comme maîtrisé'
-    );
-
-
-    saveState();
-
-
-    if (cessCurrentChapter) {
-
-        renderChapterModal();
-
-    }
-
+    cessSave();
 
     renderHome();
 
     renderSubject(
-        chapter.matiere
+        chapter.matiere || 'maths'
     );
 
+    var detail =
+        document.querySelector(
+            '.detail'
+        );
+
+    if (detail) {
+        var message =
+            detail.querySelector(
+                '.chapter-progress-box'
+            );
+
+        if (message) {
+            message.innerHTML = `
+                <div>
+                    <strong>
+                        ✓ Chapitre maîtrisé
+                    </strong>
+
+                    <span>
+                        100%
+                    </span>
+                </div>
+
+                <div class="bar">
+                    <i style="width:100%"></i>
+                </div>
+            `;
+        }
+    }
 }
 
 
@@ -2441,11 +1357,88 @@ function markDone(id) {
    QUESTIONS
    ========================================================= */
 
-function flattenQuestions(
-    filter
-) {
+function flattenQuestions(filter) {
 
-    var chapters;
+    filter = filter || 'all';
+
+    var chapters =
+        allChaps('maths')
+            .concat(allChaps('geo'));
+
+    var questions = [];
+
+    for (
+        var i = 0;
+        i < chapters.length;
+        i++
+    ) {
+
+        var chapter =
+            chapters[i];
+
+        if (
+            !Array.isArray(
+                chapter.exercices
+            )
+        ) {
+            continue;
+        }
+
+        for (
+            var j = 0;
+            j < chapter.exercices.length;
+            j++
+        ) {
+
+            var question =
+                chapter.exercices[j];
+
+            if (
+                !question ||
+                !Array.isArray(
+                    question.options
+                ) ||
+                !question.options.length
+            ) {
+                continue;
+            }
+
+            questions.push({
+
+                id:
+                    String(chapter.id) +
+                    '_' +
+                    j,
+
+                question:
+                    question.question || '',
+
+                options:
+                    question.options,
+
+                correct:
+                    typeof question.correct === 'number'
+                        ? question.correct
+                        : 0,
+
+                correction:
+                    question.correction || '',
+
+                chapter:
+                    chapter.titre || '',
+
+                annee:
+                    chapter.annee || '',
+
+                matiere:
+                    chapter.matiere || '',
+
+                chapterId:
+                    chapter.id
+
+            });
+        }
+    }
 
 
     if (
@@ -2453,1019 +1446,600 @@ function flattenQuestions(
         filter === 'geo'
     ) {
 
-        chapters =
-            allChaps(filter);
-
-    } else {
-
-        chapters =
-            allChaps('maths')
-                .concat(
-                    allChaps('geo')
-                );
-
+        questions =
+            questions.filter(
+                function (q) {
+                    return q.matiere === filter;
+                }
+            );
     }
 
 
-    var output = [];
+    if (filter === 'mistakes') {
 
-
-    chapters.forEach(
-        function (chapter) {
-
-            if (
-                !Array.isArray(
-                    chapter.exercices
-                )
-            ) {
-                return;
-            }
-
-
-            chapter.exercices.forEach(
-                function (
-                    question,
-                    index
-                ) {
-
-                    if (
-                        !question ||
-                        !Array.isArray(
-                            question.options
-                        ) ||
-                        !question.options.length
-                    ) {
-                        return;
-                    }
-
-
-                    output.push({
-
-                        id:
-                            String(
-                                chapter.id
-                            ) +
-                            '_' +
-                            index,
-
-                        question:
-                            question.question ||
-                            '',
-
-                        options:
-                            question.options,
-
-                        correct:
-                            Number(
-                                question.correct ||
-                                0
-                            ),
-
-                        correction:
-                            question.correction ||
-                            '',
-
-                        chapter:
-                            chapter.titre ||
-                            '',
-
-                        annee:
-                            chapter.annee ||
-                            '',
-
-                        matiere:
-                            chapter.matiere,
-
-                        chapterId:
-                            chapter.id
-
-                    });
-
-                }
-            );
-
-        }
-    );
-
-
-    if (
-        filter ===
-        'mistakes'
-    ) {
-
-        output =
-            output.filter(
-                function (question) {
+        questions =
+            questions.filter(
+                function (q) {
 
                     return (
-                        cessState.mistakes.indexOf(
-                            question.id
-                        ) !== -1
+                        cessState.mistakes
+                            .indexOf(q.id) !== -1
                     );
 
                 }
             );
-
     }
 
 
-    return output;
-
+    return questions;
 }
 
 
 /* =========================================================
-   VRAI / FAUX
+   QUIZ
    ========================================================= */
 
-function trueFalseQuestions() {
+function startQuiz(mode) {
 
-    return [
+    var filter = 'all';
 
-        [
-            'Deux triangles isométriques ont leurs côtés homologues de même longueur.',
-            'Vrai',
-            'Faux',
-            0,
-            'maths',
-            '3e'
-        ],
+    if (mode === 'maths') {
+        filter = 'maths';
+    }
 
-        [
-            'Des triangles semblables ont toujours leurs côtés homologues égaux.',
-            'Vrai',
-            'Faux',
-            1,
-            'maths',
-            '3e'
-        ],
+    if (mode === 'geo') {
+        filter = 'geo';
+    }
 
-        [
-            'Le théorème de Pythagore s’utilise dans un triangle rectangle.',
-            'Vrai',
-            'Faux',
-            0,
-            'maths',
-            '3e'
-        ],
+    if (mode === 'mistakes') {
+        filter = 'mistakes';
+    }
 
-        [
-            'sin(α) = opposé / hypoténuse dans un triangle rectangle.',
-            'Vrai',
-            'Faux',
-            0,
-            'maths',
-            '3e'
-        ],
 
-        [
-            'La fonction affine s’écrit f(x)=mx+p.',
-            'Vrai',
-            'Faux',
-            0,
-            'maths',
-            '4e'
-        ],
+    var questions =
+        flattenQuestions(filter);
 
-        [
-            'La médiane est une mesure de tendance centrale.',
-            'Vrai',
-            'Faux',
-            0,
-            'maths',
-            '4e'
-        ],
+    if (!questions.length) {
 
-        [
-            'Un aléa est un phénomène dangereux potentiel.',
-            'Vrai',
-            'Faux',
-            0,
-            'geo',
-            '3e'
-        ],
+        var panel =
+            document.getElementById(
+                'gamePanel'
+            );
 
-        [
-            'La densité de population est le nombre d’habitants par km².',
-            'Vrai',
-            'Faux',
-            0,
-            'geo',
-            '4e'
-        ],
-
-        [
-            'Les énergies fossiles sont renouvelables.',
-            'Vrai',
-            'Faux',
-            1,
-            'geo',
-            '5e'
-        ],
-
-        [
-            'Un conflit d’usage peut apparaître lorsque plusieurs acteurs veulent utiliser le même espace.',
-            'Vrai',
-            'Faux',
-            0,
-            'geo',
-            '6e'
-        ]
-
-    ].map(
-        function (
-            item,
-            index
-        ) {
-
-            return {
-
-                id:
-                    'tf_' +
-                    index,
-
-                question:
-                    item[0],
-
-                options: [
-                    item[1],
-                    item[2]
-                ],
-
-                correct:
-                    item[3],
-
-                matiere:
-                    item[4],
-
-                annee:
-                    item[5],
-
-                chapter:
-                    'Vrai / Faux'
-
-            };
-
+        if (panel) {
+            panel.innerHTML = `
+                <div class="empty">
+                    ${
+                        mode === 'mistakes'
+                            ? 'Tu n’as pas encore d’erreurs à revoir.'
+                            : 'Aucune question disponible.'
+                    }
+                </div>
+            `;
         }
-    );
 
+        return;
+    }
+
+
+    questions =
+        shuffle(questions)
+            .slice(0, 10);
+
+
+    cessQuizState = {
+        mode: mode,
+        questions: questions,
+        index: 0,
+        score: 0,
+        answered: false
+    };
+
+
+    renderQuizQuestion();
 }
 
 
-/* =========================================================
-   JEUX
-   ========================================================= */
+function quizChapter(id) {
 
-function startQuiz(
-    mode
-) {
+    var chapter =
+        findChapter(id);
 
-    var questions;
+    if (!chapter) {
+        return;
+    }
 
+    var questions = [];
 
     if (
-        mode ===
-        'truefalse'
-    ) {
-
-        questions =
-            trueFalseQuestions();
-
-    } else if (
-        mode ===
-        'mistakes'
-    ) {
-
-        questions =
-            flattenQuestions(
-                'mistakes'
-            );
-
-    } else {
-
-        questions =
-            flattenQuestions(
-                mode ===
-                'mixed'
-                    ? 'all'
-                    : mode
-            );
-
-    }
-
-
-    if (!questions.length) {
-
-        renderGamesMessage(
-            mode === 'mistakes'
-                ? 'Aucune erreur enregistrée pour le moment.'
-                : 'Aucune question disponible pour ce mode.'
-        );
-
-        showView(
-            'games'
-        );
-
-        return;
-
-    }
-
-
-    cessQuizState = {
-
-        qs:
-            shuffle(
-                questions
-            ).slice(0, 10),
-
-        index:
-            0,
-
-        score:
-            0,
-
-        mode:
-            mode,
-
-        recorded:
-            false
-
-    };
-
-
-    showView(
-        'games'
-    );
-
-    renderQuiz();
-
-}
-
-
-function quizChapter(
-    id
-) {
-
-    var questions =
-        flattenQuestions(
-            'all'
-        ).filter(
-            function (question) {
-
-                return (
-                    question.chapterId ===
-                    id
-                );
-
-            }
-        );
-
-
-    if (!questions.length) {
-
-        alert(
-            'Aucune question à choix multiple pour ce chapitre.'
-        );
-
-        return;
-
-    }
-
-
-    cessQuizState = {
-
-        qs:
-            shuffle(
-                questions
-            ),
-
-        index:
-            0,
-
-        score:
-            0,
-
-        mode:
-            'chapter',
-
-        chapterId:
-            id,
-
-        recorded:
-            false
-
-    };
-
-
-    closeChapter();
-
-    showView(
-        'games'
-    );
-
-    renderQuiz();
-
-}
-
-
-function startCapitals() {
-
-    var capitals =
-        typeof CAPITALES !==
-            'undefined' &&
         Array.isArray(
-            CAPITALES
+            chapter.exercices
         )
-            ? CAPITALES
-            : [];
+    ) {
 
+        for (
+            var i = 0;
+            i < chapter.exercices.length;
+            i++
+        ) {
 
-    if (!capitals.length) {
+            var q =
+                chapter.exercices[i];
 
-        renderGamesMessage(
-            'Le jeu des capitales n’est pas disponible dans les données actuelles.'
-        );
+            if (
+                q &&
+                Array.isArray(q.options) &&
+                q.options.length
+            ) {
 
-        showView(
-            'games'
-        );
+                questions.push({
 
-        return;
+                    id:
+                        String(chapter.id) +
+                        '_' +
+                        i,
 
+                    question:
+                        q.question || '',
+
+                    options:
+                        q.options,
+
+                    correct:
+                        typeof q.correct === 'number'
+                            ? q.correct
+                            : 0,
+
+                    correction:
+                        q.correction || '',
+
+                    chapter:
+                        chapter.titre || '',
+
+                    annee:
+                        chapter.annee || '',
+
+                    matiere:
+                        chapter.matiere || '',
+
+                    chapterId:
+                        chapter.id
+
+                });
+            }
+        }
     }
 
 
-    var questions =
-        shuffle(
-            capitals
-        )
-            .slice(0, 10)
-            .map(
-                function (
-                    item,
-                    index
-                ) {
-
-                    var correct =
-                        item.capitale ||
-                        item.capital ||
-                        '';
-
-                    var country =
-                        item.pays ||
-                        item.country ||
-                        '';
-
-
-                    var others =
-                        shuffle(
-                            capitals.filter(
-                                function (
-                                    other
-                                ) {
-
-                                    return (
-                                        other !==
-                                        item
-                                    );
-
-                                }
-                            )
-                        )
-                            .slice(0, 3)
-                            .map(
-                                function (
-                                    other
-                                ) {
-
-                                    return (
-                                        other.capitale ||
-                                        other.capital ||
-                                        ''
-                                    );
-
-                                }
-                            );
-
-
-                    var options =
-                        shuffle(
-                            [
-                                correct
-                            ].concat(
-                                others
-                            )
-                        );
-
-
-                    return {
-
-                        id:
-                            'capital_' +
-                            index,
-
-                        question:
-                            'Quelle est la capitale de ' +
-                            country +
-                            ' ?',
-
-                        options:
-                            options,
-
-                        correct:
-                            options.indexOf(
-                                correct
-                            ),
-
-                        matiere:
-                            'geo',
-
-                        annee:
-                            '—',
-
-                        chapter:
-                            'Capitales'
-
-                    };
-
-                }
-            );
+    if (!questions.length) {
+        alert(
+            'Ce chapitre ne contient pas encore d’exercices.'
+        );
+        return;
+    }
 
 
     cessQuizState = {
 
-        qs:
-            questions,
+        mode: 'chapter',
 
-        index:
-            0,
+        chapterId: chapter.id,
 
-        score:
-            0,
+        questions:
+            shuffle(questions),
 
-        mode:
-            'capitales',
+        index: 0,
 
-        recorded:
-            false
+        score: 0,
+
+        answered: false
 
     };
 
 
-    showView(
-        'games'
-    );
+    showView('games');
 
-    renderQuiz();
-
+    renderQuizQuestion();
 }
 
 
-function quickRevision() {
-
-    startQuiz(
-        'mixed'
-    );
-
-}
-
-
-function renderGamesHome() {
+function renderQuizQuestion() {
 
     var panel =
         document.getElementById(
             'gamePanel'
         );
 
-    if (!panel) {
+    if (!panel || !cessQuizState) {
         return;
     }
 
+    var state =
+        cessQuizState;
 
     if (
-        cessQuizState &&
-        cessQuizState.active
+        state.index >=
+        state.questions.length
     ) {
-
-        renderQuiz();
-
+        finishQuiz();
         return;
-
     }
 
+
+    var q =
+        state.questions[state.index];
+
+    var total =
+        state.questions.length;
 
     panel.innerHTML = `
 
-        <div class="quiz-start">
+        <div class="quiz-header">
 
-            <div class="quiz-start-icon">
-                🎮
-            </div>
+            <span>
+                Question
+                ${state.index + 1}
+                / ${total}
+            </span>
+
+            <strong>
+                ${state.score}
+                point${state.score > 1 ? 's' : ''}
+            </strong>
+
+        </div>
+
+
+        <div class="quiz-progress">
+
+            <i
+                style="
+                    width:${
+                        (
+                            state.index /
+                            total
+                        ) * 100
+                    }%
+                ">
+            </i>
+
+        </div>
+
+
+        <div class="quiz-question">
 
             <span class="eyebrow">
-                Entraînement
+                ${q.matiere === 'geo'
+                    ? '🌍 Géographie'
+                    : '📐 Mathématiques'}
             </span>
 
             <h2>
-                Choisis ton mode
+                ${escapeHtml(
+                    q.question
+                )}
             </h2>
-
-            <p>
-                Fais une courte session, travaille tes
-                erreurs ou prépare-toi avec un quiz
-                par matière.
-            </p>
-
-
-            <div class="game-grid">
-
-                <button
-                    class="game-card"
-                    onclick="startQuiz('mixed')"
-                    type="button"
-                >
-                    <span>🔀</span>
-                    <strong>Quiz mixte</strong>
-                    <small>10 questions variées</small>
-                </button>
-
-
-                <button
-                    class="game-card"
-                    onclick="startQuiz('maths')"
-                    type="button"
-                >
-                    <span>📐</span>
-                    <strong>Quiz Maths</strong>
-                    <small>Questions de maths</small>
-                </button>
-
-
-                <button
-                    class="game-card"
-                    onclick="startQuiz('geo')"
-                    type="button"
-                >
-                    <span>🌍</span>
-                    <strong>Quiz Géo</strong>
-                    <small>Questions de géographie</small>
-                </button>
-
-
-                <button
-                    class="game-card"
-                    onclick="startQuiz('truefalse')"
-                    type="button"
-                >
-                    <span>✅</span>
-                    <strong>Vrai / Faux</strong>
-                    <small>Révision express</small>
-                </button>
-
-
-                <button
-                    class="game-card"
-                    onclick="startQuiz('mistakes')"
-                    type="button"
-                >
-                    <span>🔁</span>
-                    <strong>Mes erreurs</strong>
-                    <small>Revoir les questions ratées</small>
-                </button>
-
-
-                <button
-                    class="game-card"
-                    onclick="startCapitals()"
-                    type="button"
-                >
-                    <span>🗺️</span>
-                    <strong>Capitales</strong>
-                    <small>Tester ta mémoire</small>
-                </button>
-
-            </div>
 
         </div>
 
-    `;
 
-}
+        <div class="quiz-options">
 
+            ${q.options.map(
+                function (option, index) {
 
-function renderGamesMessage(
-    text
-) {
+                    return `
+                        <button
+                            type="button"
+                            onclick="
+                                answerQuiz(
+                                    ${index}
+                                )
+                            ">
 
-    var panel =
-        document.getElementById(
-            'gamePanel'
-        );
+                            <span>
+                                ${String.fromCharCode(
+                                    65 + index
+                                )}
+                            </span>
 
-    if (!panel) {
-        return;
-    }
+                            ${escapeHtml(
+                                option
+                            )}
 
+                        </button>
+                    `;
 
-    panel.innerHTML = `
-
-        <div class="quiz-start">
-
-            <div class="quiz-start-icon">
-                ℹ️
-            </div>
-
-            <h2>
-                Pas encore
-            </h2>
-
-            <p>
-                ${esc(text)}
-            </p>
-
-            <button
-                class="button primary"
-                onclick="renderGamesHome()"
-                type="button"
-            >
-                Retour aux jeux
-            </button>
+                }
+            ).join('')}
 
         </div>
 
-    `;
 
+        <div
+            id="quizFeedback"
+            class="quiz-feedback">
+        </div>
+
+    `;
 }
 
 
-/* =========================================================
-   AFFICHAGE QUIZ
-   ========================================================= */
+function answerQuiz(optionIndex) {
 
-function renderQuiz() {
-
-    var panel =
-        document.getElementById(
-            'gamePanel'
-        );
-
-    if (
-        !panel ||
-        !cessQuizState
-    ) {
+    if (!cessQuizState) {
         return;
     }
+
+    if (cessQuizState.answered) {
+        return;
+    }
+
+    cessQuizState.answered = true;
 
 
     var state =
         cessQuizState;
 
+    var q =
+        state.questions[state.index];
 
-    if (
-        state.index >=
-        state.qs.length
+    var correct =
+        Number(q.correct || 0);
+
+    var good =
+        optionIndex === correct;
+
+
+    var panel =
+        document.getElementById(
+            'gamePanel'
+        );
+
+    if (!panel) {
+        return;
+    }
+
+
+    var buttons =
+        panel.querySelectorAll(
+            '.quiz-options button'
+        );
+
+    for (
+        var i = 0;
+        i < buttons.length;
+        i++
     ) {
 
-        var total =
-            state.qs.length;
+        buttons[i].disabled = true;
 
-        var score =
-            state.score;
-
-        var percentage =
-            total
-                ? Math.round(
-                    score /
-                    total *
-                    100
-                )
-                : 0;
-
-
-        if (
-            !state.recorded
-        ) {
-
-            cessState.results.push({
-
-                date:
-                    Date.now(),
-
-                score:
-                    score,
-
-                total:
-                    total,
-
-                mode:
-                    state.mode
-
-            });
-
-
-            recordActivity(
-                'quiz',
-                'Quiz terminé',
-                score +
-                    '/' +
-                    total +
-                    ' · ' +
-                    percentage +
-                    '%'
+        if (i === correct) {
+            buttons[i].classList.add(
+                'correct'
             );
-
-
-            state.recorded =
-                true;
-
-            saveState();
-
         }
 
+        if (
+            i === optionIndex &&
+            !good
+        ) {
+            buttons[i].classList.add(
+                'wrong'
+            );
+        }
+    }
 
-        var message =
-            percentage >= 80
-                ? 'Excellent travail !'
-                : percentage >= 60
-                    ? 'Bonne session. Continue comme ça !'
-                    : 'Session terminée. Reprends les chapitres les plus difficiles.';
+
+    if (good) {
+
+        state.score++;
+
+    } else {
+
+        if (
+            cessState.mistakes.indexOf(
+                q.id
+            ) === -1
+        ) {
+            cessState.mistakes.push(
+                q.id
+            );
+        }
+    }
 
 
-        panel.innerHTML = `
+    var feedback =
+        document.getElementById(
+            'quizFeedback'
+        );
 
-            <div class="quiz-result">
+    if (feedback) {
 
-                <div class="result-circle">
-                    ${percentage}%
-                </div>
+        feedback.innerHTML = `
 
-                <span class="eyebrow">
-                    Session terminée
-                </span>
+            <div class="${
+                good
+                    ? 'good'
+                    : 'bad'
+            }">
 
-                <h2>
-                    ${score}
-                    bonne${
-                        score > 1
-                            ? 's'
-                            : ''
+                <strong>
+                    ${
+                        good
+                            ? '✓ Bonne réponse !'
+                            : '✗ Mauvaise réponse'
                     }
-                    réponse${
-                        score > 1
-                            ? 's'
-                            : ''
+                </strong>
+
+                ${
+                    q.correction
+                        ? `
+                            <p>
+                                ${escapeHtml(
+                                    q.correction
+                                )}
+                            </p>
+                        `
+                        : ''
+                }
+
+                <button
+                    type="button"
+                    onclick="nextQuizQuestion()">
+
+                    ${
+                        state.index + 1 >=
+                        state.questions.length
+                            ? 'Voir le résultat'
+                            : 'Question suivante →'
                     }
-                    sur
-                    ${total}
-                </h2>
 
-                <p>
-                    ${message}
-                </p>
-
-                <div class="result-actions">
-
-                    <button
-                        class="button secondary"
-                        onclick="renderGamesHome()"
-                        type="button"
-                    >
-                        Autres jeux
-                    </button>
-
-                    <button
-                        class="button primary"
-                        onclick="replayQuiz()"
-                        type="button"
-                    >
-                        Rejouer
-                    </button>
-
-                </div>
+                </button>
 
             </div>
 
         `;
+    }
 
+    cessSave();
+}
+
+
+function nextQuizQuestion() {
+
+    if (!cessQuizState) {
         return;
+    }
 
+    cessQuizState.index++;
+    cessQuizState.answered = false;
+
+    renderQuizQuestion();
+}
+
+
+function finishQuiz() {
+
+    var state =
+        cessQuizState;
+
+    if (!state) {
+        return;
+    }
+
+    var total =
+        state.questions.length;
+
+    var score =
+        state.score;
+
+    var percentage =
+        total
+            ? Math.round(
+                score / total * 100
+            )
+            : 0;
+
+
+    cessState.results.push({
+
+        date:
+            new Date().toISOString(),
+
+        mode:
+            state.mode,
+
+        score:
+            score,
+
+        total:
+            total,
+
+        percentage:
+            percentage
+
+    });
+
+
+    if (percentage >= 70) {
+        cessState.streak++;
+    } else {
+        cessState.streak = 0;
     }
 
 
-    var question =
-        state.qs[
-            state.index
-        ];
+    cessSave();
 
 
-    var percentage =
-        Math.round(
-            state.index /
-            state.qs.length *
-            100
+    var panel =
+        document.getElementById(
+            'gamePanel'
         );
+
+    if (!panel) {
+        return;
+    }
+
+
+    var message =
+        percentage >= 80
+            ? 'Excellent ! 🎉'
+            : percentage >= 60
+                ? 'Bien joué ! 💪'
+                : 'Continue tes révisions ! 📚';
 
 
     panel.innerHTML = `
 
-        <div class="quiz-question-card">
+        <div class="quiz-result">
 
-            <button
-                class="back-button"
-                onclick="renderGamesHome()"
-                type="button"
-            >
-                ← Quitter le quiz
-            </button>
-
-
-            <div class="quiz-progress">
-
-                <span
-                    style="width:${percentage}%"
-                ></span>
-
-            </div>
-
-
-            <div class="quiz-meta">
-
-                <span>
-                    Question
-                    ${state.index + 1}
-                    /
-                    ${state.qs.length}
-                </span>
-
-                <span>
-                    ${
-                        question.matiere ===
-                        'maths'
-                            ? '📐 Maths'
-                            : '🌍 Géo'
-                    }
-                    ·
-                    ${esc(
-                        question.annee ||
-                        ''
-                    )}
-                </span>
-
-            </div>
-
-
-            <div class="quiz-question">
-
-                ${esc(
-                    question.question
-                )}
-
-            </div>
-
-
-            <div class="quiz-options">
-
+            <span class="result-icon">
                 ${
-                    question.options.map(
-                        function (
-                            option,
-                            index
-                        ) {
-
-                            return `
-
-                                <button
-                                    class="quiz-option"
-                                    onclick="answerQuiz(${index})"
-                                    type="button"
-                                >
-
-                                    <span class="option-letter">
-                                        ${
-                                            String.fromCharCode(
-                                                65 + index
-                                            )
-                                        }
-                                    </span>
-
-                                    ${esc(
-                                        option
-                                    )}
-
-                                </button>
-
-                            `;
-
-                        }
-                    ).join('')
+                    percentage >= 80
+                        ? '🏆'
+                        : percentage >= 60
+                            ? '⭐'
+                            : '📚'
                 }
+            </span>
+
+            <h2>
+                ${message}
+            </h2>
+
+            <div class="result-score">
+                ${score} / ${total}
+            </div>
+
+            <p>
+                ${percentage}% de réussite
+            </p>
+
+            <div class="result-actions">
+
+                <button
+                    type="button"
+                    class="primary"
+                    onclick="replayQuiz()">
+
+                    🔄 Recommencer
+
+                </button>
+
+                <button
+                    type="button"
+                    onclick="showView('progress')">
+
+                    📊 Voir ma progression
+
+                </button>
 
             </div>
 
         </div>
 
     `;
-
 }
 
 
@@ -3475,87 +2049,147 @@ function replayQuiz() {
         return;
     }
 
-
     if (
         cessQuizState.mode ===
         'capitales'
     ) {
-
         startCapitals();
-
         return;
-
     }
-
 
     if (
         cessQuizState.mode ===
         'chapter'
     ) {
-
         quizChapter(
             cessQuizState.chapterId
         );
-
         return;
-
     }
-
 
     startQuiz(
         cessQuizState.mode
     );
-
 }
 
 
-function answerQuiz(
-    index
-) {
+/* =========================================================
+   CAPITALES
+   ========================================================= */
 
-    if (!cessQuizState) {
-        return;
-    }
+var CESS_CAPITALS = [
 
+    ['France', 'Paris'],
+    ['Belgique', 'Bruxelles'],
+    ['Allemagne', 'Berlin'],
+    ['Espagne', 'Madrid'],
+    ['Italie', 'Rome'],
+    ['Portugal', 'Lisbonne'],
+    ['Royaume-Uni', 'Londres'],
+    ['Pays-Bas', 'Amsterdam'],
+    ['Suisse', 'Berne'],
+    ['Autriche', 'Vienne'],
+    ['Pologne', 'Varsovie'],
+    ['Grèce', 'Athènes'],
+    ['Norvège', 'Oslo'],
+    ['Suède', 'Stockholm'],
+    ['Finlande', 'Helsinki'],
+    ['Danemark', 'Copenhague'],
+    ['Irlande', 'Dublin'],
+    ['Roumanie', 'Bucarest'],
+    ['Hongrie', 'Budapest'],
+    ['Tchéquie', 'Prague']
 
-    var question =
-        cessQuizState.qs[
-            cessQuizState.index
-        ];
-
-
-    if (
-        index ===
-        Number(
-            question.correct
-        )
-    ) {
-
-        cessQuizState.score++;
-
-    } else {
-
-        if (
-            cessState.mistakes.indexOf(
-                question.id
-            ) === -1
-        ) {
-
-            cessState.mistakes.push(
-                question.id
-            );
-
-        }
-
-    }
+];
 
 
-    cessQuizState.index++;
+function startCapitals() {
 
-    saveState();
+    var questions =
+        shuffle(CESS_CAPITALS)
+            .slice(0, 10)
+            .map(function (item, index) {
 
-    renderQuiz();
+                var wrong =
+                    shuffle(
+                        CESS_CAPITALS
+                            .filter(
+                                function (other) {
+                                    return (
+                                        other[1] !==
+                                        item[1]
+                                    );
+                                }
+                            )
+                    )
+                    .slice(0, 3)
+                    .map(
+                        function (other) {
+                            return other[1];
+                        }
+                    );
 
+                var options =
+                    shuffle(
+                        wrong.concat([
+                            item[1]
+                        ])
+                    );
+
+                return {
+
+                    id:
+                        'capital_' +
+                        index,
+
+                    question:
+                        'Quelle est la capitale de ' +
+                        item[0] +
+                        ' ?',
+
+                    options:
+                        options,
+
+                    correct:
+                        options.indexOf(
+                            item[1]
+                        ),
+
+                    correction:
+                        item[0] +
+                        ' a pour capitale ' +
+                        item[1] +
+                        '.',
+
+                    matiere:
+                        'geo'
+
+                };
+
+            });
+
+
+    cessQuizState = {
+
+        mode:
+            'capitales',
+
+        questions:
+            questions,
+
+        index:
+            0,
+
+        score:
+            0,
+
+        answered:
+            false
+
+    };
+
+
+    renderQuizQuestion();
 }
 
 
@@ -3563,389 +2197,459 @@ function answerQuiz(
    MEMO
    ========================================================= */
 
-function setMemoMode(
-    mode
-) {
+function memoTab(mode, button) {
 
-    cessMemoMode =
-        mode;
+    cessMemoMode = mode;
+
+    var buttons =
+        document.querySelectorAll(
+            '.memo-tabs button'
+        );
+
+    for (
+        var i = 0;
+        i < buttons.length;
+        i++
+    ) {
+        buttons[i].classList.remove(
+            'active'
+        );
+    }
+
+    if (button) {
+        button.classList.add(
+            'active'
+        );
+    }
 
     renderMemo();
-
 }
 
 
 function renderMemo() {
 
-    var box =
+    var content =
         document.getElementById(
             'memoContent'
         );
 
-    if (!box) {
+    if (!content) {
         return;
     }
 
-
-    var search =
+    var searchElement =
         document.getElementById(
             'memoSearch'
         );
 
-    var year =
+    var yearElement =
         document.getElementById(
             'memoYear'
         );
 
-
-    var term =
-        search
-            ? String(
-                search.value ||
-                ''
-            )
+    var search =
+        searchElement
+            ? searchElement.value
                 .toLowerCase()
                 .trim()
             : '';
 
-
-    var selectedYear =
-        year
-            ? year.value
+    var year =
+        yearElement
+            ? yearElement.value
             : 'all';
 
 
-    document
-        .querySelectorAll(
-            '.memo-tab'
-        )
-        .forEach(
-            function (button) {
-
-                button.classList.toggle(
-                    'active',
-                    button.getAttribute(
-                        'data-mode'
-                    ) ===
-                    cessMemoMode
-                );
-
-            }
-        );
-
-
-    /* =====================================================
-       VOCABULAIRE
-       ===================================================== */
-
     if (
         cessMemoMode ===
-        'vocab'
+        'formules'
     ) {
 
-        var vocabulary =
-            typeof GEO_VOCAB !==
-                'undefined' &&
-            Array.isArray(
-                GEO_VOCAB
-            )
-                ? GEO_VOCAB
-                : [];
+        renderFormules(
+            content,
+            search,
+            year
+        );
+
+    } else {
+
+        renderVocabulaire(
+            content,
+            search,
+            year
+        );
+    }
+}
 
 
-        var filtered =
-            vocabulary.filter(
-                function (item) {
+function renderFormules(
+    content,
+    search,
+    year
+) {
 
-                    var text = [
-
-                        item.mot,
-
-                        item.terme,
-
-                        item.def,
-
-                        item.definition,
-
-                        item.theme,
-
-                        item.categorie
-
-                    ]
-                        .join(' ')
-                        .toLowerCase();
+    var formulas =
+        typeof FORMULES_DATA !== 'undefined'
+            ? FORMULES_DATA
+            : null;
 
 
-                    var matchText =
-                        text.indexOf(
-                            term
-                        ) !== -1;
+    if (!formulas) {
+
+        content.innerHTML = `
+            <div class="empty">
+                Les formules ne sont pas
+                disponibles.
+            </div>
+        `;
+
+        return;
+    }
 
 
-                    var itemYear =
-                        item.annee ||
-                        item.niveau ||
-                        '';
+    var items = [];
 
 
-                    var matchYear =
-                        selectedYear ===
-                            'all' ||
-                        itemYear ===
-                            selectedYear;
+    if (Array.isArray(formulas)) {
 
+        items =
+            formulas.map(function (item) {
+                return item;
+            });
 
-                    return (
-                        matchText &&
-                        matchYear
+    } else if (
+        typeof formulas === 'object'
+    ) {
+
+        var keys =
+            Object.keys(formulas);
+
+        for (
+            var i = 0;
+            i < keys.length;
+            i++
+        ) {
+
+            var key =
+                keys[i];
+
+            var value =
+                formulas[key];
+
+            if (
+                Array.isArray(value)
+            ) {
+
+                for (
+                    var j = 0;
+                    j < value.length;
+                    j++
+                ) {
+
+                    items.push(
+                        value[j]
                     );
+
+                }
+
+            } else if (
+                value &&
+                typeof value === 'object'
+            ) {
+
+                items.push(
+                    value
+                );
+            }
+        }
+    }
+
+
+    items =
+        items.filter(function (item) {
+
+            var text =
+                JSON.stringify(item)
+                    .toLowerCase();
+
+            var matchSearch =
+                !search ||
+                text.indexOf(search) !== -1;
+
+            var matchYear =
+                year === 'all' ||
+                String(
+                    item.annee ||
+                    item.year ||
+                    ''
+                ) === year;
+
+            return (
+                matchSearch &&
+                matchYear
+            );
+
+        });
+
+
+    if (!items.length) {
+
+        content.innerHTML = `
+            <div class="empty">
+                Aucune formule trouvée.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    content.innerHTML = `
+
+        <div class="memo-grid">
+
+            ${items.map(function (item) {
+
+                var title =
+                    item.titre ||
+                    item.title ||
+                    item.nom ||
+                    'Formule';
+
+                var formula =
+                    item.formule ||
+                    item.formula ||
+                    item.expression ||
+                    '';
+
+                var description =
+                    item.description ||
+                    item.desc ||
+                    '';
+
+                return `
+
+                    <article
+                        class="memo-card">
+
+                        <span>
+                            ${escapeHtml(
+                                item.annee ||
+                                ''
+                            )}
+                        </span>
+
+                        <h3>
+                            ${escapeHtml(
+                                title
+                            )}
+                        </h3>
+
+                        ${
+                            formula
+                                ? `
+                                    <div
+                                        class="formula">
+                                        ${escapeHtml(
+                                            formula
+                                        )}
+                                    </div>
+                                `
+                                : ''
+                        }
+
+                        ${
+                            description
+                                ? `
+                                    <p>
+                                        ${escapeHtml(
+                                            description
+                                        )}
+                                    </p>
+                                `
+                                : ''
+                        }
+
+                    </article>
+
+                `;
+
+            }).join('')}
+
+        </div>
+
+    `;
+}
+
+
+function renderVocabulaire(
+    content,
+    search,
+    year
+) {
+
+    var vocab =
+        typeof GEO_VOCAB !== 'undefined'
+            ? GEO_VOCAB
+            : (
+                typeof GEO_VOCABULAIRE !== 'undefined'
+                    ? GEO_VOCABULAIRE
+                    : null
+            );
+
+
+    if (!vocab) {
+
+        content.innerHTML = `
+            <div class="empty">
+                Le vocabulaire n'est pas
+                disponible.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    var items =
+        Array.isArray(vocab)
+            ? vocab.slice()
+            : Object.keys(vocab).map(
+                function (key) {
+
+                    var value =
+                        vocab[key];
+
+                    if (
+                        value &&
+                        typeof value === 'object'
+                    ) {
+
+                        var copy = {};
+
+                        for (
+                            var k in value
+                        ) {
+
+                            if (
+                                Object.prototype
+                                    .hasOwnProperty
+                                    .call(
+                                        value,
+                                        k
+                                    )
+                            ) {
+                                copy[k] =
+                                    value[k];
+                            }
+                        }
+
+                        copy.terme =
+                            copy.terme ||
+                            copy.term ||
+                            key;
+
+                        return copy;
+                    }
+
+                    return {
+                        terme: key,
+                        definition:
+                            value
+                    };
 
                 }
             );
 
 
-        if (!filtered.length) {
+    items =
+        items.filter(function (item) {
 
-            box.innerHTML =
-                '<div class="empty-state">Aucun terme trouvé.</div>';
+            var text =
+                JSON.stringify(item)
+                    .toLowerCase();
 
-            return;
+            var matchSearch =
+                !search ||
+                text.indexOf(search) !== -1;
 
-        }
+            var matchYear =
+                year === 'all' ||
+                String(
+                    item.annee ||
+                    item.year ||
+                    ''
+                ) === year;
+
+            return (
+                matchSearch &&
+                matchYear
+            );
+
+        });
 
 
-        box.innerHTML = `
+    if (!items.length) {
 
-            <div class="memo-grid">
-
-                ${
-                    filtered.map(
-                        function (item) {
-
-                            return `
-
-                                <article class="memo-card">
-
-                                    <strong>
-                                        🌍
-                                        ${esc(
-                                            item.mot ||
-                                            item.terme ||
-                                            'Terme'
-                                        )}
-                                    </strong>
-
-                                    <p>
-                                        ${esc(
-                                            item.def ||
-                                            item.definition ||
-                                            ''
-                                        )}
-                                    </p>
-
-                                    <span class="memo-tag">
-                                        ${esc(
-                                            item.annee ||
-                                            item.niveau ||
-                                            ''
-                                        )}
-                                        ·
-                                        ${esc(
-                                            item.theme ||
-                                            item.categorie ||
-                                            'Géographie'
-                                        )}
-                                    </span>
-
-                                </article>
-
-                            `;
-
-                        }
-                    ).join('')
-                }
-
+        content.innerHTML = `
+            <div class="empty">
+                Aucun mot trouvé.
             </div>
-
         `;
 
         return;
-
     }
 
 
-    /* =====================================================
-       FORMULES
-       ===================================================== */
-
-    var formulas = [];
-
-
-    if (
-        typeof FORMULES_DATA !==
-            'undefined' &&
-        FORMULES_DATA &&
-        typeof FORMULES_DATA ===
-            'object'
-    ) {
-
-        Object.keys(
-            FORMULES_DATA
-        ).forEach(
-            function (key) {
-
-                if (
-                    Array.isArray(
-                        FORMULES_DATA[key]
-                    )
-                ) {
-
-                    formulas =
-                        formulas.concat(
-                            FORMULES_DATA[key]
-                        );
-
-                }
-
-            }
-        );
-
-    }
-
-
-    formulas =
-        formulas.filter(
-            function (formula) {
-
-                var text = [
-
-                    formula.titre,
-
-                    formula.definition,
-
-                    formula.exemple,
-
-                    formula.categorie
-
-                ]
-                    .join(' ')
-                    .toLowerCase();
-
-
-                return (
-
-                    text.indexOf(
-                        term
-                    ) !== -1
-
-                    &&
-
-                    (
-                        selectedYear ===
-                            'all' ||
-                        formula.annee ===
-                            selectedYear
-                    )
-
-                );
-
-            }
-        );
-
-
-    if (!formulas.length) {
-
-        box.innerHTML =
-            '<div class="empty-state">Aucune formule trouvée.</div>';
-
-        return;
-
-    }
-
-
-    box.innerHTML = `
+    content.innerHTML = `
 
         <div class="memo-grid">
 
-            ${
-                formulas.map(
-                    function (formula) {
+            ${items.map(function (item) {
 
-                        return `
+                var term =
+                    item.terme ||
+                    item.term ||
+                    item.nom ||
+                    'Terme';
 
-                            <article class="memo-card">
+                var definition =
+                    item.definition ||
+                    item.def ||
+                    item.description ||
+                    item.desc ||
+                    '';
 
-                                <strong>
+                return `
 
-                                    ${
-                                        formula.icone ||
-                                        '📐'
-                                    }
+                    <article
+                        class="memo-card vocab-card">
 
-                                    ${esc(
-                                        formula.titre ||
-                                        'Formule'
-                                    )}
+                        <span>
+                            🌍 Vocabulaire
+                        </span>
 
-                                </strong>
+                        <h3>
+                            ${escapeHtml(
+                                term
+                            )}
+                        </h3>
 
+                        <p>
+                            ${escapeHtml(
+                                definition
+                            )}
+                        </p>
 
-                                <p>
-                                    ${esc(
-                                        formula.definition ||
-                                        ''
-                                    )}
-                                </p>
+                    </article>
 
+                `;
 
-                                ${
-                                    formula.exemple
-
-                                        ? `
-
-                                            <div class="memo-example">
-
-                                                📌
-                                                ${esc(
-                                                    formula.exemple
-                                                )}
-
-                                            </div>
-
-                                        `
-
-                                        : ''
-                                }
-
-
-                                <span class="memo-tag">
-
-                                    ${esc(
-                                        formula.annee ||
-                                        ''
-                                    )}
-
-                                    ·
-
-                                    ${esc(
-                                        formula.categorie ||
-                                        'Maths'
-                                    )}
-
-                                </span>
-
-                            </article>
-
-                        `;
-
-                    }
-                ).join('')
-            }
+            }).join('')}
 
         </div>
 
     `;
-
 }
 
 
@@ -3953,201 +2657,10 @@ function renderMemo() {
    EXAMENS
    ========================================================= */
 
-function renderExamHome() {
-
-    var box =
-        document.getElementById(
-            'examPanel'
-        );
-
-    if (!box) {
-        return;
-    }
-
-
-    var special =
-        typeof EXAMENS_CESS !==
-            'undefined' &&
-        Array.isArray(
-            EXAMENS_CESS
-        )
-            ? EXAMENS_CESS
-            : [];
-
-
-    box.innerHTML = `
-
-        <div class="exam-list">
-
-
-            <article class="exam-card">
-
-                <div class="exam-icon">
-                    📐
-                </div>
-
-                <h3>
-                    Examen blanc Maths
-                </h3>
-
-                <p>
-                    Jusqu’à 15 questions tirées
-                    de tes exercices de mathématiques.
-                </p>
-
-                <button
-                    class="button primary"
-                    onclick="startExam('maths')"
-                    type="button"
-                >
-                    Commencer →
-                </button>
-
-            </article>
-
-
-            <article class="exam-card">
-
-                <div class="exam-icon">
-                    🌍
-                </div>
-
-                <h3>
-                    Examen blanc Géo
-                </h3>
-
-                <p>
-                    Jusqu’à 15 questions tirées
-                    de tes exercices de géographie.
-                </p>
-
-                <button
-                    class="button primary"
-                    onclick="startExam('geo')"
-                    type="button"
-                >
-                    Commencer →
-                </button>
-
-            </article>
-
-
-        </div>
-
-
-        ${
-            special.length
-
-                ? `
-
-                    <div class="content-card exam-special">
-
-                        <div class="section-heading">
-
-                            <span class="eyebrow">
-                                Sujets présents dans tes données
-                            </span>
-
-                            <h2>
-                                📝 Sujets CESS
-                            </h2>
-
-                        </div>
-
-
-                        ${
-                            special.map(
-                                function (subject) {
-
-                                    return `
-
-                                        <details>
-
-                                            <summary>
-                                                ${esc(
-                                                    subject.titre ||
-                                                    subject.id
-                                                )}
-                                            </summary>
-
-
-                                            ${
-                                                Array.isArray(
-                                                    subject.exercices
-                                                )
-
-                                                    ? `
-
-                                                        <div class="special-list">
-
-                                                            ${
-                                                                subject.exercices.map(
-                                                                    function (
-                                                                        question
-                                                                    ) {
-
-                                                                        return `
-
-                                                                            <div>
-
-                                                                                <strong>
-                                                                                    ${esc(
-                                                                                        question.question ||
-                                                                                        ''
-                                                                                    )}
-                                                                                </strong>
-
-                                                                                <p>
-                                                                                    ${esc(
-                                                                                        question.correction ||
-                                                                                        ''
-                                                                                    )}
-                                                                                </p>
-
-                                                                            </div>
-
-                                                                        `;
-
-                                                                    }
-                                                                ).join('')
-                                                            }
-
-                                                        </div>
-
-                                                    `
-
-                                                    : ''
-                                            }
-
-                                        </details>
-
-                                    `;
-
-                                }
-                            ).join('')
-                        }
-
-                    </div>
-
-                `
-
-                : ''
-        }
-
-    `;
-
-}
-
-
-function startExam(
-    subject
-) {
+function startExam(subject) {
 
     var questions =
-        flattenQuestions(
-            subject
-        );
-
+        flattenQuestions(subject);
 
     if (!questions.length) {
 
@@ -4159,29 +2672,30 @@ function startExam(
         if (panel) {
 
             panel.innerHTML = `
-
-                <div class="empty-state">
-
-                    Aucune question disponible
+                <div class="empty">
+                    Aucun exercice disponible
                     pour cet examen.
-
                 </div>
-
             `;
 
         }
 
         return;
-
     }
+
+
+    questions =
+        shuffle(questions)
+            .slice(0, 15);
 
 
     cessExamState = {
 
-        qs:
-            shuffle(
-                questions
-            ).slice(0, 15),
+        subject:
+            subject,
+
+        questions:
+            questions,
 
         index:
             0,
@@ -4189,25 +2703,17 @@ function startExam(
         score:
             0,
 
-        subject:
-            subject,
-
-        recorded:
+        answered:
             false
 
     };
 
 
-    showView(
-        'exam'
-    );
-
-    renderExam();
-
+    renderExamQuestion();
 }
 
 
-function renderExam() {
+function renderExamQuestion() {
 
     var panel =
         document.getElementById(
@@ -4228,288 +2734,384 @@ function renderExam() {
 
     if (
         state.index >=
-        state.qs.length
+        state.questions.length
     ) {
 
-        var total =
-            state.qs.length;
-
-        var percentage =
-            total
-                ? Math.round(
-                    state.score /
-                    total *
-                    100
-                )
-                : 0;
-
-
-        if (
-            !state.recorded
-        ) {
-
-            cessState.results.push({
-
-                date:
-                    Date.now(),
-
-                score:
-                    state.score,
-
-                total:
-                    total,
-
-                mode:
-                    'exam-' +
-                    state.subject
-
-            });
-
-
-            recordActivity(
-                'exam',
-                'Examen ' +
-                    CESS_SUBJECTS[
-                        state.subject
-                    ].short,
-                state.score +
-                    '/' +
-                    total +
-                    ' · ' +
-                    percentage +
-                    '%'
-            );
-
-
-            state.recorded =
-                true;
-
-            saveState();
-
-        }
-
-
-        panel.innerHTML = `
-
-            <div class="quiz-result">
-
-                <div class="result-circle">
-                    ${percentage}%
-                </div>
-
-                <span class="eyebrow">
-                    Examen terminé
-                </span>
-
-                <h2>
-                    ${state.score}
-                    /
-                    ${total}
-                </h2>
-
-                <p>
-
-                    ${
-                        percentage >= 80
-
-                            ? 'Très bon résultat.'
-
-                            : percentage >= 60
-
-                                ? 'Résultat correct, continue à travailler les points faibles.'
-
-                                : 'Utilise tes erreurs pour cibler tes prochaines révisions.'
-                    }
-
-                </p>
-
-
-                <div class="result-actions">
-
-                    <button
-                        class="button secondary"
-                        onclick="renderExamHome()"
-                        type="button"
-                    >
-                        Retour
-                    </button>
-
-                    <button
-                        class="button primary"
-                        onclick="startExam('${state.subject}')"
-                        type="button"
-                    >
-                        Recommencer
-                    </button>
-
-                </div>
-
-            </div>
-
-        `;
+        finishExam();
 
         return;
-
     }
 
 
-    var question =
-        state.qs[
+    var q =
+        state.questions[
             state.index
         ];
 
 
-    var percentage =
-        Math.round(
-            state.index /
-            state.qs.length *
-            100
+    panel.innerHTML = `
+
+        <div class="quiz-header">
+
+            <span>
+                Question
+                ${state.index + 1}
+                /
+                ${state.questions.length}
+            </span>
+
+            <strong>
+                ${state.score}
+                point${state.score > 1 ? 's' : ''}
+            </strong>
+
+        </div>
+
+
+        <div class="quiz-progress">
+
+            <i
+                style="
+                    width:${
+                        (
+                            state.index /
+                            state.questions.length
+                        ) * 100
+                    }%
+                ">
+            </i>
+
+        </div>
+
+
+        <div class="quiz-question">
+
+            <span class="eyebrow">
+                ${
+                    state.subject === 'geo'
+                        ? '🌍 Géographie'
+                        : '📐 Mathématiques'
+                }
+            </span>
+
+            <h2>
+                ${escapeHtml(
+                    q.question
+                )}
+            </h2>
+
+        </div>
+
+
+        <div class="quiz-options">
+
+            ${q.options.map(
+                function (
+                    option,
+                    index
+                ) {
+
+                    return `
+                        <button
+                            type="button"
+                            onclick="
+                                answerExam(
+                                    ${index}
+                                )
+                            ">
+
+                            <span>
+                                ${String.fromCharCode(
+                                    65 + index
+                                )}
+                            </span>
+
+                            ${escapeHtml(
+                                option
+                            )}
+
+                        </button>
+                    `;
+
+                }
+            ).join('')}
+
+        </div>
+
+
+        <div
+            id="examFeedback"
+            class="quiz-feedback">
+        </div>
+
+    `;
+}
+
+
+function answerExam(optionIndex) {
+
+    if (
+        !cessExamState ||
+        cessExamState.answered
+    ) {
+        return;
+    }
+
+    cessExamState.answered =
+        true;
+
+
+    var state =
+        cessExamState;
+
+    var q =
+        state.questions[
+            state.index
+        ];
+
+    var correct =
+        Number(q.correct || 0);
+
+    var good =
+        optionIndex === correct;
+
+
+    var panel =
+        document.getElementById(
+            'examPanel'
         );
+
+    if (!panel) {
+        return;
+    }
+
+
+    var buttons =
+        panel.querySelectorAll(
+            '.quiz-options button'
+        );
+
+
+    for (
+        var i = 0;
+        i < buttons.length;
+        i++
+    ) {
+
+        buttons[i].disabled =
+            true;
+
+        if (i === correct) {
+            buttons[i].classList.add(
+                'correct'
+            );
+        }
+
+        if (
+            i === optionIndex &&
+            !good
+        ) {
+
+            buttons[i].classList.add(
+                'wrong'
+            );
+        }
+    }
+
+
+    if (good) {
+
+        state.score++;
+
+    } else {
+
+        if (
+            cessState.mistakes.indexOf(
+                q.id
+            ) === -1
+        ) {
+
+            cessState.mistakes.push(
+                q.id
+            );
+        }
+    }
+
+
+    var feedback =
+        document.getElementById(
+            'examFeedback'
+        );
+
+    if (feedback) {
+
+        feedback.innerHTML = `
+
+            <div class="${
+                good
+                    ? 'good'
+                    : 'bad'
+            }">
+
+                <strong>
+                    ${
+                        good
+                            ? '✓ Bonne réponse !'
+                            : '✗ Mauvaise réponse'
+                    }
+                </strong>
+
+                ${
+                    q.correction
+                        ? `
+                            <p>
+                                ${escapeHtml(
+                                    q.correction
+                                )}
+                            </p>
+                        `
+                        : ''
+                }
+
+                <button
+                    type="button"
+                    onclick="nextExamQuestion()">
+
+                    ${
+                        state.index + 1 >=
+                        state.questions.length
+                            ? 'Voir le résultat'
+                            : 'Question suivante →'
+                    }
+
+                </button>
+
+            </div>
+
+        `;
+    }
+
+    cessSave();
+}
+
+
+function nextExamQuestion() {
+
+    if (!cessExamState) {
+        return;
+    }
+
+    cessExamState.index++;
+    cessExamState.answered =
+        false;
+
+    renderExamQuestion();
+}
+
+
+function finishExam() {
+
+    var state =
+        cessExamState;
+
+    if (!state) {
+        return;
+    }
+
+    var total =
+        state.questions.length;
+
+    var score =
+        state.score;
+
+    var percentage =
+        total
+            ? Math.round(
+                score / total * 100
+            )
+            : 0;
+
+
+    cessState.results.push({
+
+        date:
+            new Date().toISOString(),
+
+        mode:
+            'exam-' +
+            state.subject,
+
+        score:
+            score,
+
+        total:
+            total,
+
+        percentage:
+            percentage
+
+    });
+
+
+    cessSave();
+
+
+    var panel =
+        document.getElementById(
+            'examPanel'
+        );
+
+    if (!panel) {
+        return;
+    }
 
 
     panel.innerHTML = `
 
-        <div class="quiz-question-card">
+        <div class="quiz-result">
 
-            <button
-                class="back-button"
-                onclick="renderExamHome()"
-                type="button"
-            >
-                ← Quitter l’examen
-            </button>
-
-
-            <div class="quiz-progress">
-
-                <span
-                    style="width:${percentage}%"
-                ></span>
-
-            </div>
-
-
-            <div class="quiz-meta">
-
-                <span>
-                    Examen
-                    ${CESS_SUBJECTS[
-                        state.subject
-                    ].short}
-                </span>
-
-                <span>
-                    Question
-                    ${state.index + 1}
-                    /
-                    ${state.qs.length}
-                </span>
-
-            </div>
-
-
-            <div class="quiz-question">
-
-                ${esc(
-                    question.question
-                )}
-
-            </div>
-
-
-            <div class="quiz-options">
-
+            <span class="result-icon">
                 ${
-                    question.options.map(
-                        function (
-                            option,
-                            index
-                        ) {
-
-                            return `
-
-                                <button
-                                    class="quiz-option"
-                                    onclick="answerExam(${index})"
-                                    type="button"
-                                >
-
-                                    <span class="option-letter">
-                                        ${
-                                            String.fromCharCode(
-                                                65 + index
-                                            )
-                                        }
-                                    </span>
-
-                                    ${esc(
-                                        option
-                                    )}
-
-                                </button>
-
-                            `;
-
-                        }
-                    ).join('')
+                    percentage >= 80
+                        ? '🏆'
+                        : percentage >= 60
+                            ? '⭐'
+                            : '📚'
                 }
+            </span>
+
+            <h2>
+                Examen terminé
+            </h2>
+
+            <div class="result-score">
+                ${score} / ${total}
+            </div>
+
+            <p>
+                ${percentage}% de réussite
+            </p>
+
+            <div class="result-actions">
+
+                <button
+                    type="button"
+                    class="primary"
+                    onclick="
+                        startExam(
+                            '${state.subject}'
+                        )
+                    ">
+
+                    🔄 Recommencer
+
+                </button>
 
             </div>
 
         </div>
 
     `;
-
-}
-
-
-function answerExam(
-    index
-) {
-
-    if (!cessExamState) {
-        return;
-    }
-
-
-    var question =
-        cessExamState.qs[
-            cessExamState.index
-        ];
-
-
-    if (
-        index ===
-        Number(
-            question.correct
-        )
-    ) {
-
-        cessExamState.score++;
-
-    } else {
-
-        if (
-            cessState.mistakes.indexOf(
-                question.id
-            ) === -1
-        ) {
-
-            cessState.mistakes.push(
-                question.id
-            );
-
-        }
-
-    }
-
-
-    cessExamState.index++;
-
-    saveState();
-
-    renderExam();
-
 }
 
 
@@ -4519,320 +3121,273 @@ function answerExam(
 
 function renderProgress() {
 
-    var box =
+    var content =
         document.getElementById(
             'progressContent'
         );
 
-    if (!box) {
+    if (!content) {
         return;
     }
 
 
-    var global =
-        pctGlobal();
+    var maths =
+        allChaps('maths');
 
+    var geo =
+        allChaps('geo');
 
     var all =
-        allChaps('maths')
-            .concat(
-                allChaps('geo')
-            );
+        maths.concat(geo);
 
 
-    var done =
+    var mastered =
         all.filter(
             function (chapter) {
-
                 return (
-                    progressOf(chapter) >=
-                    100
+                    getChapterProgress(
+                        chapter.id
+                    ) >= 100
                 );
-
             }
         ).length;
 
 
-    box.innerHTML = `
-
-        <div class="progress-overview">
-
-            <div class="progress-big-card">
-
-                <strong>
-                    ${global}%
-                </strong>
-
-                <span>
-                    Progression globale
-                </span>
-
-            </div>
-
-
-            <div class="progress-big-card">
-
-                <strong>
-                    ${done}/${all.length}
-                </strong>
-
-                <span>
-                    Chapitres maîtrisés
-                </span>
-
-            </div>
-
-
-            <div class="progress-big-card">
-
-                <strong>
-                    ${cessState.results.length}
-                </strong>
-
-                <span>
-                    Sessions réalisées
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <div class="progress-section">
-
-            <div class="section-heading">
-
-                <span class="eyebrow">
-                    Vue détaillée
-                </span>
-
-                <h2>
-                    Progression par matière
-                </h2>
-
-            </div>
-
-
-            ${
-                [
-                    'maths',
-                    'geo'
-                ]
-                    .map(
-                        renderProgressSubject
-                    )
-                    .join('')
-            }
-
-        </div>
-
-
-        <div class="progress-section progress-history">
-
-            <div class="section-heading">
-
-                <span class="eyebrow">
-                    Historique
-                </span>
-
-                <h2>
-                    Dernières sessions
-                </h2>
-
-            </div>
-
-            ${renderHistory()}
-
-        </div>
-
-    `;
-
-}
-
-
-function renderProgressSubject(
-    subject
-) {
-
-    var info =
-        CESS_SUBJECTS[
-            subject
-        ];
-
-    var stats =
-        subjectStats(
-            subject
-        );
-
-
-    var years = [
-        '3e',
-        '4e',
-        '5e',
-        '6e'
-    ];
-
-
-    return `
-
-        <div class="progress-subject">
-
-            <div class="progress-subject-head">
-
-                <strong>
-                    ${info.icon}
-                    ${info.label}
-                </strong>
-
-                <span>
-                    ${stats.avg}%
-                </span>
-
-            </div>
-
-
-            <div class="progress-row-bar">
-
-                <span
-                    style="width:${stats.avg}%"
-                ></span>
-
-            </div>
-
-
-            ${
-                years.map(
-                    function (year) {
-
-                        var statsYear =
-                            yearStats(
-                                subject,
-                                year
-                            );
-
-
-                        if (!statsYear.total) {
-                            return '';
-                        }
-
-
-                        return `
-
-                            <div class="progress-row">
-
-                                <span class="progress-row-name">
-                                    ${year}
-                                </span>
-
-                                <div class="progress-row-bar">
-
-                                    <span
-                                        style="width:${statsYear.avg}%"
-                                    ></span>
-
-                                </div>
-
-                                <span class="progress-row-value">
-                                    ${statsYear.avg}%
-                                </span>
-
-                            </div>
-
-                        `;
-
-                    }
-                ).join('')
-            }
-
-        </div>
-
-    `;
-
-}
-
-
-function renderHistory() {
-
-    if (!cessState.results.length) {
-
-        return `
-
-            <div class="empty-state">
-                Aucune session enregistrée.
-            </div>
-
-        `;
-
+    var total =
+        all.length;
+
+
+    var overall =
+        total
+            ? Math.round(
+                mastered /
+                total *
+                100
+            )
+            : 0;
+
+
+    var correctAnswers = 0;
+    var totalAnswers = 0;
+
+
+    for (
+        var i = 0;
+        i < cessState.results.length;
+        i++
+    ) {
+
+        correctAnswers +=
+            Number(
+                cessState.results[i].score ||
+                0
+            );
+
+        totalAnswers +=
+            Number(
+                cessState.results[i].total ||
+                0
+            );
     }
 
 
-    return `
+    var quizRate =
+        totalAnswers
+            ? Math.round(
+                correctAnswers /
+                totalAnswers *
+                100
+            )
+            : 0;
 
-        <div class="history-list">
+
+    content.innerHTML = `
+
+        <div class="progress-summary">
+
+            <div class="stat">
+                <b>
+                    ${overall}%
+                </b>
+                <span>
+                    Progression globale
+                </span>
+            </div>
+
+            <div class="stat">
+                <b>
+                    ${mastered}/${total}
+                </b>
+                <span>
+                    Chapitres maîtrisés
+                </span>
+            </div>
+
+            <div class="stat">
+                <b>
+                    ${cessState.results.length}
+                </b>
+                <span>
+                    Quiz réalisés
+                </span>
+            </div>
+
+            <div class="stat">
+                <b>
+                    ${quizRate}%
+                </b>
+                <span>
+                    Réussite aux quiz
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="grid2">
+
+            <div class="panel">
+
+                <h2>
+                    📐 Mathématiques
+                </h2>
+
+                <div class="progress-row">
+
+                    <div class="progress-label">
+                        <span>
+                            Progression
+                        </span>
+
+                        <strong>
+                            ${pctSubject('maths')}%
+                        </strong>
+                    </div>
+
+                    <div class="bar">
+                        <i
+                            style="
+                                width:${pctSubject('maths')}%
+                            ">
+                        </i>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <h2>
+                    🌍 Géographie
+                </h2>
+
+                <div class="progress-row">
+
+                    <div class="progress-label">
+                        <span>
+                            Progression
+                        </span>
+
+                        <strong>
+                            ${pctSubject('geo')}%
+                        </strong>
+                    </div>
+
+                    <div class="bar">
+                        <i
+                            style="
+                                width:${pctSubject('geo')}%
+                            ">
+                        </i>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="panel">
+
+            <h2>
+                📝 Historique des quiz
+            </h2>
 
             ${
-                cessState.results
-                    .slice()
-                    .reverse()
-                    .slice(0, 10)
-                    .map(
-                        function (result) {
+                cessState.results.length
+                    ? `
+                        <div class="history">
 
-                            var percentage =
-                                result.total
-                                    ? Math.round(
-                                        result.score /
-                                        result.total *
-                                        100
-                                    )
-                                    : 0;
+                            ${cessState.results
+                                .slice()
+                                .reverse()
+                                .slice(0, 10)
+                                .map(
+                                    function (
+                                        result
+                                    ) {
 
-
-                            return `
-
-                                <div class="history-item">
-
-                                    <span>
-                                        🎯
-                                    </span>
-
-                                    <div>
-
-                                        <strong>
-                                            ${esc(
-                                                result.mode ||
-                                                'Session'
-                                            )}
-                                        </strong>
-
-                                        <small>
-                                            ${result.score}
-                                            /
-                                            ${result.total}
-                                            ·
-                                            ${formatDate(
+                                        var date =
+                                            new Date(
                                                 result.date
-                                            )}
-                                        </small>
+                                            );
 
-                                    </div>
+                                        return `
+                                            <div
+                                                class="history-row">
 
-                                    <b>
-                                        ${percentage}%
-                                    </b>
+                                                <span>
+                                                    ${escapeHtml(
+                                                        result.mode
+                                                    )}
+                                                </span>
 
-                                </div>
+                                                <strong>
+                                                    ${
+                                                        result.score
+                                                    } /
+                                                    ${
+                                                        result.total
+                                                    }
+                                                </strong>
 
-                            `;
+                                                <b>
+                                                    ${
+                                                        result.percentage
+                                                    }%
+                                                </b>
 
-                        }
-                    ).join('')
+                                                <small>
+                                                    ${
+                                                        date.toLocaleDateString(
+                                                            'fr-BE'
+                                                        )
+                                                    }
+                                                </small>
+
+                                            </div>
+                                        `;
+
+                                    }
+                                )
+                                .join('')}
+
+                        </div>
+                    `
+                    : `
+                        <div class="empty">
+                            Aucun quiz réalisé pour
+                            le moment.
+                        </div>
+                    `
             }
 
         </div>
 
     `;
-
 }
 
 
@@ -4840,62 +3395,47 @@ function renderHistory() {
    INITIALISATION
    ========================================================= */
 
-function init() {
+function initCESS() {
 
-    if (
-        cessState.theme ===
-        'dark'
-    ) {
-
-        document.body.classList.add(
-            'dark'
-        );
-
-    }
-
-
-    updateThemeButton();
+    applyTheme();
 
     renderHome();
 
-    renderSubject(
-        'maths'
+    if (
+        typeof CHAPITRES === 'undefined'
+    ) {
+        console.warn(
+            'CHAPITRES n’est pas chargé.'
+        );
+    }
+
+    if (
+        typeof GEO_CHAPITRES === 'undefined'
+    ) {
+        console.warn(
+            'GEO_CHAPITRES n’est pas chargé.'
+        );
+    }
+
+    console.log(
+        'Carnet CESS chargé correctement.'
     );
-
-    renderSubject(
-        'geo'
-    );
-
-    renderMemo();
-
-    renderGamesHome();
-
-    renderExamHome();
-
-    renderProgress();
-
-
-    document.addEventListener(
-        'keydown',
-        function (event) {
-
-            if (
-                event.key ===
-                'Escape' &&
-                cessCurrentChapter
-            ) {
-
-                closeChapter();
-
-            }
-
-        }
-    );
-
 }
 
 
-document.addEventListener(
-    'DOMContentLoaded',
-    init
-);
+if (
+    document.readyState ===
+    'loading'
+) {
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        initCESS
+    );
+
+} else {
+
+    initCESS();
+
+}
+```
