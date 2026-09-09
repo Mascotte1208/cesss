@@ -18,26 +18,26 @@ function renderSubject(subject) {
     var data =
         CESS_SUBJECTS[subject].getData();
 
+    var elementIds = {
+        maths: ['mathsTotal', 'mathYears', 'mathContent'],
+        geo: ['geoTotal', 'geoYears', 'geoContent'],
+        bio: ['bioTotal', 'bioYears', 'bioContent']
+    };
+
+    var ids = elementIds[subject];
+
+    if (!ids) {
+        return;
+    }
+
     var totalElement =
-        document.getElementById(
-            subject === 'maths'
-                ? 'mathsTotal'
-                : 'geoTotal'
-        );
+        document.getElementById(ids[0]);
 
     var yearsElement =
-        document.getElementById(
-            subject === 'maths'
-                ? 'mathYears'
-                : 'geoYears'
-        );
+        document.getElementById(ids[1]);
 
     var contentElement =
-        document.getElementById(
-            subject === 'maths'
-                ? 'mathContent'
-                : 'geoContent'
-        );
+        document.getElementById(ids[2]);
 
     if (
         !totalElement ||
