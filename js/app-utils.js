@@ -99,7 +99,8 @@ function allChaps(subject) {
 
 function findChapter(id) {
     var chapters = allChaps('maths')
-        .concat(allChaps('geo'));
+        .concat(allChaps('geo'))
+        .concat(allChaps('bio'));
 
     for (var i = 0; i < chapters.length; i++) {
         if (
