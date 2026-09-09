@@ -432,41 +432,77 @@ var CHAPITRES = {
 // ---- Formules ----
 var FORMULES_DATA = {
     algebre: [
-        {id:'alg_1', titre:'Identité remarquable', definition:'(a+b)² = a² + 2ab + b²', exemple:'(x+3)² = x² + 6x + 9', icone:'🔢', categorie:'Algèbre'},
-        {id:'alg_2', titre:'Différence de carrés', definition:'a² - b² = (a-b)(a+b)', exemple:'x² - 9 = (x-3)(x+3)', icone:'🔢', categorie:'Algèbre'},
-        {id:'alg_3', titre:'Discriminant', definition:'Δ = b² - 4ac', exemple:'Pour x² + 2x - 3, Δ = 16', icone:'🔢', categorie:'Algèbre'},
-        {id:'alg_4', titre:'Racines du 2nd degré', definition:'x = (-b ± √Δ)/2a', exemple:'x = (-2 ± 4)/2 → 1 ou -3', icone:'🔢', categorie:'Algèbre'}
+        {id:'alg_1', annee:'3e', titre:'Identité remarquable', definition:'(a+b)² = a² + 2ab + b²', exemple:'(x+3)² = x² + 6x + 9', icone:'🔢', categorie:'Algèbre'},
+        {id:'alg_2', annee:'3e', titre:'Différence de carrés', definition:'a² - b² = (a-b)(a+b)', exemple:'x² - 9 = (x-3)(x+3)', icone:'🔢', categorie:'Algèbre'},
+        {id:'alg_3', annee:'4e', titre:'Discriminant', definition:'Δ = b² - 4ac', exemple:'Pour x² + 2x - 3, Δ = 16', icone:'🔢', categorie:'Algèbre'},
+        {id:'alg_4', annee:'4e', titre:'Racines du 2nd degré', definition:'x = (-b ± √Δ)/2a', exemple:'x = (-2 ± 4)/2 → 1 ou -3', icone:'🔢', categorie:'Algèbre'},
+        {id:'alg_5', annee:'4e', titre:'Somme et produit des racines', definition:'S = x₁+x₂ = -b/a  ;  P = x₁×x₂ = c/a', exemple:'Pour x²-5x+6=0 : S=5, P=6 → racines 2 et 3', icone:'🔢', categorie:'Algèbre'}
     ],
     geometrie: [
-        {id:'geo_1', titre:'Théorème de Pythagore', definition:'a² + b² = c² (triangle rectangle)', exemple:'3² + 4² = 5²', icone:'📐', categorie:'Géométrie'},
-        {id:'geo_2', titre:'Théorème de Thalès', definition:'AB/AC = AD/AE (si BD // CE)', exemple:'Calculer une longueur inconnue', icone:'📐', categorie:'Géométrie'},
-        {id:'geo_3', titre:'Distance entre deux points', definition:'d = √[(xB-xA)² + (yB-yA)²]', exemple:'A(0,0), B(3,4) → d = 5', icone:'📐', categorie:'Géométrie'},
-        {id:'geo_4', titre:'Équation du cercle', definition:'(x-a)² + (y-b)² = r²', exemple:'Centre (0,0), rayon 3 → x²+y²=9', icone:'📐', categorie:'Géométrie'}
+        {id:'geo_1', annee:'3e', titre:'Théorème de Pythagore', definition:'a² + b² = c² (triangle rectangle)', exemple:'3² + 4² = 5²', icone:'📐', categorie:'Géométrie'},
+        {id:'geo_2', annee:'3e', titre:'Théorème de Thalès', definition:'AB/AC = AD/AE (si BD // CE)', exemple:'Calculer une longueur inconnue', icone:'📐', categorie:'Géométrie'},
+        {id:'geo_3', annee:'5e', titre:'Distance entre deux points', definition:'d = √[(xB-xA)² + (yB-yA)²]', exemple:'A(0,0), B(3,4) → d = 5', icone:'📐', categorie:'Géométrie'},
+        {id:'geo_4', annee:'5e', titre:'Équation du cercle', definition:'(x-a)² + (y-b)² = r²', exemple:'Centre (0,0), rayon 3 → x²+y²=9', icone:'📐', categorie:'Géométrie'},
+        {id:'geo_5', annee:'5e', titre:'Équation d’une droite', definition:'y = mx + p, avec m = (yB-yA)/(xB-xA)', exemple:'A(0,1), B(2,5) → m=2, droite y=2x+1', icone:'📐', categorie:'Géométrie'},
+        {id:'geo_6', annee:'4e', titre:'Aire d’un triangle quelconque', definition:'Aire = (1/2) × a × b × sin(C)', exemple:'a=5, b=6, C=90° → Aire = 15', icone:'📐', categorie:'Géométrie'},
+        {id:'geo_7', annee:'4e', titre:'Théorème d’Al-Kashi', definition:'a² = b² + c² - 2bc·cos(A)', exemple:'Généralise Pythagore à tout triangle', icone:'📐', categorie:'Géométrie'},
+        {id:'geo_8', annee:'4e', titre:'Relation des sinus', definition:'a/sin(A) = b/sin(B) = c/sin(C)', exemple:'Utile pour un triangle sans angle droit', icone:'📐', categorie:'Géométrie'}
     ],
     trigonometrie: [
-        {id:'trigo_1', titre:'Sinus', definition:'sin(α) = opposé / hypoténuse', exemple:'sin(30°) = 0.5', icone:'📐', categorie:'Trigonométrie'},
-        {id:'trigo_2', titre:'Cosinus', definition:'cos(α) = adjacent / hypoténuse', exemple:'cos(60°) = 0.5', icone:'📐', categorie:'Trigonométrie'},
-        {id:'trigo_3', titre:'Tangente', definition:'tan(α) = opposé / adjacent', exemple:'tan(45°) = 1', icone:'📐', categorie:'Trigonométrie'},
-        {id:'trigo_4', titre:'Relation fondamentale', definition:'sin²α + cos²α = 1', exemple:'Formule à connaître par cœur', icone:'📐', categorie:'Trigonométrie'}
+        {id:'trigo_1', annee:'3e', titre:'Sinus', definition:'sin(α) = opposé / hypoténuse', exemple:'sin(30°) = 0.5', icone:'📐', categorie:'Trigonométrie'},
+        {id:'trigo_2', annee:'3e', titre:'Cosinus', definition:'cos(α) = adjacent / hypoténuse', exemple:'cos(60°) = 0.5', icone:'📐', categorie:'Trigonométrie'},
+        {id:'trigo_3', annee:'3e', titre:'Tangente', definition:'tan(α) = opposé / adjacent', exemple:'tan(45°) = 1', icone:'📐', categorie:'Trigonométrie'},
+        {id:'trigo_4', annee:'4e', titre:'Relation fondamentale', definition:'sin²(α) + cos²(α) = 1', exemple:'Vraie pour tout angle α, sur le cercle trigonométrique', icone:'📐', categorie:'Trigonométrie'},
+        {id:'trigo_5', annee:'4e', titre:'Radian ↔ degré', definition:'π rad = 180°', exemple:'π/2 rad = 90°', icone:'📐', categorie:'Trigonométrie'},
+        {id:'trigo_6', annee:'4e', titre:'Tangente = sinus/cosinus', definition:'tan(α) = sin(α) / cos(α)', exemple:'sin(45°)=cos(45°) → tan(45°)=1', icone:'📐', categorie:'Trigonométrie'},
+        {id:'trigo_7', annee:'5e', titre:'Amplitude et période', definition:'Pour f(x)=a·sin(bx+c) : amplitude=|a|, période=2π/b', exemple:'f(x)=3·sin(2x) → amplitude 3, période π', icone:'📐', categorie:'Trigonométrie'}
     ],
     analyse: [
-        {id:'ana_1', titre:'Dérivée d’une puissance', definition:"(xⁿ)' = n·xⁿ⁻¹", exemple:"(x³)' = 3x²", icone:'📈', categorie:'Analyse'},
-        {id:'ana_2', titre:'Dérivée d’un produit', definition:"(uv)' = u'v + uv'", exemple:"(x²·x)' → règle du produit", icone:'📈', categorie:'Analyse'},
-        {id:'ana_3', titre:'Dérivée d’un quotient', definition:"(u/v)' = (u'v - uv')/v²", exemple:'Utile pour les fonctions rationnelles', icone:'📈', categorie:'Analyse'},
-        {id:'ana_4', titre:'Primitive d’une puissance', definition:'∫xⁿ dx = xⁿ⁺¹/(n+1) + C', exemple:'∫x dx = x²/2 + C', icone:'📈', categorie:'Analyse'},
-        {id:'ana_5', titre:'Intégrale définie', definition:'∫ₐᵇ f(x)dx = F(b) - F(a)', exemple:'Aire sous la courbe entre a et b', icone:'📈', categorie:'Analyse'}
+        {id:'ana_1', annee:'5e', titre:'Dérivée d’une puissance', definition:"(xⁿ)' = n·xⁿ⁻¹", exemple:"(x³)' = 3x²", icone:'📈', categorie:'Analyse'},
+        {id:'ana_6', annee:'5e', titre:'Nombre dérivé', definition:"f'(a) = lim (f(a+h)-f(a))/h quand h→0", exemple:'C’est la pente de la tangente en x=a', icone:'📈', categorie:'Analyse'},
+        {id:'ana_7', annee:'5e', titre:'Équation de la tangente', definition:"y = f'(a)(x-a) + f(a)", exemple:'Tangente à la courbe au point d’abscisse a', icone:'📈', categorie:'Analyse'},
+        {id:'ana_2', annee:'6e', titre:'Dérivée d’un produit', definition:"(uv)' = u'v + uv'", exemple:"(x²·x)' → règle du produit", icone:'📈', categorie:'Analyse'},
+        {id:'ana_3', annee:'6e', titre:'Dérivée d’un quotient', definition:"(u/v)' = (u'v - uv')/v²", exemple:'Utile pour les fonctions rationnelles', icone:'📈', categorie:'Analyse'},
+        {id:'ana_4', annee:'6e', titre:'Primitive d’une puissance', definition:'∫xⁿ dx = xⁿ⁺¹/(n+1) + C', exemple:'∫x dx = x²/2 + C', icone:'📈', categorie:'Analyse'},
+        {id:'ana_5', annee:'6e', titre:'Intégrale définie', definition:'∫ₐᵇ f(x)dx = F(b) - F(a)', exemple:'Aire sous la courbe entre a et b', icone:'📈', categorie:'Analyse'}
     ],
     vecteurs: [
-        {id:'vec_1', titre:'Produit scalaire', definition:'u·v = ||u|| × ||v|| × cos(α)', exemple:'Si orthogonaux, u·v = 0', icone:'➡️', categorie:'Vecteurs'}
+        {id:'vec_1', annee:'4e', titre:'Produit scalaire', definition:'u·v = ||u|| × ||v|| × cos(α)', exemple:'Si orthogonaux, u·v = 0', icone:'➡️', categorie:'Vecteurs'},
+        {id:'vec_2', annee:'4e', titre:'Relation de Chasles', definition:'AB + BC = AC', exemple:'Décomposer un vecteur en passant par un point intermédiaire', icone:'➡️', categorie:'Vecteurs'}
     ],
     statistiques: [
-        {id:'stat_1', titre:'Moyenne', definition:'x̄ = Σxi / n', exemple:'(4+6+8)/3 = 6', icone:'📊', categorie:'Statistiques'},
-        {id:'stat_2', titre:'Écart-type', definition:'σ = √Variance', exemple:'Mesure la dispersion', icone:'📊', categorie:'Statistiques'},
-        {id:'stat_3', titre:'Probabilité conditionnelle', definition:'P(A|B) = P(A∩B) / P(B)', exemple:'Probabilité de A sachant B', icone:'📊', categorie:'Statistiques'}
+        {id:'stat_1', annee:'4e', titre:'Moyenne', definition:'x̄ = Σxi / n', exemple:'(4+6+8)/3 = 6', icone:'📊', categorie:'Statistiques'},
+        {id:'stat_2', annee:'4e', titre:'Écart-type', definition:'σ = √Variance', exemple:'Mesure la dispersion', icone:'📊', categorie:'Statistiques'},
+        {id:'stat_3', annee:'4e', titre:'Variance', definition:'V = Σ(xi - x̄)² / n', exemple:'Moyenne des carrés des écarts à la moyenne', icone:'📊', categorie:'Statistiques'}
+    ],
+    stat2var: [
+        {id:'s2v_1', annee:'5e', titre:'Point moyen', definition:'G(x̄, ȳ) où x̄ et ȳ sont les moyennes de chaque série', exemple:'La droite d’ajustement passe toujours par G', icone:'📊', categorie:'Statistique à 2 variables'},
+        {id:'s2v_2', annee:'5e', titre:'Coefficient de corrélation', definition:'r compris entre -1 et 1', exemple:'|r| proche de 1 = points bien alignés', icone:'📊', categorie:'Statistique à 2 variables'}
+    ],
+    probabilites: [
+        {id:'proba_1', annee:'6e', titre:'Probabilité conditionnelle', definition:'P(A|B) = P(A∩B) / P(B)', exemple:'Probabilité de A sachant B', icone:'🎲', categorie:'Probabilités'},
+        {id:'proba_2', annee:'6e', titre:'Événements indépendants', definition:'P(A∩B) = P(A) × P(B)', exemple:'Vrai seulement si A et B sont indépendants', icone:'🎲', categorie:'Probabilités'},
+        {id:'proba_3', annee:'6e', titre:'Espérance mathématique', definition:'E(X) = Σ xi × P(X=xi)', exemple:'C’est la valeur moyenne « théorique » de X', icone:'🎲', categorie:'Probabilités'},
+        {id:'proba_4', annee:'6e', titre:'Loi binomiale', definition:'P(X=k) = C(n,k) × pᵏ × (1-p)ⁿ⁻ᵏ', exemple:'Probabilité d’obtenir k succès sur n essais', icone:'🎲', categorie:'Probabilités'}
+    ],
+    suites: [
+        {id:'suite_1', annee:'6e', titre:'Terme général — arithmétique', definition:'uₙ = u₀ + n×r', exemple:'u₀=2, r=3 → u₅ = 2+5×3 = 17', icone:'🔢', categorie:'Suites'},
+        {id:'suite_2', annee:'6e', titre:'Terme général — géométrique', definition:'uₙ = u₀ × qⁿ', exemple:'u₀=1, q=2 → u₅ = 1×2⁵ = 32', icone:'🔢', categorie:'Suites'},
+        {id:'suite_3', annee:'6e', titre:'Somme — suite arithmétique', definition:'Sₙ = n × (u₀+uₙ₋₁)/2', exemple:'Somme des n premiers termes', icone:'🔢', categorie:'Suites'},
+        {id:'suite_4', annee:'6e', titre:'Somme — suite géométrique', definition:'Sₙ = u₀ × (1-qⁿ)/(1-q)  (q≠1)', exemple:'Utile pour les intérêts composés', icone:'🔢', categorie:'Suites'}
+    ],
+    geoEspace: [
+        {id:'espace_1', annee:'6e', titre:'Distance dans l’espace', definition:'d = √[(xB-xA)² + (yB-yA)² + (zB-zA)²]', exemple:'Pythagore généralisé en 3 dimensions', icone:'🧊', categorie:'Géométrie de l’espace'},
+        {id:'espace_2', annee:'6e', titre:'Équation cartésienne d’un plan', definition:'ax + by + cz + d = 0', exemple:'Un vecteur normal (a,b,c) est perpendiculaire au plan', icone:'🧊', categorie:'Géométrie de l’espace'}
+    ],
+    expoLog: [
+        {id:'explog_1', annee:'6e', titre:'Propriété de l’exponentielle', definition:'eˣ⁺ʸ = eˣ × eʸ', exemple:'e³ × e² = e⁵', icone:'📈', categorie:'Exponentielles / Logarithmes'},
+        {id:'explog_2', annee:'6e', titre:'Propriété du logarithme', definition:'ln(a×b) = ln(a) + ln(b)', exemple:'ln(6) = ln(2)+ln(3)', icone:'📈', categorie:'Exponentielles / Logarithmes'},
+        {id:'explog_3', annee:'6e', titre:'Réciprocité exp/log', definition:'ln(eˣ) = x   et   e^(ln x) = x', exemple:'Sert à résoudre les équations exponentielles', icone:'📈', categorie:'Exponentielles / Logarithmes'}
     ],
     complexes: [
-        {id:'comp_1', titre:'Module', definition:'|z| = √(a² + b²)', exemple:'|3+4i| = 5', icone:'ℂ', categorie:'Nombres complexes'},
-        {id:'comp_2', titre:'Unité imaginaire', definition:'i² = -1', exemple:'Base des nombres complexes', icone:'ℂ', categorie:'Nombres complexes'}
+        {id:'comp_1', annee:'5e', titre:'Module', definition:'|z| = √(a² + b²)', exemple:'|3+4i| = 5', icone:'ℂ', categorie:'Nombres complexes'},
+        {id:'comp_2', annee:'5e', titre:'Unité imaginaire', definition:'i² = -1', exemple:'Base des nombres complexes', icone:'ℂ', categorie:'Nombres complexes'}
     ]
 };
 
