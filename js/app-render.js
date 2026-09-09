@@ -894,10 +894,10 @@ function renderGamePanel() {
                 <strong>Vrai / Faux</strong>
                 <small>12 affirmations variées</small>
             </button>
-            <button class="game-card" onclick="startCapitals()">
+            <button class="game-card" onclick="showCapitalLevels()">
                 <span>🌍</span>
                 <strong>Jeu des capitales</strong>
-                <small>Teste tes connaissances</small>
+                <small>195 pays · 3 niveaux</small>
             </button>
             <button class="game-card" onclick="startQuiz('mistakes')">
                 <span>🧠</span>
