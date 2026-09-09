@@ -1,6 +1,6 @@
 /* =========================================================
    CARNET CESS
-   APPLICATION PRINCIPALE - VERSION CORRIGÉE
+   APPLICATION PRINCIPALE - VERSION COMPLETE CORRIGEE
    ========================================================= */
 
 const DBKEY = 'carnetCESSv3';
@@ -10,7 +10,6 @@ const DBKEY = 'carnetCESSv3';
    ========================================================= */
 
 let state;
-
 try {
     state = JSON.parse(localStorage.getItem(DBKEY) || 'null') || {
         progress: {},
@@ -82,7 +81,6 @@ function toggleTheme() {
     save();
 }
 
-// Restaurer le thème
 if (state.theme === 'dark') {
     document.body.classList.add('dark');
 }
@@ -105,7 +103,6 @@ function showView(id) {
     target.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Rendre le contenu de la vue
     switch(id) {
         case 'home':
             renderHome();
@@ -160,6 +157,18 @@ function pctSubject(subject) {
     return Math.round(done / chapters.length * 100);
 }
 
+function findChapter(id) {
+    return allChaps('maths').concat(allChaps('geo')).find(function(chapter) {
+        return chapter.id === id;
+    });
+}
+
+function shuffle(array) {
+    return [...array].sort(function() {
+        return Math.random() - 0.5;
+    });
+}
+
 /* =========================================================
    ACCUEIL
    ========================================================= */
@@ -186,7 +195,6 @@ function renderHome() {
         `;
     }).join('');
 
-    // Progression par matière
     const subjectProgress = document.getElementById('subjectProgress');
     if (subjectProgress) {
         subjectProgress.innerHTML = ['maths', 'geo'].map(function(subject) {
@@ -205,7 +213,6 @@ function renderHome() {
         }).join('');
     }
 
-    // Priorités
     const priorities = document.getElementById('priorities');
     if (priorities) {
         const chapters = allChaps('maths')
@@ -285,16 +292,6 @@ function renderSubject(subject) {
             }).join('')}
         </div>
     `;
-}
-
-/* =========================================================
-   RECHERCHE CHAPITRE
-   ========================================================= */
-
-function findChapter(id) {
-    return allChaps('maths').concat(allChaps('geo')).find(function(chapter) {
-        return chapter.id === id;
-    });
 }
 
 /* =========================================================
@@ -383,7 +380,6 @@ function flattenQuestions(filter) {
         if (!Array.isArray(chapter.exercices)) return;
 
         chapter.exercices.forEach(function(question, index) {
-            // Vérifier que la question a bien des options
             if (!Array.isArray(question.options) || question.options.length === 0) return;
             
             questions.push({
@@ -413,7 +409,7 @@ function flattenQuestions(filter) {
 }
 
 /* =========================================================
-   DEMARRER QUIZ
+   DEMARRER QUIZ - VERSION CORRIGEE AVEC VRAI/FAUX
    ========================================================= */
 
 function startQuiz(mode) {
@@ -516,7 +512,284 @@ function startQuiz(mode) {
                 chapter: 'Fonctions'
             },
             {
-               
+                id: 'tf_maths_11',
+                question: 'Dans f(x)=mx+p, si m>0, la fonction est croissante.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Fonctions du premier degré'
+            },
+            {
+                id: 'tf_maths_12',
+                question: 'L\'ordonnée à l\'origine d\'une fonction du premier degré est donnée par m.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Fonctions du premier degré'
+            },
+            {
+                id: 'tf_maths_13',
+                question: 'sin(α) = opposé / hypoténuse.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Trigonométrie'
+            },
+            {
+                id: 'tf_maths_14',
+                question: 'cos(α) = opposé / adjacent.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Trigonométrie'
+            },
+            {
+                id: 'tf_maths_15',
+                question: 'tan(α) = opposé / adjacent.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Trigonométrie'
+            },
+            // === MATHS 4e ===
+            {
+                id: 'tf_maths_16',
+                question: 'La fonction inverse f(x)=1/x est définie pour toutes les valeurs de x.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'maths',
+                annee: '4e',
+                chapter: 'Fonctions de référence'
+            },
+            {
+                id: 'tf_maths_17',
+                question: 'La fonction carré f(x)=x² est une fonction de référence.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '4e',
+                chapter: 'Fonctions de référence'
+            },
+            {
+                id: 'tf_maths_18',
+                question: 'La variance est un indicateur de dispersion.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '4e',
+                chapter: 'Statistiques'
+            },
+            {
+                id: 'tf_maths_19',
+                question: 'L\'étendue d\'une série se calcule par maximum + minimum.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'maths',
+                annee: '4e',
+                chapter: 'Statistiques'
+            },
+            {
+                id: 'tf_maths_20',
+                question: 'La médiane est une mesure de tendance centrale.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '4e',
+                chapter: 'Statistiques'
+            },
+            // === GEOGRAPHIE 3e ===
+            {
+                id: 'tf_geo_1',
+                question: 'Un aléa est un phénomène dangereux potentiel.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'geo',
+                annee: '3e',
+                chapter: 'Risques naturels'
+            },
+            {
+                id: 'tf_geo_2',
+                question: 'La vulnérabilité d\'un territoire dépend uniquement de son climat.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'geo',
+                annee: '3e',
+                chapter: 'Risques naturels'
+            },
+            {
+                id: 'tf_geo_3',
+                question: 'La Belgique a un climat de type océanique.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'geo',
+                annee: '3e',
+                chapter: 'Climats'
+            },
+            {
+                id: 'tf_geo_4',
+                question: 'Les séismes se produisent principalement aux frontières des plaques tectoniques.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'geo',
+                annee: '3e',
+                chapter: 'Séismes et volcans'
+            },
+            {
+                id: 'tf_geo_5',
+                question: 'L\'épicentre d\'un séisme est le point situé à l\'intérieur de la Terre.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'geo',
+                annee: '3e',
+                chapter: 'Séismes et volcans'
+            },
+            {
+                id: 'tf_geo_6',
+                question: 'Une fonction du territoire est un usage de l\'espace (logement, emploi, transport...).',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'geo',
+                annee: '3e',
+                chapter: 'Fonctions du territoire'
+            },
+            // === GEOGRAPHIE 4e ===
+            {
+                id: 'tf_geo_7',
+                question: 'Le stress hydrique est une situation où les ressources en eau sont suffisantes.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'geo',
+                annee: '4e',
+                chapter: 'Accès à l\'eau'
+            },
+            {
+                id: 'tf_geo_8',
+                question: 'L\'agriculture vivrière est destinée à nourrir la population locale.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'geo',
+                annee: '4e',
+                chapter: 'Accès à la nourriture'
+            },
+            {
+                id: 'tf_geo_9',
+                question: 'La densité de population est le nombre d\'habitants par km².',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'geo',
+                annee: '4e',
+                chapter: 'Population'
+            },
+            // === GEOGRAPHIE 5e ===
+            {
+                id: 'tf_geo_10',
+                question: 'Les énergies fossiles sont des énergies renouvelables.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'geo',
+                annee: '5e',
+                chapter: 'Énergie'
+            },
+            {
+                id: 'tf_geo_11',
+                question: 'La mondialisation correspond à l\'intensification des échanges entre territoires.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'geo',
+                annee: '5e',
+                chapter: 'Mondialisation'
+            },
+            {
+                id: 'tf_geo_12',
+                question: 'Un facteur pull est un facteur qui attire les migrants vers un territoire.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'geo',
+                annee: '5e',
+                chapter: 'Migrations'
+            },
+            {
+                id: 'tf_geo_13',
+                question: 'Un facteur push est un facteur qui attire les migrants.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'geo',
+                annee: '5e',
+                chapter: 'Migrations'
+            },
+            // === GEOGRAPHIE 6e ===
+            {
+                id: 'tf_geo_14',
+                question: 'Le développement durable repose sur 3 piliers : économique, social et environnemental.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'geo',
+                annee: '6e',
+                chapter: 'Développement durable'
+            },
+            {
+                id: 'tf_geo_15',
+                question: 'Un conflit d\'usage survient lorsque plusieurs acteurs veulent utiliser le même espace.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'geo',
+                annee: '6e',
+                chapter: 'Aménagement du territoire'
+            },
+            {
+                id: 'tf_geo_16',
+                question: 'La géopolitique étudie uniquement les climats.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'geo',
+                annee: '6e',
+                chapter: 'Géopolitique'
+            }
+        ];
+
+        questions = shuffle(questions).slice(0, 10);
+
+    } else if (mode === 'mistakes') {
+        questions = flattenQuestions('all').filter(function(q) {
+            return state.mistakes.includes(q.id);
+        });
+        if (!questions.length) {
+            const panel = document.getElementById('gamePanel');
+            if (panel) {
+                panel.innerHTML = '<div class="empty">Aucune erreur enregistrée pour le moment.<br><br>Fais d\'abord un quiz !</div>';
+            }
+            return;
+        }
+        questions = shuffle(questions).slice(0, 10);
+
+    } else {
+        questions = flattenQuestions(mode === 'mixed' ? 'all' : mode);
+        if (!questions.length) {
+            const panel = document.getElementById('gamePanel');
+            if (panel) {
+                panel.innerHTML = '<div class="empty">Aucune question disponible pour ce mode.</div>';
+            }
+            return;
+        }
+        questions = shuffle(questions).slice(0, 10);
+    }
+
+    quizState = {
+        qs: questions,
+        index: 0,
+        score: 0,
+        mode: mode
+    };
+
+    showView('games');
+    renderQuiz();
+}
+
 /* =========================================================
    QUIZ CHAPITRE
    ========================================================= */
@@ -570,7 +843,6 @@ function renderQuiz() {
     const question = quizState.qs[quizState.index];
     const options = Array.isArray(question.options) ? question.options : [];
 
-    // Si pas d'options, passer à la question suivante
     if (options.length === 0) {
         quizState.index++;
         renderQuiz();
@@ -628,7 +900,7 @@ function startCapitals() {
     if (typeof CAPITALES === 'undefined' || !Array.isArray(CAPITALES) || !CAPITALES.length) {
         const panel = document.getElementById('gamePanel');
         if (panel) {
-            panel.innerHTML = `<div class="empty">Le jeu des capitales n'est pas disponible.</div>`;
+            panel.innerHTML = '<div class="empty">Le jeu des capitales n\'est pas disponible.</div>';
         }
         return;
     }
@@ -704,14 +976,11 @@ function renderMemo() {
     const term = (searchElement ? searchElement.value : '').toLowerCase().trim();
     const year = yearElement ? yearElement.value : 'all';
 
-    // VOCABULAIRE
     if (memoMode === 'vocab') {
-        // Utiliser GEO_VOCAB_DATA si disponible, sinon GEO_VOCAB
         let vocabulary = [];
         if (typeof GEO_VOCAB_DATA !== 'undefined' && Array.isArray(GEO_VOCAB_DATA)) {
             vocabulary = GEO_VOCAB_DATA;
         } else if (typeof GEO_VOCAB !== 'undefined' && typeof GEO_VOCAB === 'object') {
-            // Si GEO_VOCAB est un objet avec des années
             vocabulary = Object.values(GEO_VOCAB).flat();
         }
 
@@ -741,7 +1010,6 @@ function renderMemo() {
         return;
     }
 
-    // FORMULES
     let formulas = [];
     if (typeof FORMULES_DATA !== 'undefined') {
         Object.values(FORMULES_DATA).forEach(function(list) {
@@ -933,16 +1201,6 @@ function renderProgress() {
             <p>Quiz réalisés : <b>${state.results.length}</b> · Erreurs enregistrées : <b>${state.mistakes.length}</b></p>
         </div>
     `;
-}
-
-/* =========================================================
-   MELANGE
-   ========================================================= */
-
-function shuffle(array) {
-    return [...array].sort(function() {
-        return Math.random() - 0.5;
-    });
 }
 
 /* =========================================================
