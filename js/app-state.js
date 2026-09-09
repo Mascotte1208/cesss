@@ -163,6 +163,23 @@ var CESS_SUBJECTS = {
 
             return {};
         }
+    },
+
+    bio: {
+        label: 'Biologie',
+        icon: '🧬',
+
+        getData: function () {
+            if (
+                typeof BIO_CHAPITRES !== 'undefined' &&
+                BIO_CHAPITRES &&
+                typeof BIO_CHAPITRES === 'object'
+            ) {
+                return BIO_CHAPITRES;
+            }
+
+            return {};
+        }
     }
 };
 
