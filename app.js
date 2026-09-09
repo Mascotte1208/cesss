@@ -1035,9 +1035,11 @@ function renderMemo() {
     formulas = formulas.filter(function(formula) {
         const text = (formula.titre || '') + ' ' + 
                     (formula.definition || '') + ' ' + 
-                    (formula.explication || '') + ' ' + 
+                    (formula.exemple || '') + ' ' + 
                     (formula.categorie || '');
-        return text.toLowerCase().includes(term);
+        const matchesTerm = text.toLowerCase().includes(term);
+        const matchesYear = year === 'all' || formula.annee === year;
+        return matchesTerm && matchesYear;
     });
 
     box.innerHTML = formulas.length
@@ -1046,10 +1048,10 @@ function renderMemo() {
                 <article class="memo-card">
                     <div class="top">
                         <h3>${formula.icone || '📐'} ${formula.titre}</h3>
-                        <span class="badge">${formula.categorie || 'Maths'}</span>
+                        <span class="badge">${formula.annee || '—'} · ${formula.categorie || 'Maths'}</span>
                     </div>
                     <p>${formula.definition || ''}</p>
-                    ${formula.explication ? `<div class="formula">${formula.explication}</div>` : ''}
+                    ${formula.exemple ? `<p class="exemple">📌 ${formula.exemple}</p>` : ''}
                 </article>
             `;
         }).join('')
