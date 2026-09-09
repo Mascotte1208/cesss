@@ -1,21 +1,12 @@
-```javascript
 /* =========================================================
    CARNET CESS
-   APP.JS — VERSION STABLE
-   Compatible avec :
-   - index.html
-   - maths-data.js
-   - geo-data.js
-   - geo-vocab.js
+   APPLICATION PRINCIPALE
+   VERSION STABLE
    ========================================================= */
 
-const DBKEY = 'carnetCESSv4';
+var CESS_DBKEY = 'carnetCESSv4';
 
-/* =========================================================
-   ETAT
-   ========================================================= */
-
-let state = {
+var cessState = {
     progress: {},
     results: [],
     mistakes: [],
@@ -23,50 +14,71 @@ let state = {
     theme: 'light'
 };
 
-try {
-    const saved = localStorage.getItem(DBKEY);
-    if (saved) {
-        const parsed = JSON.parse(saved);
-
-        state = {
-            progress: parsed.progress || {},
-            results: Array.isArray(parsed.results) ? parsed.results : [],
-            mistakes: Array.isArray(parsed.mistakes) ? parsed.mistakes : [],
-            streak: Number(parsed.streak || 0),
-            theme: parsed.theme || 'light'
-        };
-    }
-} catch (e) {
-    console.warn('Erreur LocalStorage :', e);
-}
-
-let selectedYear = {
+var cessSelectedYear = {
     maths: '3e',
     geo: '3e'
 };
 
-let memoMode = 'formules';
-
-let quizState = null;
-let examState = null;
+var cessMemoMode = 'formules';
+var cessQuizState = null;
+var cessExamState = null;
 
 
 /* =========================================================
-   DONNEES
+   CHARGEMENT DE L'ETAT
    ========================================================= */
 
-const SUBJECTS = {
+(function loadState() {
+
+    try {
+
+        var saved = localStorage.getItem(CESS_DBKEY);
+
+        if (saved) {
+            var parsed = JSON.parse(saved);
+
+            if (parsed && typeof parsed === 'object') {
+                cessState = {
+                    progress: parsed.progress || {},
+                    results: Array.isArray(parsed.results) ? parsed.results : [],
+                    mistakes: Array.isArray(parsed.mistakes) ? parsed.mistakes : [],
+                    streak: Number(parsed.streak || 0),
+                    theme: parsed.theme === 'dark' ? 'dark' : 'light'
+                };
+            }
+        }
+
+    } catch (error) {
+
+        console.warn(
+            'Impossible de charger les données sauvegardées.',
+            error
+        );
+
+    }
+
+})();
+
+
+/* =========================================================
+   DONNEES DES MATIERES
+   ========================================================= */
+
+var CESS_SUBJECTS = {
 
     maths: {
         label: 'Mathématiques',
         icon: '📐',
+        getData: function () {
 
-        data: function() {
-            if (typeof CHAPITRES !== 'undefined') {
+            if (
+                typeof CHAPITRES !== 'undefined' &&
+                CHAPITRES &&
+                typeof CHAPITRES === 'object'
+            ) {
                 return CHAPITRES;
             }
 
-            console.error('CHAPITRES introuvable. Vérifie maths-data.js');
             return {};
         }
     },
@@ -74,16 +86,20 @@ const SUBJECTS = {
     geo: {
         label: 'Géographie',
         icon: '🌍',
+        getData: function () {
 
-        data: function() {
-            if (typeof GEO_CHAPITRES !== 'undefined') {
+            if (
+                typeof GEO_CHAPITRES !== 'undefined' &&
+                GEO_CHAPITRES &&
+                typeof GEO_CHAPITRES === 'object'
+            ) {
                 return GEO_CHAPITRES;
             }
 
-            console.error('GEO_CHAPITRES introuvable. Vérifie geo-data.js');
             return {};
         }
     }
+
 };
 
 
@@ -91,13 +107,24 @@ const SUBJECTS = {
    SAUVEGARDE
    ========================================================= */
 
-function save() {
+function cessSave() {
 
     try {
-        localStorage.setItem(DBKEY, JSON.stringify(state));
-    } catch (e) {
-        console.warn('Impossible de sauvegarder :', e);
+
+        localStorage.setItem(
+            CESS_DBKEY,
+            JSON.stringify(cessState)
+        );
+
+    } catch (error) {
+
+        console.warn(
+            'Impossible de sauvegarder les données.',
+            error
+        );
+
     }
+
 }
 
 
@@ -109,12 +136,13 @@ function toggleTheme() {
 
     document.body.classList.toggle('dark');
 
-    state.theme =
+    cessState.theme =
         document.body.classList.contains('dark')
             ? 'dark'
             : 'light';
 
-    save();
+    cessSave();
+
 }
 
 
@@ -124,26 +152,29 @@ function toggleTheme() {
 
 function showView(id) {
 
-    const target = document.getElementById(id);
+    var target = document.getElementById(id);
 
     if (!target) {
-        console.error('Vue introuvable :', id);
+        console.warn('Vue introuvable :', id);
         return;
     }
 
-    document.querySelectorAll('.view').forEach(function(view) {
-        view.classList.remove('active');
-    });
+    var views = document.querySelectorAll('.view');
+
+    for (var i = 0; i < views.length; i++) {
+        views[i].classList.remove('active');
+    }
 
     target.classList.add('active');
 
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-
-
-    /* RENDU DE LA PAGE */
+    try {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    } catch (error) {
+        window.scrollTo(0, 0);
+    }
 
     if (id === 'home') {
         renderHome();
@@ -161,95 +192,144 @@ function showView(id) {
         renderMemo();
     }
 
-    if (id === 'games') {
-        renderGameMenu();
-    }
-
-    if (id === 'exam') {
-        renderExamMenu();
-    }
-
     if (id === 'progress') {
         renderProgress();
     }
+
 }
 
 
 /* =========================================================
-   RECUPERER TOUS LES CHAPITRES
+   CHAPITRES
    ========================================================= */
 
 function allChaps(subject) {
 
-    if (!SUBJECTS[subject]) {
+    var subjectData = CESS_SUBJECTS[subject];
+
+    if (!subjectData) {
         return [];
     }
 
-    const data = SUBJECTS[subject].data();
+    var data = subjectData.getData();
 
     if (!data || typeof data !== 'object') {
         return [];
     }
 
-    const result = [];
+    var result = [];
+    var years = Object.keys(data);
 
-    Object.keys(data).forEach(function(annee) {
+    for (var i = 0; i < years.length; i++) {
 
-        const chapters = data[annee];
+        var year = years[i];
+        var chapters = data[year];
 
         if (!Array.isArray(chapters)) {
-            return;
+            continue;
         }
 
-        chapters.forEach(function(chapter) {
+        for (var j = 0; j < chapters.length; j++) {
 
-            result.push({
-                ...chapter,
-                annee: annee,
-                matiere: subject
-            });
+            var chapter = chapters[j];
 
-        });
+            if (!chapter || typeof chapter !== 'object') {
+                continue;
+            }
 
-    });
+            var copy = {};
+
+            for (var key in chapter) {
+                if (Object.prototype.hasOwnProperty.call(chapter, key)) {
+                    copy[key] = chapter[key];
+                }
+            }
+
+            copy.annee = chapter.annee || year;
+            copy.matiere = subject;
+
+            result.push(copy);
+        }
+
+    }
 
     return result;
 }
 
 
 /* =========================================================
-   CHAPITRE
+   CHAPITRE PAR ID
    ========================================================= */
 
 function findChapter(id) {
 
-    return allChaps('maths')
-        .concat(allChaps('geo'))
-        .find(function(chapter) {
-            return chapter.id === id;
-        });
+    var all = allChaps('maths').concat(
+        allChaps('geo')
+    );
+
+    for (var i = 0; i < all.length; i++) {
+
+        if (String(all[i].id) === String(id)) {
+            return all[i];
+        }
+
+    }
+
+    return null;
 }
 
 
 /* =========================================================
-   PROGRESSION
+   MELANGE
+   ========================================================= */
+
+function shuffle(array) {
+
+    var copy = Array.isArray(array)
+        ? array.slice()
+        : [];
+
+    for (var i = copy.length - 1; i > 0; i--) {
+
+        var j = Math.floor(
+            Math.random() * (i + 1)
+        );
+
+        var temp = copy[i];
+
+        copy[i] = copy[j];
+        copy[j] = temp;
+    }
+
+    return copy;
+}
+
+
+/* =========================================================
+   POURCENTAGE
    ========================================================= */
 
 function pctSubject(subject) {
 
-    const chapters = allChaps(subject);
+    var chapters = allChaps(subject);
 
     if (!chapters.length) {
         return 0;
     }
 
-    const done = chapters.filter(function(chapter) {
+    var done = 0;
 
-        return Number(
-            state.progress[chapter.id] || 0
-        ) >= 100;
+    for (var i = 0; i < chapters.length; i++) {
 
-    }).length;
+        if (
+            Number(
+                cessState.progress[chapters[i].id] || 0
+            ) >= 100
+        ) {
+            done++;
+        }
+
+    }
 
     return Math.round(
         done / chapters.length * 100
@@ -263,288 +343,275 @@ function pctSubject(subject) {
 
 function renderHome() {
 
-    const homeStats =
-        document.getElementById('homeStats');
+    var stats = document.getElementById('homeStats');
 
-    if (!homeStats) {
+    if (!stats) {
         return;
     }
 
+    var mathsCount = allChaps('maths').length;
+    var geoCount = allChaps('geo').length;
 
-    const mathsCount =
-        allChaps('maths').length;
+    var total = mathsCount + geoCount;
 
-    const geoCount =
-        allChaps('geo').length;
+    stats.innerHTML = [
 
-    const total =
-        mathsCount + geoCount;
+        ['📚', total, 'Chapitres'],
 
+        [
+            '📐',
+            pctSubject('maths') + '%',
+            'Maîtrise Maths'
+        ],
 
-    homeStats.innerHTML = `
+        [
+            '🌍',
+            pctSubject('geo') + '%',
+            'Maîtrise Géo'
+        ],
 
-        <div class="stat">
-            <b>📚 ${total}</b>
-            <span>Chapitres</span>
-        </div>
+        [
+            '🎯',
+            cessState.results.length,
+            'Quiz réalisés'
+        ]
 
-        <div class="stat">
-            <b>📐 ${pctSubject('maths')}%</b>
-            <span>Maîtrise Maths</span>
-        </div>
-
-        <div class="stat">
-            <b>🌍 ${pctSubject('geo')}%</b>
-            <span>Maîtrise Géo</span>
-        </div>
-
-        <div class="stat">
-            <b>🎯 ${state.results.length}</b>
-            <span>Quiz réalisés</span>
-        </div>
-
-    `;
-
-
-    const subjectProgress =
-        document.getElementById('subjectProgress');
-
-    if (subjectProgress) {
-
-        subjectProgress.innerHTML = `
-
-            <div class="progress-row">
-
-                <div class="progress-label">
-                    <span>📐 Mathématiques</span>
-                    <span>${pctSubject('maths')}%</span>
-                </div>
-
-                <div class="bar">
-                    <i style="width:${pctSubject('maths')}%"></i>
-                </div>
-
-            </div>
-
-
-            <div class="progress-row">
-
-                <div class="progress-label">
-                    <span>🌍 Géographie</span>
-                    <span>${pctSubject('geo')}%</span>
-                </div>
-
-                <div class="bar">
-                    <i style="width:${pctSubject('geo')}%"></i>
-                </div>
-
-            </div>
-
-        `;
-    }
-
-
-    const priorities =
-        document.getElementById('priorities');
-
-    if (priorities) {
-
-        const chapters =
-            allChaps('maths')
-                .concat(allChaps('geo'))
-                .filter(function(chapter) {
-
-                    return Number(
-                        state.progress[chapter.id] || 0
-                    ) < 100;
-
-                })
-                .slice(0, 6);
-
-
-        if (!chapters.length) {
-
-            priorities.innerHTML =
-                `<div class="empty">
-                    🎉 Tout est maîtrisé !
-                </div>`;
-
-        } else {
-
-            priorities.innerHTML =
-                chapters.map(function(chapter) {
-
-                    return `
-
-                        <div class="priority">
-
-                            <span>
-                                ${chapter.icone || '📘'}
-                                ${chapter.titre}
-                            </span>
-
-                            <b>${chapter.annee}</b>
-
-                        </div>
-
-                    `;
-
-                }).join('');
-        }
-    }
-}
-
-
-/* =========================================================
-   RENDU MATIERE
-   ========================================================= */
-
-function renderSubject(subject) {
-
-    if (!SUBJECTS[subject]) {
-        console.error('Matière inconnue :', subject);
-        return;
-    }
-
-
-    const data =
-        SUBJECTS[subject].data();
-
-
-    const totalElement =
-        document.getElementById(
-            subject === 'maths'
-                ? 'mathsTotal'
-                : 'geoTotal'
-        );
-
-
-    const yearsElement =
-        document.getElementById(
-            subject === 'maths'
-                ? 'mathYears'
-                : 'geoYears'
-        );
-
-
-    const contentElement =
-        document.getElementById(
-            subject === 'maths'
-                ? 'mathContent'
-                : 'geoContent'
-        );
-
-
-    if (!yearsElement || !contentElement) {
-
-        console.error(
-            'Elements HTML manquants pour',
-            subject
-        );
-
-        return;
-    }
-
-
-    const allChapters =
-        allChaps(subject);
-
-
-    if (totalElement) {
-
-        totalElement.textContent =
-            allChapters.length +
-            ' chapitres';
-
-    }
-
-
-    /* =====================================================
-       ANNEES
-       ===================================================== */
-
-    const years = ['3e', '4e', '5e', '6e'];
-
-
-    yearsElement.innerHTML = years.map(function(year) {
-
-        const chapters =
-            Array.isArray(data[year])
-                ? data[year]
-                : [];
-
-
-        const done =
-            chapters.filter(function(chapter) {
-
-                return Number(
-                    state.progress[chapter.id] || 0
-                ) >= 100;
-
-            }).length;
-
-
-        const percentage =
-            chapters.length
-                ? Math.round(
-                    done /
-                    chapters.length *
-                    100
-                )
-                : 0;
-
+    ].map(function (item) {
 
         return `
-
-            <button
-                type="button"
-                class="year-card ${
-                    selectedYear[subject] === year
-                        ? 'active'
-                        : ''
-                }"
-                onclick="
-                    selectedYear['${subject}']='${year}';
-                    renderSubject('${subject}');
-                "
-            >
-
-                <b>${year} année</b>
-
-                <small>
-                    ${chapters.length}
-                    chapitre${chapters.length > 1 ? 's' : ''}
-                    · ${percentage}% maîtrisé
-                </small>
-
-            </button>
-
+            <div class="stat">
+                <b>${item[0]} ${item[1]}</b>
+                <span>${item[2]}</span>
+            </div>
         `;
 
     }).join('');
 
 
-    /* =====================================================
-       CHAPITRES DE L'ANNEE
-       ===================================================== */
+    var progress = document.getElementById(
+        'subjectProgress'
+    );
 
-    const chapters =
-        Array.isArray(data[selectedYear[subject]])
-            ? data[selectedYear[subject]]
+    if (progress) {
+
+        progress.innerHTML = [
+            'maths',
+            'geo'
+        ].map(function (subject) {
+
+            var percentage =
+                pctSubject(subject);
+
+            return `
+                <div class="progress-row">
+
+                    <div class="progress-label">
+
+                        <span>
+                            ${CESS_SUBJECTS[subject].icon}
+                            ${CESS_SUBJECTS[subject].label}
+                        </span>
+
+                        <span>
+                            ${percentage}%
+                        </span>
+
+                    </div>
+
+                    <div class="bar">
+                        <i style="width:${percentage}%"></i>
+                    </div>
+
+                </div>
+            `;
+
+        }).join('');
+
+    }
+
+
+    var priorities =
+        document.getElementById('priorities');
+
+    if (priorities) {
+
+        var chapters = allChaps('maths')
+            .concat(allChaps('geo'))
+            .filter(function (chapter) {
+
+                return Number(
+                    cessState.progress[chapter.id] || 0
+                ) < 100;
+
+            })
+            .slice(0, 6);
+
+
+        if (!chapters.length) {
+
+            priorities.innerHTML =
+                '<div class="empty">🎉 Tout est maîtrisé !</div>';
+
+        } else {
+
+            priorities.innerHTML =
+                chapters.map(function (chapter) {
+
+                    return `
+                        <div class="priority">
+
+                            <span>
+                                ${chapter.icone || '📘'}
+                                ${chapter.titre || 'Chapitre'}
+                            </span>
+
+                            <b>
+                                ${chapter.annee || ''}
+                            </b>
+
+                        </div>
+                    `;
+
+                }).join('');
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   MATIERE
+   ========================================================= */
+
+function renderSubject(subject) {
+
+    if (!CESS_SUBJECTS[subject]) {
+        return;
+    }
+
+    var data =
+        CESS_SUBJECTS[subject].getData();
+
+    var totalElement = document.getElementById(
+        subject === 'maths'
+            ? 'mathsTotal'
+            : 'geoTotal'
+    );
+
+    var yearsElement = document.getElementById(
+        subject === 'maths'
+            ? 'mathYears'
+            : 'geoYears'
+    );
+
+    var contentElement = document.getElementById(
+        subject === 'maths'
+            ? 'mathContent'
+            : 'geoContent'
+    );
+
+    if (
+        !totalElement ||
+        !yearsElement ||
+        !contentElement
+    ) {
+        return;
+    }
+
+
+    var chaptersAll =
+        allChaps(subject);
+
+    totalElement.textContent =
+        chaptersAll.length + ' chapitres';
+
+
+    var years = [
+        '3e',
+        '4e',
+        '5e',
+        '6e'
+    ];
+
+
+    yearsElement.innerHTML =
+        years.map(function (year) {
+
+            var chapters =
+                Array.isArray(data[year])
+                    ? data[year]
+                    : [];
+
+            var done = 0;
+
+            for (var i = 0; i < chapters.length; i++) {
+
+                if (
+                    Number(
+                        cessState.progress[
+                            chapters[i].id
+                        ] || 0
+                    ) >= 100
+                ) {
+                    done++;
+                }
+
+            }
+
+            var percentage =
+                chapters.length
+                    ? Math.round(
+                        done / chapters.length * 100
+                    )
+                    : 0;
+
+            var active =
+                cessSelectedYear[subject] === year
+                    ? 'active'
+                    : '';
+
+            return `
+                <button
+                    type="button"
+                    class="year-card ${active}"
+                    onclick="
+                        cessSelectedYear['${subject}']='${year}';
+                        renderSubject('${subject}');
+                    ">
+
+                    <b>${year}</b>
+
+                    <small>
+                        ${chapters.length}
+                        chapitres ·
+                        ${percentage}%
+                        maîtrisé
+                    </small>
+
+                </button>
+            `;
+
+        }).join('');
+
+
+    var selected =
+        cessSelectedYear[subject];
+
+    var chapters =
+        Array.isArray(data[selected])
+            ? data[selected]
             : [];
 
 
     if (!chapters.length) {
 
         contentElement.innerHTML = `
-
             <div class="empty">
-
                 Aucun chapitre disponible
-                pour ${selectedYear[subject]}.
-
+                pour cette année.
             </div>
-
         `;
 
         return;
@@ -552,32 +619,29 @@ function renderSubject(subject) {
 
 
     contentElement.innerHTML = `
-
         <div class="chapter-list">
 
-            ${chapters.map(function(chapter) {
+            ${chapters.map(function (chapter) {
 
-                const done =
+                var done =
                     Number(
-                        state.progress[chapter.id] || 0
+                        cessState.progress[
+                            chapter.id
+                        ] || 0
                     ) >= 100;
 
-
                 return `
-
                     <article class="chapter">
 
                         <span
-                            style="font-size:30px"
-                        >
+                            style="font-size:30px">
                             ${chapter.icone || '📘'}
                         </span>
-
 
                         <div class="chapter-main">
 
                             <h3>
-                                ${chapter.titre}
+                                ${chapter.titre || 'Chapitre'}
                             </h3>
 
                             <p>
@@ -586,54 +650,48 @@ function renderSubject(subject) {
 
                         </div>
 
-
                         <span
-                            class="badge ${
-                                done ? 'done' : ''
-                            }"
-                        >
+                            class="badge ${done ? 'done' : ''}">
+
                             ${
                                 done
                                     ? '✓ Maîtrisé'
                                     : 'À revoir'
                             }
-                        </span>
 
+                        </span>
 
                         <button
                             type="button"
-                            onclick="
-                                openChapter('${chapter.id}')
-                            "
-                        >
+                            onclick="openChapter('${chapter.id}')">
+
                             Ouvrir
+
                         </button>
 
                     </article>
-
                 `;
 
             }).join('')}
 
         </div>
-
     `;
+
 }
 
 
 /* =========================================================
-   OUVRIR UN CHAPITRE
+   OUVRIR CHAPITRE
    ========================================================= */
 
 function openChapter(id) {
 
-    const chapter =
+    var chapter =
         findChapter(id);
-
 
     if (!chapter) {
 
-        console.error(
+        console.warn(
             'Chapitre introuvable :',
             id
         );
@@ -642,41 +700,47 @@ function openChapter(id) {
     }
 
 
-    const content =
-        document.createElement('article');
-
+    var content =
+        document.createElement('div');
 
     content.className = 'detail';
 
 
-    const objectives =
+    var objectives =
         Array.isArray(chapter.objectifs)
             ? chapter.objectifs
             : [];
 
 
-    const matieres =
+    var matieres =
         Array.isArray(chapter.matieres)
             ? chapter.matieres
             : [];
+
+
+    var subject =
+        chapter.matiere || 'maths';
+
+
+    var subjectInfo =
+        CESS_SUBJECTS[subject] ||
+        CESS_SUBJECTS.maths;
 
 
     content.innerHTML = `
 
         <div class="eyebrow">
 
-            ${SUBJECTS[chapter.matiere].icon}
-
-            ${SUBJECTS[chapter.matiere].label}
-
-            · ${chapter.annee}
+            ${subjectInfo.icon}
+            ${subjectInfo.label}
+            · ${chapter.annee || ''}
 
         </div>
 
 
         <h2>
             ${chapter.icone || ''}
-            ${chapter.titre}
+            ${chapter.titre || 'Chapitre'}
         </h2>
 
 
@@ -688,42 +752,41 @@ function openChapter(id) {
         ${
             matieres.length
                 ? `
-
-                    <h3>📚 À savoir</h3>
+                    <h3>
+                        📚 À savoir
+                    </h3>
 
                     <ul>
-                        ${matieres.map(function(item) {
+                        ${matieres.map(function (item) {
                             return `<li>${item}</li>`;
                         }).join('')}
                     </ul>
-
                 `
                 : ''
         }
 
 
         <div class="course">
-
             ${chapter.cours || ''}
-
         </div>
 
 
-        ${
-            objectives.length
-                ? `
+        <h3>
+            🎯 Objectifs
+        </h3>
 
-                    <h3>🎯 Objectifs</h3>
 
-                    <ul>
-                        ${objectives.map(function(item) {
-                            return `<li>${item}</li>`;
-                        }).join('')}
-                    </ul>
+        <ul>
 
-                `
-                : ''
-        }
+            ${
+                objectives.length
+                    ? objectives.map(function (item) {
+                        return `<li>${item}</li>`;
+                    }).join('')
+                    : '<li>Aucun objectif renseigné.</li>'
+            }
+
+        </ul>
 
 
         <div class="detail-actions">
@@ -731,33 +794,30 @@ function openChapter(id) {
             <button
                 type="button"
                 class="success"
-                onclick="
-                    markDone('${chapter.id}')
-                "
-            >
+                onclick="markDone('${chapter.id}')">
+
                 ✓ Marquer maîtrisé
+
             </button>
 
 
             <button
                 type="button"
                 class="primary"
-                onclick="
-                    quizChapter('${chapter.id}')
-                "
-            >
+                onclick="quizChapter('${chapter.id}')">
+
                 🎯 Faire le quiz
+
             </button>
 
 
             <button
                 type="button"
                 class="close"
-                onclick="
-                    this.closest('.detail').remove()
-                "
-            >
+                onclick="this.closest('.detail').remove()">
+
                 Fermer
+
             </button>
 
         </div>
@@ -765,124 +825,146 @@ function openChapter(id) {
     `;
 
 
-    const host =
+    var host =
         document.getElementById(
-            chapter.matiere === 'maths'
-                ? 'mathContent'
-                : 'geoContent'
+            subject === 'geo'
+                ? 'geoContent'
+                : 'mathContent'
         );
 
 
     if (host) {
 
+        var previous =
+            host.querySelector('.detail');
+
+        if (previous) {
+            previous.remove();
+        }
+
         host.prepend(content);
 
-        content.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
+        try {
+
+            content.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+        } catch (error) {
+
+            content.scrollIntoView();
+
+        }
 
     }
+
 }
 
 
 /* =========================================================
-   MAITRISE
+   MARQUER MAITRISE
    ========================================================= */
 
 function markDone(id) {
 
-    const chapter =
+    var chapter =
         findChapter(id);
-
 
     if (!chapter) {
         return;
     }
 
+    cessState.progress[id] = 100;
 
-    state.progress[id] = 100;
-
-    save();
+    cessSave();
 
     renderHome();
 
-    renderSubject(chapter.matiere);
+    renderSubject(
+        chapter.matiere || 'maths'
+    );
+
 }
 
 
 /* =========================================================
-   QUIZ : QUESTIONS
+   QUESTIONS
    ========================================================= */
 
 function flattenQuestions(filter) {
 
     filter = filter || 'all';
 
+    var chapters =
+        allChaps('maths').concat(
+            allChaps('geo')
+        );
 
-    let questions = [];
+    var questions = [];
 
 
-    allChaps('maths')
-        .concat(allChaps('geo'))
-        .forEach(function(chapter) {
+    for (var i = 0; i < chapters.length; i++) {
 
-            if (!Array.isArray(chapter.exercices)) {
-                return;
+        var chapter = chapters[i];
+
+        if (!Array.isArray(chapter.exercices)) {
+            continue;
+        }
+
+
+        for (
+            var j = 0;
+            j < chapter.exercices.length;
+            j++
+        ) {
+
+            var question =
+                chapter.exercices[j];
+
+
+            if (
+                !question ||
+                !Array.isArray(question.options) ||
+                !question.options.length
+            ) {
+                continue;
             }
 
 
-            chapter.exercices.forEach(
-                function(question, index) {
+            questions.push({
 
-                    if (
-                        !Array.isArray(question.options) ||
-                        !question.options.length
-                    ) {
-                        return;
-                    }
+                id:
+                    chapter.id +
+                    '_' +
+                    j,
 
+                question:
+                    question.question || '',
 
-                    questions.push({
+                options:
+                    question.options,
 
-                        ...question,
+                correct:
+                    typeof question.correct === 'number'
+                        ? question.correct
+                        : 0,
 
-                        id:
-                            chapter.id +
-                            '_' +
-                            index,
+                correction:
+                    question.correction || '',
 
-                        chapter:
-                            chapter.titre,
+                chapter:
+                    chapter.titre || '',
 
-                        annee:
-                            chapter.annee,
+                annee:
+                    chapter.annee || '',
 
-                        matiere:
-                            chapter.matiere,
+                matiere:
+                    chapter.matiere || ''
 
-                        correct:
-                            typeof question.correct === 'number'
-                                ? question.correct
-                                : 0
+            });
 
-                    });
-
-                }
-            );
-
-        });
-
-
-    if (filter === 'mistakes') {
-
-        return questions.filter(function(question) {
-
-            return state.mistakes.includes(
-                question.id
-            );
-
-        });
+        }
 
     }
 
@@ -892,11 +974,24 @@ function flattenQuestions(filter) {
         filter === 'geo'
     ) {
 
-        return questions.filter(function(question) {
+        questions =
+            questions.filter(function (q) {
 
-            return question.matiere === filter;
+                return q.matiere === filter;
 
-        });
+            });
+
+    }
+
+
+    if (filter === 'mistakes') {
+
+        questions =
+            questions.filter(function (q) {
+
+                return cessState.mistakes.indexOf(q.id) !== -1;
+
+            });
 
     }
 
@@ -911,17 +1006,7 @@ function flattenQuestions(filter) {
 
 function startQuiz(mode) {
 
-    let questions =
-        flattenQuestions(
-            mode === 'maths' || mode === 'geo'
-                ? mode
-                : 'all'
-        );
-
-
-    if (mode === 'mistakes') {
-        questions = flattenQuestions('mistakes');
-    }
+    var questions = [];
 
 
     if (mode === 'truefalse') {
@@ -929,182 +1014,200 @@ function startQuiz(mode) {
         questions = [
 
             {
-                id: 'tf1',
+                id: 'tf_1',
                 question:
                     'Deux triangles isométriques ont leurs côtés homologues de même longueur.',
                 options: ['Vrai', 'Faux'],
                 correct: 0,
                 matiere: 'maths',
-                annee: '3e',
-                chapter: 'Triangles isométriques'
+                annee: '3e'
             },
 
             {
-                id: 'tf2',
+                id: 'tf_2',
                 question:
-                    'Des triangles semblables ont toujours leurs côtés de même longueur.',
+                    'Des triangles semblables ont toujours leurs côtés homologues égaux.',
                 options: ['Vrai', 'Faux'],
                 correct: 1,
                 matiere: 'maths',
-                annee: '3e',
-                chapter: 'Triangles semblables'
+                annee: '3e'
             },
 
             {
-                id: 'tf3',
+                id: 'tf_3',
                 question:
-                    'Le théorème de Thalès permet de travailler avec des rapports de longueurs.',
+                    'Le théorème de Pythagore s’utilise dans un triangle rectangle.',
                 options: ['Vrai', 'Faux'],
                 correct: 0,
                 matiere: 'maths',
-                annee: '3e',
-                chapter: 'Théorème de Thalès'
+                annee: '3e'
             },
 
             {
-                id: 'tf4',
+                id: 'tf_4',
                 question:
-                    '√(a²) = |a| pour tout réel a.',
+                    'sin(α) = opposé / hypoténuse dans un triangle rectangle.',
                 options: ['Vrai', 'Faux'],
                 correct: 0,
                 matiere: 'maths',
-                annee: '3e',
-                chapter: 'Racines carrées'
+                annee: '3e'
             },
 
             {
-                id: 'tf5',
+                id: 'tf_5',
                 question:
-                    'Un zéro d’une fonction correspond à une intersection avec l’axe des abscisses.',
+                    'La fonction affine s’écrit f(x)=mx+p.',
                 options: ['Vrai', 'Faux'],
                 correct: 0,
                 matiere: 'maths',
-                annee: '3e',
-                chapter: 'Fonctions'
+                annee: '4e'
+            },
+
+            {
+                id: 'tf_6',
+                question:
+                    'La médiane est une mesure de tendance centrale.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '4e'
+            },
+
+            {
+                id: 'tf_7',
+                question:
+                    'Un aléa est un phénomène dangereux potentiel.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'geo',
+                annee: '3e'
+            },
+
+            {
+                id: 'tf_8',
+                question:
+                    'La densité de population est le nombre d’habitants par km².',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'geo',
+                annee: '4e'
+            },
+
+            {
+                id: 'tf_9',
+                question:
+                    'Les énergies fossiles sont renouvelables.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'geo',
+                annee: '5e'
+            },
+
+            {
+                id: 'tf_10',
+                question:
+                    'Un conflit d’usage peut apparaître lorsque plusieurs acteurs veulent utiliser le même espace.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'geo',
+                annee: '6e'
             }
 
         ];
-    }
+
+    } else {
+
+        questions =
+            flattenQuestions(
+                mode === 'mixed'
+                    ? 'all'
+                    : mode
+            );
 
 
-    if (mode === 'mixed') {
-        questions = flattenQuestions('all');
-    }
+        if (
+            mode === 'mistakes' &&
+            !questions.length
+        ) {
 
+            var emptyPanel =
+                document.getElementById(
+                    'gamePanel'
+                );
 
-    if (!questions.length) {
+            if (emptyPanel) {
 
-        showView('games');
+                emptyPanel.innerHTML = `
+                    <div class="empty">
+                        Aucune erreur enregistrée
+                        pour le moment.<br><br>
+                        Fais d'abord un quiz.
+                    </div>
+                `;
 
-        const panel =
-            document.getElementById('gamePanel');
+            }
 
-        if (panel) {
+            showView('games');
 
-            panel.innerHTML = `
-
-                <div class="empty">
-
-                    Aucune question disponible
-                    pour le moment.
-
-                </div>
-
-            `;
+            return;
         }
 
-        return;
+
+        if (!questions.length) {
+
+            var noPanel =
+                document.getElementById(
+                    'gamePanel'
+                );
+
+            if (noPanel) {
+
+                noPanel.innerHTML = `
+                    <div class="empty">
+                        Aucune question disponible
+                        pour ce mode.
+                    </div>
+                `;
+
+            }
+
+            showView('games');
+
+            return;
+        }
+
     }
 
 
-    questions =
-        shuffle(questions).slice(
-            0,
-            Math.min(10, questions.length)
-        );
-
-
-    quizState = {
-
-        questions: questions,
-
+    cessQuizState = {
+        qs: shuffle(questions).slice(0, 10),
         index: 0,
-
-        score: 0
-
+        score: 0,
+        mode: mode,
+        recorded: false
     };
 
 
     showView('games');
 
     renderQuiz();
+
 }
 
 
 /* =========================================================
-   MELANGE
-   ========================================================= */
-
-function shuffle(array) {
-
-    return [...array].sort(
-        () => Math.random() - 0.5
-    );
-}
-
-
-/* =========================================================
-   QUIZ CHAPITRE
+   QUIZ D'UN CHAPITRE
    ========================================================= */
 
 function quizChapter(id) {
 
-    const chapter =
-        findChapter(id);
+    var questions =
+        flattenQuestions('all')
+            .filter(function (question) {
 
-
-    if (!chapter) {
-        return;
-    }
-
-
-    let questions =
-        Array.isArray(chapter.exercices)
-            ? chapter.exercices
-            : [];
-
-
-    questions =
-        questions
-            .filter(function(question) {
-
-                return (
-                    Array.isArray(question.options) &&
-                    question.options.length
-                );
-
-            })
-            .map(function(question, index) {
-
-                return {
-
-                    ...question,
-
-                    id:
-                        chapter.id +
-                        '_' +
-                        index,
-
-                    chapter:
-                        chapter.titre,
-
-                    annee:
-                        chapter.annee,
-
-                    matiere:
-                        chapter.matiere
-
-                };
+                return question.id.indexOf(
+                    id + '_'
+                ) === 0;
 
             });
 
@@ -1119,13 +1222,17 @@ function quizChapter(id) {
     }
 
 
-    quizState = {
+    cessQuizState = {
 
-        questions: shuffle(questions),
+        qs: shuffle(questions),
 
         index: 0,
 
-        score: 0
+        score: 0,
+
+        mode: 'chapter',
+
+        recorded: false
 
     };
 
@@ -1133,154 +1240,167 @@ function quizChapter(id) {
     showView('games');
 
     renderQuiz();
+
 }
 
 
 /* =========================================================
-   RENDU QUIZ
+   AFFICHAGE DU QUIZ
    ========================================================= */
 
 function renderQuiz() {
 
-    const panel =
-        document.getElementById('gamePanel');
+    var panel =
+        document.getElementById(
+            'gamePanel'
+        );
 
-
-    if (!panel || !quizState) {
+    if (!panel) {
         return;
     }
 
 
     if (
-        quizState.index >=
-        quizState.questions.length
+        !cessQuizState ||
+        cessQuizState.index >=
+        cessQuizState.qs.length
     ) {
 
-        const total =
-            quizState.questions.length;
+        var score =
+            cessQuizState
+                ? cessQuizState.score
+                : 0;
+
+        var total =
+            cessQuizState
+                ? cessQuizState.qs.length
+                : 0;
+
+        var percentage =
+            total
+                ? Math.round(
+                    score / total * 100
+                )
+                : 0;
 
 
-        state.results.push({
+        if (
+            cessQuizState &&
+            !cessQuizState.recorded
+        ) {
 
-            date:
-                new Date().toISOString(),
+            cessState.results.push({
 
-            score:
-                quizState.score,
+                date: Date.now(),
 
-            total:
-                total
+                score: score,
 
-        });
+                total: total,
 
+                mode: cessQuizState.mode
 
-        save();
+            });
+
+            cessQuizState.recorded = true;
+
+            cessSave();
+
+        }
 
 
         panel.innerHTML = `
 
-            <div class="quiz-result">
+            <div class="result">
 
-                <h2>🎉 Quiz terminé !</h2>
+                <b>
+                    ${percentage}%
+                </b>
 
                 <p>
-                    Score :
-                    <strong>
-                        ${quizState.score}/${total}
-                    </strong>
+                    ${score}
+                    bonne(s) réponse(s)
+                    sur
+                    ${total}
                 </p>
 
                 <button
                     type="button"
                     class="primary"
-                    onclick="startQuiz('mixed')"
-                >
-                    🔄 Recommencer
-                </button>
+                    onclick="startQuiz('${cessQuizState ? cessQuizState.mode : 'mixed'}')">
 
-                <button
-                    type="button"
-                    onclick="showView('home')"
-                >
-                    Retour à l'accueil
+                    Rejouer
+
                 </button>
 
             </div>
 
         `;
 
-        renderHome();
-
         return;
     }
 
 
-    const question =
-        quizState.questions[
-            quizState.index
+    var question =
+        cessQuizState.qs[
+            cessQuizState.index
         ];
+
+
+    var options =
+        Array.isArray(question.options)
+            ? question.options
+            : [];
 
 
     panel.innerHTML = `
 
-        <div class="quiz">
+        <div class="quiz-meta">
 
-            <div class="quiz-header">
+            <span>
+                Question
+                ${cessQuizState.index + 1}
+                /
+                ${cessQuizState.qs.length}
+            </span>
 
-                <span>
-                    Question
-                    ${quizState.index + 1}
-                    /
-                    ${quizState.questions.length}
-                </span>
+            <span>
+                ${
+                    question.matiere === 'maths'
+                        ? '📐 Maths'
+                        : '🌍 Géo'
+                }
+                ·
+                ${question.annee || ''}
+            </span>
 
-                <span>
-                    Score :
-                    ${quizState.score}
-                </span>
-
-            </div>
-
-
-            <div class="quiz-question">
-
-                <span class="badge">
-                    ${question.annee || ''}
-                </span>
-
-                <p>
-                    ${question.question}
-                </p>
-
-            </div>
+        </div>
 
 
-            <div class="quiz-options">
+        <div class="question">
+            ${question.question}
+        </div>
 
-                ${question.options.map(
-                    function(option, index) {
 
-                        return `
+        <div class="options">
 
-                            <button
-                                type="button"
-                                onclick="
-                                    answerQuiz(${index})
-                                "
-                            >
-                                ${option}
-                            </button>
+            ${options.map(function (option, index) {
 
-                        `;
+                return `
+                    <button
+                        type="button"
+                        onclick="answerQuiz(${index})">
 
-                    }
-                ).join('')}
+                        ${option}
 
-            </div>
+                    </button>
+                `;
+
+            }).join('')}
 
         </div>
 
     `;
+
 }
 
 
@@ -1290,26 +1410,33 @@ function renderQuiz() {
 
 function answerQuiz(index) {
 
-    if (!quizState) {
+    if (!cessQuizState) {
         return;
     }
 
 
-    const question =
-        quizState.questions[
-            quizState.index
+    var question =
+        cessQuizState.qs[
+            cessQuizState.index
         ];
 
 
-    if (index === question.correct) {
+    if (
+        index ===
+        Number(question.correct)
+    ) {
 
-        quizState.score++;
+        cessQuizState.score++;
 
     } else {
 
-        if (!state.mistakes.includes(question.id)) {
+        if (
+            cessState.mistakes.indexOf(
+                question.id
+            ) === -1
+        ) {
 
-            state.mistakes.push(
+            cessState.mistakes.push(
                 question.id
             );
 
@@ -1318,106 +1445,156 @@ function answerQuiz(index) {
     }
 
 
-    quizState.index++;
+    cessQuizState.index++;
 
-    save();
+    cessSave();
 
     renderQuiz();
+
 }
 
 
 /* =========================================================
-   MENU JEUX
+   CAPITALes
    ========================================================= */
 
-function renderGameMenu() {
+function startCapitals() {
 
-    const panel =
-        document.getElementById('gamePanel');
+    var capitals = null;
 
 
-    if (!panel) {
+    if (
+        typeof CAPITALES !== 'undefined' &&
+        Array.isArray(CAPITALES)
+    ) {
+
+        capitals = CAPITALES;
+
+    }
+
+
+    if (
+        !capitals ||
+        !capitals.length
+    ) {
+
+        var panel =
+            document.getElementById(
+                'gamePanel'
+            );
+
+        if (panel) {
+
+            panel.innerHTML = `
+                <div class="empty">
+                    Le jeu des capitales
+                    n'est pas disponible
+                    dans les données actuelles.
+                </div>
+            `;
+
+        }
+
+        showView('games');
+
         return;
     }
 
 
-    if (quizState) {
-        return;
-    }
+    var questions =
+        shuffle(capitals)
+            .slice(0, 10)
+            .map(function (item, index) {
+
+                var correctCapital =
+                    item.capitale ||
+                    item.capital ||
+                    '';
 
 
-    panel.innerHTML = `
-
-        <div class="grid2">
-
-            <div class="panel">
-
-                <h2>🎯 Quiz mixte</h2>
-
-                <p>
-                    Questions Maths + Géographie.
-                </p>
-
-                <button
-                    type="button"
-                    class="primary"
-                    onclick="startQuiz('mixed')"
-                >
-                    Commencer
-                </button>
-
-            </div>
+                var country =
+                    item.pays ||
+                    item.country ||
+                    '';
 
 
-            <div class="panel">
+                var others =
+                    shuffle(
+                        capitals.filter(function (other) {
 
-                <h2>✓ Vrai / Faux</h2>
+                            return (
+                                other !== item
+                            );
 
-                <p>
-                    Test rapide de connaissances.
-                </p>
+                        })
+                    )
+                    .slice(0, 3)
+                    .map(function (other) {
 
-                <button
-                    type="button"
-                    class="primary"
-                    onclick="startQuiz('truefalse')"
-                >
-                    Commencer
-                </button>
+                        return (
+                            other.capitale ||
+                            other.capital ||
+                            ''
+                        );
 
-            </div>
-
-
-            <div class="panel">
-
-                <h2>📐 Quiz Maths</h2>
-
-                <button
-                    type="button"
-                    onclick="startQuiz('maths')"
-                >
-                    Maths
-                </button>
-
-            </div>
+                    });
 
 
-            <div class="panel">
+                var options =
+                    shuffle(
+                        [correctCapital]
+                            .concat(others)
+                    );
 
-                <h2>🌍 Quiz Géo</h2>
 
-                <button
-                    type="button"
-                    onclick="startQuiz('geo')"
-                >
-                    Géographie
-                </button>
+                return {
 
-            </div>
+                    id:
+                        'capital_' + index,
 
-        </div>
+                    question:
+                        'Quelle est la capitale de ' +
+                        country +
+                        ' ?',
 
-    `;
+                    options:
+                        options,
+
+                    correct:
+                        options.indexOf(
+                            correctCapital
+                        ),
+
+                    matiere:
+                        'geo',
+
+                    annee:
+                        '—'
+
+                };
+
+            });
+
+
+    cessQuizState = {
+
+        qs: questions,
+
+        index: 0,
+
+        score: 0,
+
+        mode: 'capitales',
+
+        recorded: false
+
+    };
+
+
+    showView('games');
+
+    renderQuiz();
+
 }
 
 
@@ -1428,6 +1605,7 @@ function renderGameMenu() {
 function quickRevision() {
 
     startQuiz('mixed');
+
 }
 
 
@@ -1437,24 +1615,35 @@ function quickRevision() {
 
 function memoTab(mode, button) {
 
-    memoMode = mode;
+    cessMemoMode = mode;
 
 
-    document
-        .querySelectorAll('.memo-tabs button')
-        .forEach(function(btn) {
+    var buttons =
+        document.querySelectorAll(
+            '.memo-tabs button'
+        );
 
-            btn.classList.remove('active');
 
-        });
+    for (var i = 0; i < buttons.length; i++) {
+
+        buttons[i].classList.remove(
+            'active'
+        );
+
+    }
 
 
     if (button) {
-        button.classList.add('active');
+
+        button.classList.add(
+            'active'
+        );
+
     }
 
 
     renderMemo();
+
 }
 
 
@@ -1464,107 +1653,144 @@ function memoTab(mode, button) {
 
 function renderMemo() {
 
-    const box =
-        document.getElementById('memoContent');
-
+    var box =
+        document.getElementById(
+            'memoContent'
+        );
 
     if (!box) {
         return;
     }
 
 
-    const search =
-        document.getElementById('memoSearch');
+    var search =
+        document.getElementById(
+            'memoSearch'
+        );
 
 
-    const year =
-        document.getElementById('memoYear');
+    var yearSelect =
+        document.getElementById(
+            'memoYear'
+        );
 
 
-    const term =
+    var term =
         search
-            ? search.value.toLowerCase().trim()
+            ? String(search.value || '')
+                .toLowerCase()
+                .trim()
             : '';
 
 
-    const selected =
-        year
-            ? year.value
+    var year =
+        yearSelect
+            ? yearSelect.value
             : 'all';
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        VOCABULAIRE
-       ===================================================== */
+       ----------------------------------------------------- */
 
-    if (memoMode === 'vocab') {
+    if (
+        cessMemoMode === 'vocab'
+    ) {
 
-        let vocabulary = [];
+        var vocabulary = [];
 
 
         if (
-            typeof GEO_VOCAB !== 'undefined' &&
-            Array.isArray(GEO_VOCAB)
+            typeof GEO_VOCAB_DATA !== 'undefined' &&
+            Array.isArray(GEO_VOCAB_DATA)
         ) {
 
-            vocabulary = GEO_VOCAB;
+            vocabulary =
+                GEO_VOCAB_DATA;
+
+        } else if (
+            typeof GEO_VOCAB !== 'undefined'
+        ) {
+
+            if (
+                Array.isArray(GEO_VOCAB)
+            ) {
+
+                vocabulary =
+                    GEO_VOCAB;
+
+            } else if (
+                GEO_VOCAB &&
+                typeof GEO_VOCAB === 'object'
+            ) {
+
+                vocabulary =
+                    Object.values(
+                        GEO_VOCAB
+                    ).flat();
+
+            }
 
         }
 
 
-        const filtered =
-            vocabulary.filter(function(item) {
+        var filteredVocabulary =
+            vocabulary.filter(function (item) {
 
-                const text = (
-
-                    item.mot ||
-                    item.terme ||
-                    ''
-
-                ) + ' ' + (
-
-                    item.def ||
-                    item.definition ||
-                    ''
-
-                ) + ' ' + (
-
-                    item.theme ||
-                    item.categorie ||
-                    ''
-
-                );
+                item = item || {};
 
 
-                const matchesSearch =
-                    text
-                        .toLowerCase()
-                        .includes(term);
+                var text = [
+
+                    item.terme || '',
+                    item.mot || '',
+                    item.definition || '',
+                    item.def || '',
+                    item.exemple || '',
+                    item.categorie || '',
+                    item.theme || ''
+
+                ].join(' ').toLowerCase();
 
 
-                const itemYear =
-                    item.annee ||
+                var matchesTerm =
+                    text.indexOf(term) !== -1;
+
+
+                var itemYear =
                     item.niveau ||
+                    item.annee ||
                     '';
 
 
-                const matchesYear =
-                    selected === 'all' ||
-                    itemYear === selected;
+                var matchesYear =
+                    year === 'all' ||
+                    itemYear === year;
 
 
                 return (
-                    matchesSearch &&
+                    matchesTerm &&
                     matchesYear
                 );
 
             });
 
 
-        box.innerHTML =
-            filtered.length
+        if (!filteredVocabulary.length) {
 
-                ? filtered.map(function(item) {
+            box.innerHTML = `
+                <div class="empty">
+                    Aucun mot trouvé.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        box.innerHTML =
+            filteredVocabulary
+                .map(function (item) {
 
                     return `
 
@@ -1573,282 +1799,264 @@ function renderMemo() {
                             <div class="top">
 
                                 <h3>
-                                    ${item.mot || item.terme}
+                                    ${
+                                        item.terme ||
+                                        item.mot ||
+                                        'Terme'
+                                    }
                                 </h3>
 
                                 <span class="badge">
+
                                     ${
-                                        item.annee ||
                                         item.niveau ||
-                                        ''
+                                        item.annee ||
+                                        '—'
                                     }
+
+                                    ·
+
+                                    ${
+                                        item.categorie ||
+                                        item.theme ||
+                                        'Géographie'
+                                    }
+
                                 </span>
 
                             </div>
 
+
                             <p>
                                 ${
-                                    item.def ||
                                     item.definition ||
+                                    item.def ||
                                     ''
                                 }
                             </p>
+
+
+                            ${
+                                item.exemple
+                                    ? `
+                                        <p class="exemple">
+                                            📌
+                                            ${item.exemple}
+                                        </p>
+                                    `
+                                    : ''
+                            }
 
                         </article>
 
                     `;
 
-                }).join('')
-
-                : `
-                    <div class="empty">
-                        Aucun mot trouvé.
-                    </div>
-                `;
+                }).join('');
 
 
         return;
     }
 
 
-    /* =====================================================
+    /* -----------------------------------------------------
        FORMULES
-       ===================================================== */
+       ----------------------------------------------------- */
 
-    let formulas = [];
+    var formulas = [];
 
 
     if (
-        typeof FORMULES_DATA !== 'undefined'
+        typeof FORMULES_DATA !== 'undefined' &&
+        FORMULES_DATA &&
+        typeof FORMULES_DATA === 'object'
     ) {
 
-        Object.values(
-            FORMULES_DATA
-        ).forEach(function(list) {
+        var categories =
+            Object.keys(
+                FORMULES_DATA
+            );
+
+
+        for (
+            var c = 0;
+            c < categories.length;
+            c++
+        ) {
+
+            var list =
+                FORMULES_DATA[
+                    categories[c]
+                ];
+
 
             if (Array.isArray(list)) {
 
-                formulas.push(...list);
+                formulas =
+                    formulas.concat(list);
 
             }
 
-        });
+        }
 
     }
 
 
-    const filtered =
-        formulas.filter(function(formula) {
+    formulas =
+        formulas.filter(function (formula) {
 
-            const text = (
-
-                formula.titre ||
-                ''
-
-            ) + ' ' + (
-
-                formula.definition ||
-                ''
-
-            ) + ' ' + (
-
-                formula.exemple ||
-                ''
-
-            );
+            formula = formula || {};
 
 
-            const matchesSearch =
-                text
-                    .toLowerCase()
-                    .includes(term);
+            var text = [
+
+                formula.titre || '',
+                formula.definition || '',
+                formula.exemple || '',
+                formula.categorie || ''
+
+            ].join(' ').toLowerCase();
 
 
-            const matchesYear =
-                selected === 'all' ||
-                !formula.annee ||
-                formula.annee === selected;
+            var matchesTerm =
+                text.indexOf(term) !== -1;
+
+
+            var matchesYear =
+                year === 'all' ||
+                formula.annee === year;
 
 
             return (
-                matchesSearch &&
+                matchesTerm &&
                 matchesYear
             );
 
         });
 
 
-    box.innerHTML =
-        filtered.length
+    if (!formulas.length) {
 
-            ? filtered.map(function(formula) {
-
-                return `
-
-                    <article class="memo-card">
-
-                        <h3>
-                            ${formula.titre || 'Formule'}
-                        </h3>
-
-                        <div class="formula">
-                            ${
-                                formula.formule ||
-                                formula.expression ||
-                                ''
-                            }
-                        </div>
-
-                        ${
-                            formula.definition
-                                ? `<p>${formula.definition}</p>`
-                                : ''
-                        }
-
-                    </article>
-
-                `;
-
-            }).join('')
-
-            : `
-                <div class="empty">
-                    Aucune formule trouvée.
-                </div>
-            `;
-}
-
-
-/* =========================================================
-   EXAMENS
-   ========================================================= */
-
-function renderExamMenu() {
-
-    const panel =
-        document.getElementById('examPanel');
-
-
-    if (!panel) {
-        return;
-    }
-
-
-    if (
-        typeof EXAMENS_CESS === 'undefined' ||
-        !Array.isArray(EXAMENS_CESS)
-    ) {
-
-        panel.innerHTML = `
-
+        box.innerHTML = `
             <div class="empty">
-
-                Aucun examen disponible.
-
+                Aucune formule trouvée.
             </div>
-
         `;
 
         return;
     }
 
 
-    panel.innerHTML = `
+    box.innerHTML =
+        formulas.map(function (formula) {
 
-        <div class="grid2">
+            return `
 
-            ${
-                EXAMENS_CESS.map(function(exam, index) {
+                <article class="memo-card">
 
-                    return `
+                    <div class="top">
 
-                        <div class="panel">
+                        <h3>
+                            ${
+                                formula.icone ||
+                                '📐'
+                            }
 
-                            <h2>
-                                📝
-                                ${
-                                    exam.titre ||
-                                    exam.nom ||
-                                    'Examen'
-                                }
-                            </h2>
+                            ${formula.titre || ''}
+                        </h3>
 
-                            <p>
-                                ${
-                                    exam.desc ||
-                                    exam.description ||
-                                    ''
-                                }
-                            </p>
+                        <span class="badge">
 
-                            <button
-                                type="button"
-                                class="primary"
-                                onclick="
-                                    startExam(${index})
-                                "
-                            >
-                                Commencer
-                            </button>
+                            ${
+                                formula.annee ||
+                                '—'
+                            }
 
-                        </div>
+                            ·
 
-                    `;
+                            ${
+                                formula.categorie ||
+                                'Maths'
+                            }
 
-                }).join('')
-            }
+                        </span>
 
-        </div>
+                    </div>
 
-    `;
+
+                    <p>
+                        ${
+                            formula.definition ||
+                            ''
+                        }
+                    </p>
+
+
+                    ${
+                        formula.exemple
+                            ? `
+                                <p class="exemple">
+                                    📌
+                                    ${formula.exemple}
+                                </p>
+                            `
+                            : ''
+                    }
+
+                </article>
+
+            `;
+
+        }).join('');
+
 }
 
 
 /* =========================================================
-   DEMARRER EXAMEN
+   EXAMEN
    ========================================================= */
 
-function startExam(index) {
+function startExam(subject) {
 
-    if (
-        typeof EXAMENS_CESS === 'undefined' ||
-        !EXAMENS_CESS[index]
-    ) {
-        return;
-    }
-
-
-    const exam =
-        EXAMENS_CESS[index];
-
-
-    const questions =
-        Array.isArray(exam.questions)
-            ? exam.questions
-            : (
-                Array.isArray(exam.exercices)
-                    ? exam.exercices
-                    : []
-            );
+    var questions =
+        flattenQuestions(subject);
 
 
     if (!questions.length) {
 
-        alert(
-            'Cet examen ne contient pas encore de questions.'
-        );
+        var empty =
+            document.getElementById(
+                'examPanel'
+            );
+
+
+        if (empty) {
+
+            empty.innerHTML = `
+                <div class="empty">
+                    Aucune question disponible
+                    pour cet examen.
+                </div>
+            `;
+
+        }
+
+        showView('exam');
 
         return;
     }
 
 
-    examState = {
+    cessExamState = {
 
-        questions: questions,
+        qs:
+            shuffle(questions)
+                .slice(0, 15),
 
         index: 0,
 
-        score: 0
+        score: 0,
+
+        subject: subject
 
     };
 
@@ -1856,52 +2064,67 @@ function startExam(index) {
     showView('exam');
 
     renderExam();
+
 }
 
 
 /* =========================================================
-   RENDU EXAMEN
+   AFFICHAGE EXAMEN
    ========================================================= */
 
 function renderExam() {
 
-    const panel =
-        document.getElementById('examPanel');
+    var panel =
+        document.getElementById(
+            'examPanel'
+        );
 
 
-    if (!panel || !examState) {
+    if (
+        !panel ||
+        !cessExamState
+    ) {
         return;
     }
 
 
     if (
-        examState.index >=
-        examState.questions.length
+        cessExamState.index >=
+        cessExamState.qs.length
     ) {
+
+        var percentage =
+            cessExamState.qs.length
+                ? Math.round(
+                    cessExamState.score /
+                    cessExamState.qs.length *
+                    100
+                )
+                : 0;
+
 
         panel.innerHTML = `
 
-            <div class="quiz-result">
+            <div class="result">
 
-                <h2>🏁 Examen terminé</h2>
+                <b>
+                    ${percentage}%
+                </b>
 
                 <p>
-                    Score :
-                    <strong>
-                        ${examState.score}/
-                        ${examState.questions.length}
-                    </strong>
+                    ${cessExamState.score}
+                    /
+                    ${cessExamState.qs.length}
+                    réponses correctes.
                 </p>
 
                 <button
                     type="button"
                     class="primary"
-                    onclick="
-                        examState=null;
-                        renderExamMenu();
-                    "
-                >
-                    Retour aux examens
+                    onclick="startExam('${cessExamState.subject}')">
+
+                    Recommencer
+
                 </button>
 
             </div>
@@ -1912,13 +2135,13 @@ function renderExam() {
     }
 
 
-    const question =
-        examState.questions[
-            examState.index
+    var question =
+        cessExamState.qs[
+            cessExamState.index
         ];
 
 
-    const options =
+    var options =
         Array.isArray(question.options)
             ? question.options
             : [];
@@ -1926,66 +2149,61 @@ function renderExam() {
 
     panel.innerHTML = `
 
-        <div class="quiz">
+        <div class="quiz-meta">
 
-            <div class="quiz-header">
+            <span>
 
-                <span>
-                    Question
-                    ${examState.index + 1}
-                    /
-                    ${examState.questions.length}
-                </span>
-
-                <span>
-                    Score :
-                    ${examState.score}
-                </span>
-
-            </div>
-
-
-            <div class="quiz-question">
-
-                <p>
-                    ${
-                        question.question ||
-                        question.enonce ||
-                        ''
-                    }
-                </p>
-
-            </div>
-
-
-            <div class="quiz-options">
-
+                Examen
                 ${
-                    options.map(
-                        function(option, index) {
-
-                            return `
-
-                                <button
-                                    type="button"
-                                    onclick="
-                                        answerExam(${index})
-                                    "
-                                >
-                                    ${option}
-                                </button>
-
-                            `;
-
-                        }
-                    ).join('')
+                    cessExamState.subject === 'maths'
+                        ? 'Maths'
+                        : 'Géographie'
                 }
 
-            </div>
+            </span>
+
+
+            <span>
+
+                Question
+                ${cessExamState.index + 1}
+                /
+                ${cessExamState.qs.length}
+
+            </span>
+
+        </div>
+
+
+        <div class="question">
+
+            ${question.question}
+
+        </div>
+
+
+        <div class="options">
+
+            ${options.map(function (option, index) {
+
+                return `
+
+                    <button
+                        type="button"
+                        onclick="answerExam(${index})">
+
+                        ${option}
+
+                    </button>
+
+                `;
+
+            }).join('')}
 
         </div>
 
     `;
+
 }
 
 
@@ -1995,30 +2213,47 @@ function renderExam() {
 
 function answerExam(index) {
 
-    if (!examState) {
+    if (!cessExamState) {
         return;
     }
 
 
-    const question =
-        examState.questions[
-            examState.index
+    var question =
+        cessExamState.qs[
+            cessExamState.index
         ];
 
 
     if (
-        typeof question.correct === 'number' &&
-        index === question.correct
+        index ===
+        Number(question.correct)
     ) {
 
-        examState.score++;
+        cessExamState.score++;
+
+    } else {
+
+        if (
+            cessState.mistakes.indexOf(
+                question.id
+            ) === -1
+        ) {
+
+            cessState.mistakes.push(
+                question.id
+            );
+
+        }
 
     }
 
 
-    examState.index++;
+    cessExamState.index++;
+
+    cessSave();
 
     renderExam();
+
 }
 
 
@@ -2028,7 +2263,7 @@ function answerExam(index) {
 
 function renderProgress() {
 
-    const container =
+    var container =
         document.getElementById(
             'progressContent'
         );
@@ -2039,170 +2274,202 @@ function renderProgress() {
     }
 
 
-    const subjects =
-        ['maths', 'geo'];
+    var subjects = [
+        'maths',
+        'geo'
+    ];
+
+
+    var rows =
+        subjects.map(function (subject) {
+
+            var global =
+                pctSubject(subject);
+
+
+            var years = [
+                '3e',
+                '4e',
+                '5e',
+                '6e'
+            ];
+
+
+            var data =
+                CESS_SUBJECTS[
+                    subject
+                ].getData();
+
+
+            var yearRows =
+                years.map(function (year) {
+
+                    var chapters =
+                        Array.isArray(data[year])
+                            ? data[year]
+                            : [];
+
+
+                    var done = 0;
+
+
+                    for (
+                        var i = 0;
+                        i < chapters.length;
+                        i++
+                    ) {
+
+                        if (
+                            Number(
+                                cessState.progress[
+                                    chapters[i].id
+                                ] || 0
+                            ) >= 100
+                        ) {
+                            done++;
+                        }
+
+                    }
+
+
+                    var percentage =
+                        chapters.length
+                            ? Math.round(
+                                done /
+                                chapters.length *
+                                100
+                            )
+                            : 0;
+
+
+                    return `
+
+                        <div class="progress-row">
+
+                            <div class="progress-label">
+
+                                <span>
+                                    ${year}
+                                </span>
+
+                                <span>
+                                    ${percentage}%
+                                </span>
+
+                            </div>
+
+                            <div class="bar">
+
+                                <i
+                                    style="
+                                        width:${percentage}%
+                                    ">
+                                </i>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }).join('');
+
+
+            return `
+
+                <div class="panel">
+
+                    <h2>
+
+                        ${
+                            CESS_SUBJECTS[
+                                subject
+                            ].icon
+                        }
+
+                        ${
+                            CESS_SUBJECTS[
+                                subject
+                            ].label
+                        }
+
+                    </h2>
+
+
+                    <div class="progress-row">
+
+                        <div class="progress-label">
+
+                            <span>
+                                Progression globale
+                            </span>
+
+                            <span>
+                                ${global}%
+                            </span>
+
+                        </div>
+
+
+                        <div class="bar">
+
+                            <i
+                                style="
+                                    width:${global}%
+                                ">
+                            </i>
+
+                        </div>
+
+                    </div>
+
+
+                    ${yearRows}
+
+                </div>
+
+            `;
+
+        }).join('');
 
 
     container.innerHTML = `
 
         <div class="grid2">
 
-            ${
-                subjects.map(function(subject) {
-
-                    const global =
-                        pctSubject(subject);
-
-
-                    const years =
-                        ['3e', '4e', '5e', '6e'];
-
-
-                    return `
-
-                        <div class="panel">
-
-                            <h2>
-                                ${
-                                    SUBJECTS[subject].icon
-                                }
-                                ${
-                                    SUBJECTS[subject].label
-                                }
-                            </h2>
-
-
-                            <div class="progress-row">
-
-                                <div class="progress-label">
-
-                                    <span>
-                                        Progression globale
-                                    </span>
-
-                                    <span>
-                                        ${global}%
-                                    </span>
-
-                                </div>
-
-
-                                <div class="bar">
-
-                                    <i
-                                        style="
-                                            width:${global}%
-                                        "
-                                    ></i>
-
-                                </div>
-
-                            </div>
-
-
-                            ${
-                                years.map(function(year) {
-
-                                    const chapters =
-                                        Array.isArray(
-                                            SUBJECTS[subject]
-                                                .data()[year]
-                                        )
-                                            ? SUBJECTS[subject]
-                                                .data()[year]
-                                            : [];
-
-
-                                    const done =
-                                        chapters.filter(
-                                            function(chapter) {
-
-                                                return Number(
-                                                    state.progress[
-                                                        chapter.id
-                                                    ] || 0
-                                                ) >= 100;
-
-                                            }
-                                        ).length;
-
-
-                                    const percentage =
-                                        chapters.length
-                                            ? Math.round(
-                                                done /
-                                                chapters.length *
-                                                100
-                                            )
-                                            : 0;
-
-
-                                    return `
-
-                                        <div class="progress-row">
-
-                                            <div class="progress-label">
-
-                                                <span>
-                                                    ${year}
-                                                </span>
-
-                                                <span>
-                                                    ${percentage}%
-                                                </span>
-
-                                            </div>
-
-
-                                            <div class="bar">
-
-                                                <i
-                                                    style="
-                                                        width:${percentage}%
-                                                    "
-                                                ></i>
-
-                                            </div>
-
-                                        </div>
-
-                                    `;
-
-                                }).join('')
-                            }
-
-                        </div>
-
-                    `;
-
-                }).join('')
-            }
+            ${rows}
 
         </div>
 
 
         <div
             class="panel"
-            style="margin-top:20px"
-        >
+            style="margin-top:20px">
 
-            <h2>🏆 Historique</h2>
+            <h2>
+                🏆 Historique
+            </h2>
 
             <p>
 
                 Quiz réalisés :
-                <b>${state.results.length}</b>
+                <b>
+                    ${cessState.results.length}
+                </b>
 
                 ·
 
-                Erreurs :
-                <b>${state.mistakes.length}</b>
+                Erreurs enregistrées :
+                <b>
+                    ${cessState.mistakes.length}
+                </b>
 
             </p>
 
         </div>
 
     `;
+
 }
 
 
@@ -2212,20 +2479,18 @@ function renderProgress() {
 
 document.addEventListener(
     'DOMContentLoaded',
-    function() {
-
-        /* thème */
+    function () {
 
         if (
-            state.theme === 'dark'
+            cessState.theme === 'dark'
         ) {
 
-            document.body.classList.add('dark');
+            document.body.classList.add(
+                'dark'
+            );
 
         }
 
-
-        /* affichage initial */
 
         renderHome();
 
@@ -2235,13 +2500,7 @@ document.addEventListener(
 
         renderMemo();
 
-        renderExamMenu();
-
-
-        /* accueil */
-
-        showView('home');
+        renderProgress();
 
     }
 );
-```
