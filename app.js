@@ -23,6 +23,14 @@ var cessMemoMode = 'formules';
 var cessQuizState = null;
 var cessExamState = null;
 
+// =========================================================
+// CHRONOMÈTRE
+// =========================================================
+
+var quizTimer = null;
+var quizTimeLeft = 0;
+var quizTimeLimit = 0;
+
 
 /* =========================================================
    CHARGEMENT / SAUVEGARDE
@@ -314,6 +322,12 @@ function showView(id) {
 
     if (id === 'progress') {
         renderProgress();
+    }
+
+    if (id === 'flashcards') {
+        if (typeof initFlashcards === 'function') {
+            initFlashcards('maths');
+        }
     }
 }
 
@@ -905,6 +919,13 @@ function openChapter(id) {
                                 chapter.cours ||
                                 '<p>Le cours sera bientôt disponible.</p>'
                             }
+                        </div>
+
+                        <!-- BOUTON IMPRESSION PDF -->
+                        <div style="margin-top:20px;padding:15px;background:var(--primary-soft);border-radius:10px;text-align:center;">
+                            <button class="button primary" onclick="printChapter('${chapter.id}')" type="button">
+                                📄 Télécharger ce chapitre en PDF
+                            </button>
                         </div>
 
                     </div>
@@ -1681,6 +1702,10 @@ function renderQuizQuestion() {
                     / ${total}
                 </span>
 
+                <span id="quizTimer" style="font-weight:850;font-size:13px;color:var(--text-soft);">
+                    ⏱️ ${formatTime(30)}
+                </span>
+
                 <strong>
                     ${state.score}
                     point${state.score > 1 ? 's' : ''}
@@ -1764,6 +1789,9 @@ function renderQuizQuestion() {
         </div>
 
     `;
+
+    // Démarrer le chronomètre
+    startQuizTimer(30);
 }
 
 
@@ -1927,6 +1955,12 @@ function finishQuiz() {
 
     if (!state) {
         return;
+    }
+
+    // Arrêter le chronomètre
+    if (quizTimer) {
+        clearInterval(quizTimer);
+        quizTimer = null;
     }
 
     var total =
@@ -3151,6 +3185,15 @@ function renderProgress() {
     var streak = cessState.streak || 0;
 
 
+    // Badges
+    var badgesHtml = `
+        <div class="panel" style="margin-top:18px;">
+            <h2>🏆 Succès débloqués</h2>
+            <div id="badgesContainer"></div>
+        </div>
+    `;
+
+
     content.innerHTML = `
 
         <div class="progress-overview">
@@ -3221,6 +3264,43 @@ function renderProgress() {
 
         </div>
 
+        <!-- STATISTIQUES DÉTAILLÉES PAR CHAPITRE -->
+        <div class="panel" style="margin-top:18px">
+            <h2>📊 Progression par chapitre</h2>
+            <div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
+    `;
+
+    all.forEach(function(chapter) {
+        var progress = getChapterProgress(chapter.id);
+        var pct = progress > 0 ? progress : 0;
+        var color = pct >= 100 ? 'var(--green)' : (pct > 0 ? 'var(--primary)' : 'var(--text-light)');
+
+        content.innerHTML += `
+            <div style="
+                background:var(--paper-soft);
+                border:1px solid var(--line);
+                border-radius:10px;
+                padding:12px 15px;
+            ">
+                <div style="display:flex;align-items:center;gap:8px;font-size:11px;">
+                    <span>${chapter.icone || '📘'}</span>
+                    <span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        ${escapeHtml(chapter.titre || '')}
+                    </span>
+                    <span style="font-weight:850;color:${color};">${pct}%</span>
+                </div>
+                <div class="progress-line" style="margin-top:6px;">
+                    <span style="width:${pct}%;background:${color};"></span>
+                </div>
+            </div>
+        `;
+    });
+
+    content.innerHTML += `
+            </div>
+        </div>
+
+        ${badgesHtml}
 
         <div class="panel" style="margin-top:18px">
 
@@ -3298,6 +3378,9 @@ function renderProgress() {
         </div>
 
     `;
+
+    // Afficher les badges
+    renderBadges();
 }
 
 
@@ -3347,6 +3430,199 @@ function renderGamePanel() {
 
 
 /* =========================================================
+   IMPRESSION PDF
+   ========================================================= */
+
+function printChapter(id) {
+    var chapter = findChapter(id);
+    if (!chapter) {
+        alert('Chapitre introuvable.');
+        return;
+    }
+
+    var content = `
+        <html>
+        <head>
+            <title>${chapter.titre} - CESS</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 40px; max-width: 800px; margin: auto; line-height: 1.6; }
+                h1 { color: #1a3a5c; }
+                h2 { color: #2a5f8f; margin-top: 25px; }
+                .formule { background: #f0f4ff; padding: 10px; border-left: 4px solid #315bea; margin: 10px 0; }
+                .astuce { background: #fff8e1; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+                .piege { background: #fce4ec; padding: 10px; border-left: 4px solid #d32f2f; margin: 10px 0; }
+                .checklist { background: #e8f5e9; padding: 10px; border-left: 4px solid #2e7d32; margin: 10px 0; }
+                ul, ol { padding-left: 20px; }
+                table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background: #f0f4ff; }
+                .footer { margin-top: 30px; border-top: 2px solid #ddd; padding-top: 10px; font-size: 12px; color: #999; text-align: center; }
+            </style>
+        </head>
+        <body>
+            <h1>${chapter.titre}</h1>
+            <p><strong>Année :</strong> ${chapter.annee || ''}</p>
+            <p><strong>Description :</strong> ${chapter.desc || ''}</p>
+
+            ${chapter.cours || ''}
+
+            <div class="footer">
+                Fiche générée depuis le Carnet CESS — Révision Mathématiques & Géographie
+            </div>
+        </body>
+        </html>
+    `;
+
+    var win = window.open('', '_blank');
+    win.document.write(content);
+    win.document.close();
+    win.print();
+}
+
+
+/* =========================================================
+   SYSTÈME DE BADGES
+   ========================================================= */
+
+var BADGES = {
+    first_quiz: { id: 'first_quiz', nom: 'Premier pas', description: 'Terminer un quiz', icone: '🎯' },
+    five_quizzes: { id: 'five_quizzes', nom: 'Entraîné', description: 'Terminer 5 quiz', icone: '💪' },
+    twenty_quizzes: { id: 'twenty_quizzes', nom: 'Accro', description: 'Terminer 20 quiz', icone: '🔥' },
+    perfect_score: { id: 'perfect_score', nom: 'Parfait !', description: 'Obtenir 100% à un quiz', icone: '⭐' },
+    maths_champion: { id: 'maths_champion', nom: 'Champion Maths', description: 'Maîtriser tous les chapitres de maths', icone: '📐' },
+    geo_champion: { id: 'geo_champion', nom: 'Champion Géo', description: 'Maîtriser tous les chapitres de géographie', icone: '🌍' },
+    ten_streak: { id: 'ten_streak', nom: 'Série en cours', description: '10 jours de révision consécutifs', icone: '📅' },
+    master_all: { id: 'master_all', nom: 'Maître CESS', description: 'Maîtriser tous les chapitres', icone: '👑' }
+};
+
+function getBadges() {
+    var unlocked = [];
+    var results = cessState.results || [];
+    var mathsChaps = allChaps('maths');
+    var geoChaps = allChaps('geo');
+    var allChapsTotal = mathsChaps.concat(geoChaps);
+
+    if (results.length >= 1) unlocked.push('first_quiz');
+    if (results.length >= 5) unlocked.push('five_quizzes');
+    if (results.length >= 20) unlocked.push('twenty_quizzes');
+
+    for (var i = 0; i < results.length; i++) {
+        if (results[i].percentage >= 100) {
+            unlocked.push('perfect_score');
+            break;
+        }
+    }
+
+    var mathsDone = 0;
+    for (var m = 0; m < mathsChaps.length; m++) {
+        if (getChapterProgress(mathsChaps[m].id) >= 100) mathsDone++;
+    }
+    if (mathsDone === mathsChaps.length && mathsChaps.length > 0) unlocked.push('maths_champion');
+
+    var geoDone = 0;
+    for (var g = 0; g < geoChaps.length; g++) {
+        if (getChapterProgress(geoChaps[g].id) >= 100) geoDone++;
+    }
+    if (geoDone === geoChaps.length && geoChaps.length > 0) unlocked.push('geo_champion');
+
+    if (cessState.streak >= 10) unlocked.push('ten_streak');
+
+    if (mathsDone === mathsChaps.length && geoDone === geoChaps.length && allChapsTotal.length > 0) unlocked.push('master_all');
+
+    return unlocked.filter(function(value, index, self) {
+        return self.indexOf(value) === index;
+    });
+}
+
+function renderBadges() {
+    var container = document.getElementById('badgesContainer');
+    if (!container) return;
+
+    var unlocked = getBadges();
+
+    var html = `
+        <div style="display:flex;flex-wrap:wrap;gap:12px;padding:10px 0;">
+    `;
+
+    for (var key in BADGES) {
+        if (BADGES.hasOwnProperty(key)) {
+            var badge = BADGES[key];
+            var isUnlocked = unlocked.indexOf(key) !== -1;
+
+            html += `
+                <div style="
+                    background:${isUnlocked ? 'var(--primary-soft)' : 'var(--paper-soft)'};
+                    border:2px solid ${isUnlocked ? 'var(--primary)' : 'var(--line)'};
+                    border-radius:12px;
+                    padding:12px 16px;
+                    text-align:center;
+                    min-width:100px;
+                    opacity:${isUnlocked ? 1 : 0.4};
+                    transition:0.3s;
+                ">
+                    <div style="font-size:28px;">${badge.icone}</div>
+                    <div style="font-size:11px;font-weight:850;margin-top:4px;color:${isUnlocked ? 'var(--text)' : 'var(--text-light)'};">
+                        ${badge.nom}
+                    </div>
+                    <div style="font-size:8px;color:var(--text-light);">${badge.description}</div>
+                    ${!isUnlocked ? '<div style="font-size:8px;color:var(--text-light);margin-top:4px;">🔒 Verrouillé</div>' : '<div style="font-size:8px;color:var(--green);margin-top:4px;">✅ Débloqué</div>'}
+                </div>
+            `;
+        }
+    }
+
+    html += `
+        </div>
+    `;
+
+    container.innerHTML = html;
+}
+
+
+/* =========================================================
+   CHRONOMÈTRE
+   ========================================================= */
+
+function startQuizTimer(seconds) {
+    // Arrêter l'ancien timer s'il existe
+    if (quizTimer) {
+        clearInterval(quizTimer);
+        quizTimer = null;
+    }
+
+    quizTimeLimit = seconds || 30;
+    quizTimeLeft = quizTimeLimit;
+    updateTimerDisplay();
+
+    quizTimer = setInterval(function() {
+        quizTimeLeft--;
+        updateTimerDisplay();
+
+        if (quizTimeLeft <= 0) {
+            clearInterval(quizTimer);
+            quizTimer = null;
+            alert('⏰ Temps écoulé !');
+            finishQuiz();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    var el = document.getElementById('quizTimer');
+    if (el) {
+        el.textContent = '⏱️ ' + formatTime(quizTimeLeft);
+        el.style.color = quizTimeLeft < 10 ? 'var(--red)' : 'var(--text-soft)';
+    }
+}
+
+function formatTime(seconds) {
+    var minutes = Math.floor(seconds / 60);
+    var secs = seconds % 60;
+    return String(minutes).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+}
+
+
+/* =========================================================
    INITIALISATION
    ========================================================= */
 
@@ -3373,6 +3649,14 @@ function initCESS() {
     ) {
         console.warn(
             'GEO_CHAPITRES n’est pas chargé.'
+        );
+    }
+
+    if (
+        typeof FLASHCARDS_DATA === 'undefined'
+    ) {
+        console.warn(
+            'FLASHCARDS_DATA n’est pas chargé.'
         );
     }
 
