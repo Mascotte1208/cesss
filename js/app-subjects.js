@@ -390,20 +390,6 @@ function openChapter(id) {
                         ${
                             coursSections.length
                                 ? `
-                                    <div class="cours-toc">
-                                        ${coursSections.map(function (section, index) {
-                                            return `
-                                                <button
-                                                    type="button"
-                                                    class="cours-toc-chip"
-                                                    data-index="${index}"
-                                                    onclick="jumpToCoursSection(this)">
-                                                    ${section.title}
-                                                </button>
-                                            `;
-                                        }).join('')}
-                                    </div>
-
                                     <div class="cours-sections">
                                         ${coursSections.map(function (section, index) {
                                             return `
@@ -413,14 +399,15 @@ function openChapter(id) {
                                                         type="button"
                                                         class="cours-section-header"
                                                         data-index="${index}"
+                                                        aria-expanded="false"
                                                         onclick="toggleCoursSection(this)">
                                                         <span>${section.title}</span>
-                                                        <span class="cours-chevron">${index === 0 ? '▾' : '▸'}</span>
+                                                        <span class="cours-chevron">▸</span>
                                                     </button>
 
                                                     <div
                                                         class="cours-section-body"
-                                                        style="display:${index === 0 ? 'block' : 'none'}">
+                                                        style="display:none">
                                                         ${section.body}
                                                     </div>
 
@@ -740,9 +727,6 @@ function toggleCoursSection(button) {
     var body =
         section.querySelector('.cours-section-body');
 
-    var chevron =
-        section.querySelector('.cours-chevron');
-
     if (!body) {
         return;
     }
@@ -750,12 +734,50 @@ function toggleCoursSection(button) {
     var isOpen =
         body.style.display !== 'none';
 
-    body.style.display =
-        isOpen ? 'none' : 'block';
+    var container =
+        section.closest('.cours-sections');
 
-    if (chevron) {
-        chevron.textContent =
-            isOpen ? '▸' : '▾';
+    if (container) {
+        var sections =
+            container.querySelectorAll('.cours-section');
+
+        for (var i = 0; i < sections.length; i++) {
+            var otherBody =
+                sections[i].querySelector('.cours-section-body');
+
+            var otherHeader =
+                sections[i].querySelector('.cours-section-header');
+
+            var otherChevron =
+                sections[i].querySelector('.cours-chevron');
+
+            if (otherBody) {
+                otherBody.style.display = 'none';
+            }
+
+            sections[i].classList.remove('open');
+
+            if (otherHeader) {
+                otherHeader.setAttribute('aria-expanded', 'false');
+            }
+
+            if (otherChevron) {
+                otherChevron.textContent = '▸';
+            }
+        }
+    }
+
+    if (!isOpen) {
+        body.style.display = 'block';
+        section.classList.add('open');
+        button.setAttribute('aria-expanded', 'true');
+
+        var chevron =
+            section.querySelector('.cours-chevron');
+
+        if (chevron) {
+            chevron.textContent = '▾';
+        }
     }
 }
 
@@ -780,18 +802,11 @@ function jumpToCoursSection(button) {
         return;
     }
 
-    var body =
-        section.querySelector('.cours-section-body');
+    var header =
+        section.querySelector('.cours-section-header');
 
-    var chevron =
-        section.querySelector('.cours-chevron');
-
-    if (body) {
-        body.style.display = 'block';
-    }
-
-    if (chevron) {
-        chevron.textContent = '▾';
+    if (header) {
+        toggleCoursSection(header);
     }
 
     try {
