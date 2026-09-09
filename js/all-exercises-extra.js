@@ -119,4 +119,8 @@
     if (typeof GEO_CHAPITRES !== 'undefined') {
         completer(GEO_CHAPITRES);
     }
+
+    if (typeof BIO_CHAPITRES !== 'undefined') {
+        completer(BIO_CHAPITRES);
+    }
 })();
