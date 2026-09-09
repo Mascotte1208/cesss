@@ -1,13 +1,19 @@
+```javascript
 /* =========================================================
    CARNET CESS
-   APP.JS — VERSION COMPATIBLE AVEC LE NOUVEL INDEX.HTML
+   APP.JS — VERSION STABLE
+   Compatible avec :
+   - index.html
+   - maths-data.js
+   - geo-data.js
+   - geo-vocab.js
    ========================================================= */
+
+const DBKEY = 'carnetCESSv4';
 
 /* =========================================================
    ETAT
    ========================================================= */
-
-const DBKEY = 'carnetCESSv4';
 
 let state = {
     progress: {},
@@ -19,21 +25,19 @@ let state = {
 
 try {
     const saved = localStorage.getItem(DBKEY);
-
     if (saved) {
         const parsed = JSON.parse(saved);
 
         state = {
-            ...state,
-            ...parsed,
             progress: parsed.progress || {},
-            results: parsed.results || [],
-            mistakes: parsed.mistakes || [],
-            streak: parsed.streak || 0
+            results: Array.isArray(parsed.results) ? parsed.results : [],
+            mistakes: Array.isArray(parsed.mistakes) ? parsed.mistakes : [],
+            streak: Number(parsed.streak || 0),
+            theme: parsed.theme || 'light'
         };
     }
-} catch (error) {
-    console.warn('Impossible de charger les données sauvegardées.', error);
+} catch (e) {
+    console.warn('Erreur LocalStorage :', e);
 }
 
 let selectedYear = {
@@ -44,12 +48,11 @@ let selectedYear = {
 let memoMode = 'formules';
 
 let quizState = null;
-
 let examState = null;
 
 
 /* =========================================================
-   MATIERES
+   DONNEES
    ========================================================= */
 
 const SUBJECTS = {
@@ -58,10 +61,13 @@ const SUBJECTS = {
         label: 'Mathématiques',
         icon: '📐',
 
-        data: function () {
-            return typeof CHAPITRES !== 'undefined'
-                ? CHAPITRES
-                : {};
+        data: function() {
+            if (typeof CHAPITRES !== 'undefined') {
+                return CHAPITRES;
+            }
+
+            console.error('CHAPITRES introuvable. Vérifie maths-data.js');
+            return {};
         }
     },
 
@@ -69,13 +75,15 @@ const SUBJECTS = {
         label: 'Géographie',
         icon: '🌍',
 
-        data: function () {
-            return typeof GEO_CHAPITRES !== 'undefined'
-                ? GEO_CHAPITRES
-                : {};
+        data: function() {
+            if (typeof GEO_CHAPITRES !== 'undefined') {
+                return GEO_CHAPITRES;
+            }
+
+            console.error('GEO_CHAPITRES introuvable. Vérifie geo-data.js');
+            return {};
         }
     }
-
 };
 
 
@@ -86,103 +94,10 @@ const SUBJECTS = {
 function save() {
 
     try {
-        localStorage.setItem(
-            DBKEY,
-            JSON.stringify(state)
-        );
+        localStorage.setItem(DBKEY, JSON.stringify(state));
+    } catch (e) {
+        console.warn('Impossible de sauvegarder :', e);
     }
-
-    catch (error) {
-        console.warn(
-            'Impossible de sauvegarder les données.',
-            error
-        );
-    }
-}
-
-
-/* =========================================================
-   NAVIGATION PRINCIPALE
-   ========================================================= */
-
-function showView(id) {
-
-    const target = document.getElementById(id);
-
-    if (!target) {
-        console.warn(
-            'Vue introuvable :',
-            id
-        );
-        return;
-    }
-
-    document
-        .querySelectorAll('.view')
-        .forEach(function (view) {
-
-            view.classList.remove('active');
-
-        });
-
-
-    target.classList.add('active');
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-
-
-    switch (id) {
-
-        case 'home':
-            renderHome();
-            break;
-
-        case 'maths':
-            renderSubject('maths');
-            break;
-
-        case 'geo':
-            renderSubject('geo');
-            break;
-
-        case 'memo':
-            renderMemo();
-            break;
-
-        case 'games':
-
-            if (!quizState) {
-
-                const panel =
-                    document.getElementById('gamePanel');
-
-                if (panel) {
-
-                    panel.innerHTML = `
-                        <div class="empty">
-                            Choisis un jeu pour commencer.
-                        </div>
-                    `;
-
-                }
-
-            }
-
-            break;
-
-        case 'exam':
-            break;
-
-        case 'progress':
-            renderProgress();
-            break;
-
-    }
-
 }
 
 
@@ -200,12 +115,68 @@ function toggleTheme() {
             : 'light';
 
     save();
-
 }
 
 
 /* =========================================================
-   CHAPITRES
+   NAVIGATION
+   ========================================================= */
+
+function showView(id) {
+
+    const target = document.getElementById(id);
+
+    if (!target) {
+        console.error('Vue introuvable :', id);
+        return;
+    }
+
+    document.querySelectorAll('.view').forEach(function(view) {
+        view.classList.remove('active');
+    });
+
+    target.classList.add('active');
+
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+
+
+    /* RENDU DE LA PAGE */
+
+    if (id === 'home') {
+        renderHome();
+    }
+
+    if (id === 'maths') {
+        renderSubject('maths');
+    }
+
+    if (id === 'geo') {
+        renderSubject('geo');
+    }
+
+    if (id === 'memo') {
+        renderMemo();
+    }
+
+    if (id === 'games') {
+        renderGameMenu();
+    }
+
+    if (id === 'exam') {
+        renderExamMenu();
+    }
+
+    if (id === 'progress') {
+        renderProgress();
+    }
+}
+
+
+/* =========================================================
+   RECUPERER TOUS LES CHAPITRES
    ========================================================= */
 
 function allChaps(subject) {
@@ -222,7 +193,7 @@ function allChaps(subject) {
 
     const result = [];
 
-    Object.keys(data).forEach(function (annee) {
+    Object.keys(data).forEach(function(annee) {
 
         const chapters = data[annee];
 
@@ -230,7 +201,7 @@ function allChaps(subject) {
             return;
         }
 
-        chapters.forEach(function (chapter) {
+        chapters.forEach(function(chapter) {
 
             result.push({
                 ...chapter,
@@ -247,39 +218,21 @@ function allChaps(subject) {
 
 
 /* =========================================================
-   TROUVER UN CHAPITRE
+   CHAPITRE
    ========================================================= */
 
 function findChapter(id) {
 
     return allChaps('maths')
         .concat(allChaps('geo'))
-        .find(function (chapter) {
-
+        .find(function(chapter) {
             return chapter.id === id;
-
         });
-
 }
 
 
 /* =========================================================
-   MELANGE
-   ========================================================= */
-
-function shuffle(array) {
-
-    return [...array].sort(function () {
-
-        return Math.random() - 0.5;
-
-    });
-
-}
-
-
-/* =========================================================
-   POURCENTAGE
+   PROGRESSION
    ========================================================= */
 
 function pctSubject(subject) {
@@ -290,7 +243,7 @@ function pctSubject(subject) {
         return 0;
     }
 
-    const done = chapters.filter(function (chapter) {
+    const done = chapters.filter(function(chapter) {
 
         return Number(
             state.progress[chapter.id] || 0
@@ -301,7 +254,6 @@ function pctSubject(subject) {
     return Math.round(
         done / chapters.length * 100
     );
-
 }
 
 
@@ -329,135 +281,101 @@ function renderHome() {
         mathsCount + geoCount;
 
 
-    homeStats.innerHTML = [
+    homeStats.innerHTML = `
 
-        [
-            '📚',
-            total,
-            'Chapitres'
-        ],
+        <div class="stat">
+            <b>📚 ${total}</b>
+            <span>Chapitres</span>
+        </div>
 
-        [
-            '📐',
-            pctSubject('maths') + '%',
-            'Maîtrise Maths'
-        ],
+        <div class="stat">
+            <b>📐 ${pctSubject('maths')}%</b>
+            <span>Maîtrise Maths</span>
+        </div>
 
-        [
-            '🌍',
-            pctSubject('geo') + '%',
-            'Maîtrise Géo'
-        ],
+        <div class="stat">
+            <b>🌍 ${pctSubject('geo')}%</b>
+            <span>Maîtrise Géo</span>
+        </div>
 
-        [
-            '🎯',
-            state.results.length,
-            'Quiz réalisés'
-        ]
+        <div class="stat">
+            <b>🎯 ${state.results.length}</b>
+            <span>Quiz réalisés</span>
+        </div>
 
-    ].map(function (item) {
-
-        return `
-            <div class="stat">
-
-                <b>
-                    ${item[0]}
-                    ${item[1]}
-                </b>
-
-                <span>
-                    ${item[2]}
-                </span>
-
-            </div>
-        `;
-
-    }).join('');
+    `;
 
 
     const subjectProgress =
-        document.getElementById(
-            'subjectProgress'
-        );
-
+        document.getElementById('subjectProgress');
 
     if (subjectProgress) {
 
-        subjectProgress.innerHTML =
-            ['maths', 'geo']
-                .map(function (subject) {
+        subjectProgress.innerHTML = `
 
-                    const percentage =
-                        pctSubject(subject);
+            <div class="progress-row">
 
-                    return `
-                        <div class="progress-row">
+                <div class="progress-label">
+                    <span>📐 Mathématiques</span>
+                    <span>${pctSubject('maths')}%</span>
+                </div>
 
-                            <div class="progress-label">
+                <div class="bar">
+                    <i style="width:${pctSubject('maths')}%"></i>
+                </div>
 
-                                <span>
-                                    ${SUBJECTS[subject].icon}
-                                    ${SUBJECTS[subject].label}
-                                </span>
+            </div>
 
-                                <span>
-                                    ${percentage}%
-                                </span>
 
-                            </div>
+            <div class="progress-row">
 
-                            <div class="bar">
-                                <i
-                                    style="width:${percentage}%">
-                                </i>
-                            </div>
+                <div class="progress-label">
+                    <span>🌍 Géographie</span>
+                    <span>${pctSubject('geo')}%</span>
+                </div>
 
-                        </div>
-                    `;
+                <div class="bar">
+                    <i style="width:${pctSubject('geo')}%"></i>
+                </div>
 
-                })
-                .join('');
+            </div>
 
+        `;
     }
 
 
     const priorities =
-        document.getElementById(
-            'priorities'
-        );
-
+        document.getElementById('priorities');
 
     if (priorities) {
 
         const chapters =
             allChaps('maths')
                 .concat(allChaps('geo'))
-                .filter(function (chapter) {
+                .filter(function(chapter) {
 
                     return Number(
                         state.progress[chapter.id] || 0
                     ) < 100;
 
                 })
-                .slice(0, 5);
+                .slice(0, 6);
 
 
         if (!chapters.length) {
 
-            priorities.innerHTML = `
-                <div class="empty">
-                    🎉 Tous les chapitres sont maîtrisés !
-                </div>
-            `;
+            priorities.innerHTML =
+                `<div class="empty">
+                    🎉 Tout est maîtrisé !
+                </div>`;
 
-        }
-
-        else {
+        } else {
 
             priorities.innerHTML =
-                chapters.map(function (chapter) {
+                chapters.map(function(chapter) {
 
                     return `
+
                         <div class="priority">
 
                             <span>
@@ -465,27 +383,29 @@ function renderHome() {
                                 ${chapter.titre}
                             </span>
 
-                            <b>
-                                ${chapter.annee}
-                            </b>
+                            <b>${chapter.annee}</b>
 
                         </div>
+
                     `;
 
                 }).join('');
-
         }
-
     }
-
 }
 
 
 /* =========================================================
-   AFFICHAGE MATIERE
+   RENDU MATIERE
    ========================================================= */
 
 function renderSubject(subject) {
+
+    if (!SUBJECTS[subject]) {
+        console.error('Matière inconnue :', subject);
+        return;
+    }
+
 
     const data =
         SUBJECTS[subject].data();
@@ -515,112 +435,119 @@ function renderSubject(subject) {
         );
 
 
-    if (
-        !totalElement ||
-        !yearsElement ||
-        !contentElement
-    ) {
+    if (!yearsElement || !contentElement) {
+
+        console.error(
+            'Elements HTML manquants pour',
+            subject
+        );
+
         return;
     }
 
 
-    const chapters =
+    const allChapters =
         allChaps(subject);
 
 
-    totalElement.textContent =
-        chapters.length +
-        ' chapitres';
+    if (totalElement) {
+
+        totalElement.textContent =
+            allChapters.length +
+            ' chapitres';
+
+    }
 
 
-    const years =
-        ['3e', '4e', '5e', '6e'];
+    /* =====================================================
+       ANNEES
+       ===================================================== */
+
+    const years = ['3e', '4e', '5e', '6e'];
 
 
-    yearsElement.innerHTML =
-        years.map(function (year) {
+    yearsElement.innerHTML = years.map(function(year) {
 
-            const yearChapters =
-                Array.isArray(data[year])
-                    ? data[year]
-                    : [];
-
-
-            const done =
-                yearChapters.filter(
-                    function (chapter) {
-
-                        return Number(
-                            state.progress[
-                                chapter.id
-                            ] || 0
-                        ) >= 100;
-
-                    }
-                ).length;
+        const chapters =
+            Array.isArray(data[year])
+                ? data[year]
+                : [];
 
 
-            const percentage =
-                yearChapters.length
-                    ? Math.round(
-                        done /
-                        yearChapters.length *
-                        100
-                    )
-                    : 0;
+        const done =
+            chapters.filter(function(chapter) {
+
+                return Number(
+                    state.progress[chapter.id] || 0
+                ) >= 100;
+
+            }).length;
 
 
-            return `
-                <button
-                    type="button"
-                    class="year-card ${
-                        selectedYear[subject] === year
-                            ? 'active'
-                            : ''
-                    }"
-                    onclick="
-                        selectedYear['${subject}']='${year}';
-                        renderSubject('${subject}');
-                    "
-                >
-
-                    <b>
-                        ${year} année
-                    </b>
-
-                    <small>
-                        ${yearChapters.length}
-                        chapitres
-                        ·
-                        ${percentage}%
-                        maîtrisé
-                    </small>
-
-                </button>
-            `;
-
-        }).join('');
+        const percentage =
+            chapters.length
+                ? Math.round(
+                    done /
+                    chapters.length *
+                    100
+                )
+                : 0;
 
 
-    const selectedChapters =
-        Array.isArray(
-            data[selectedYear[subject]]
-        )
+        return `
+
+            <button
+                type="button"
+                class="year-card ${
+                    selectedYear[subject] === year
+                        ? 'active'
+                        : ''
+                }"
+                onclick="
+                    selectedYear['${subject}']='${year}';
+                    renderSubject('${subject}');
+                "
+            >
+
+                <b>${year} année</b>
+
+                <small>
+                    ${chapters.length}
+                    chapitre${chapters.length > 1 ? 's' : ''}
+                    · ${percentage}% maîtrisé
+                </small>
+
+            </button>
+
+        `;
+
+    }).join('');
+
+
+    /* =====================================================
+       CHAPITRES DE L'ANNEE
+       ===================================================== */
+
+    const chapters =
+        Array.isArray(data[selectedYear[subject]])
             ? data[selectedYear[subject]]
             : [];
 
 
-    if (!selectedChapters.length) {
+    if (!chapters.length) {
 
         contentElement.innerHTML = `
+
             <div class="empty">
+
                 Aucun chapitre disponible
-                pour cette année.
+                pour ${selectedYear[subject]}.
+
             </div>
+
         `;
 
         return;
-
     }
 
 
@@ -628,76 +555,69 @@ function renderSubject(subject) {
 
         <div class="chapter-list">
 
-            ${selectedChapters
-                .map(function (chapter) {
+            ${chapters.map(function(chapter) {
 
-                    const done =
-                        Number(
-                            state.progress[
-                                chapter.id
-                            ] || 0
-                        ) >= 100;
+                const done =
+                    Number(
+                        state.progress[chapter.id] || 0
+                    ) >= 100;
 
 
-                    return `
+                return `
 
-                        <article class="chapter">
+                    <article class="chapter">
 
-                            <span
-                                style="
-                                    font-size:30px
-                                "
-                            >
-                                ${chapter.icone || '📘'}
-                            </span>
+                        <span
+                            style="font-size:30px"
+                        >
+                            ${chapter.icone || '📘'}
+                        </span>
 
 
-                            <div class="chapter-main">
+                        <div class="chapter-main">
 
-                                <h3>
-                                    ${chapter.titre}
-                                </h3>
+                            <h3>
+                                ${chapter.titre}
+                            </h3>
 
-                                <p>
-                                    ${chapter.desc || ''}
-                                </p>
+                            <p>
+                                ${chapter.desc || ''}
+                            </p>
 
-                            </div>
-
-
-                            <span
-                                class="
-                                    badge
-                                    ${done ? 'done' : ''}
-                                "
-                            >
-                                ${
-                                    done
-                                        ? '✓ Maîtrisé'
-                                        : 'À revoir'
-                                }
-                            </span>
+                        </div>
 
 
-                            <button
-                                type="button"
-                                onclick="
-                                    openChapter('${chapter.id}')
-                                "
-                            >
-                                Ouvrir
-                            </button>
+                        <span
+                            class="badge ${
+                                done ? 'done' : ''
+                            }"
+                        >
+                            ${
+                                done
+                                    ? '✓ Maîtrisé'
+                                    : 'À revoir'
+                            }
+                        </span>
 
-                        </article>
 
-                    `;
+                        <button
+                            type="button"
+                            onclick="
+                                openChapter('${chapter.id}')
+                            "
+                        >
+                            Ouvrir
+                        </button>
 
-                }).join('')}
+                    </article>
+
+                `;
+
+            }).join('')}
 
         </div>
 
     `;
-
 }
 
 
@@ -713,46 +633,20 @@ function openChapter(id) {
 
     if (!chapter) {
 
-        console.warn(
+        console.error(
             'Chapitre introuvable :',
             id
         );
 
         return;
-
     }
 
 
-    const host =
-        document.getElementById(
-            chapter.matiere === 'maths'
-                ? 'mathContent'
-                : 'geoContent'
-        );
-
-
-    if (!host) {
-        return;
-    }
-
-
-    const oldDetail =
-        host.querySelector(
-            '.chapter-detail'
-        );
-
-
-    if (oldDetail) {
-        oldDetail.remove();
-    }
-
-
-    const detail =
+    const content =
         document.createElement('article');
 
 
-    detail.className =
-        'chapter-detail panel';
+    content.className = 'detail';
 
 
     const objectives =
@@ -767,60 +661,42 @@ function openChapter(id) {
             : [];
 
 
-    const done =
-        Number(
-            state.progress[chapter.id] || 0
-        ) >= 100;
+    content.innerHTML = `
 
+        <div class="eyebrow">
 
-    detail.innerHTML = `
+            ${SUBJECTS[chapter.matiere].icon}
 
-        <div class="section-head">
+            ${SUBJECTS[chapter.matiere].label}
 
-            <div>
-
-                <span class="eyebrow">
-                    ${SUBJECTS[chapter.matiere].icon}
-                    ${SUBJECTS[chapter.matiere].label}
-                    · ${chapter.annee}
-                </span>
-
-                <h2>
-                    ${chapter.icone || '📘'}
-                    ${chapter.titre}
-                </h2>
-
-                <p>
-                    ${chapter.desc || ''}
-                </p>
-
-            </div>
+            · ${chapter.annee}
 
         </div>
+
+
+        <h2>
+            ${chapter.icone || ''}
+            ${chapter.titre}
+        </h2>
+
+
+        <p>
+            ${chapter.desc || ''}
+        </p>
 
 
         ${
             matieres.length
                 ? `
-                    <div class="chapter-info">
 
-                        <h3>
-                            📚 À retenir
-                        </h3>
+                    <h3>📚 À savoir</h3>
 
-                        <ul>
-                            ${matieres.map(
-                                function (item) {
-                                    return `
-                                        <li>
-                                            ${item}
-                                        </li>
-                                    `;
-                                }
-                            ).join('')}
-                        </ul>
+                    <ul>
+                        ${matieres.map(function(item) {
+                            return `<li>${item}</li>`;
+                        }).join('')}
+                    </ul>
 
-                    </div>
                 `
                 : ''
         }
@@ -833,37 +709,21 @@ function openChapter(id) {
         </div>
 
 
-        <div class="chapter-info">
+        ${
+            objectives.length
+                ? `
 
-            <h3>
-                🎯 Objectifs
-            </h3>
+                    <h3>🎯 Objectifs</h3>
 
-            <ul>
+                    <ul>
+                        ${objectives.map(function(item) {
+                            return `<li>${item}</li>`;
+                        }).join('')}
+                    </ul>
 
-                ${
-                    objectives.length
-                        ? objectives.map(
-                            function (item) {
-
-                                return `
-                                    <li>
-                                        ${item}
-                                    </li>
-                                `;
-
-                            }
-                        ).join('')
-                        : `
-                            <li>
-                                Aucun objectif renseigné.
-                            </li>
-                        `
-                }
-
-            </ul>
-
-        </div>
+                `
+                : ''
+        }
 
 
         <div class="detail-actions">
@@ -875,11 +735,7 @@ function openChapter(id) {
                     markDone('${chapter.id}')
                 "
             >
-                ${
-                    done
-                        ? '✓ Déjà maîtrisé'
-                        : '✓ Marquer maîtrisé'
-                }
+                ✓ Marquer maîtrisé
             </button>
 
 
@@ -898,7 +754,7 @@ function openChapter(id) {
                 type="button"
                 class="close"
                 onclick="
-                    this.closest('.chapter-detail').remove()
+                    this.closest('.detail').remove()
                 "
             >
                 Fermer
@@ -909,19 +765,29 @@ function openChapter(id) {
     `;
 
 
-    host.prepend(detail);
+    const host =
+        document.getElementById(
+            chapter.matiere === 'maths'
+                ? 'mathContent'
+                : 'geoContent'
+        );
 
 
-    detail.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-    });
+    if (host) {
 
+        host.prepend(content);
+
+        content.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+
+    }
 }
 
 
 /* =========================================================
-   MARQUER UN CHAPITRE
+   MAITRISE
    ========================================================= */
 
 function markDone(id) {
@@ -937,97 +803,290 @@ function markDone(id) {
 
     state.progress[id] = 100;
 
-
     save();
-
 
     renderHome();
 
-
-    renderSubject(
-        chapter.matiere
-    );
-
-
-    setTimeout(function () {
-
-        const host =
-            document.getElementById(
-                chapter.matiere === 'maths'
-                    ? 'mathContent'
-                    : 'geoContent'
-            );
-
-
-        if (host) {
-
-            const detail =
-                document.createElement(
-                    'div'
-                );
-
-            detail.className =
-                'empty';
-
-            detail.innerHTML = `
-                ✅
-                <strong>
-                    ${chapter.titre}
-                </strong>
-                est maintenant marqué
-                comme maîtrisé.
-            `;
-
-            host.prepend(detail);
-
-        }
-
-    }, 100);
-
+    renderSubject(chapter.matiere);
 }
 
 
 /* =========================================================
-   QUESTIONS
+   QUIZ : QUESTIONS
    ========================================================= */
 
 function flattenQuestions(filter) {
 
-    filter =
-        filter || 'all';
-
-
-    const chapters =
-        allChaps('maths')
-            .concat(allChaps('geo'));
+    filter = filter || 'all';
 
 
     let questions = [];
 
 
-    chapters.forEach(function (chapter) {
+    allChaps('maths')
+        .concat(allChaps('geo'))
+        .forEach(function(chapter) {
 
-        if (!Array.isArray(
-            chapter.exercices
-        )) {
-            return;
+            if (!Array.isArray(chapter.exercices)) {
+                return;
+            }
+
+
+            chapter.exercices.forEach(
+                function(question, index) {
+
+                    if (
+                        !Array.isArray(question.options) ||
+                        !question.options.length
+                    ) {
+                        return;
+                    }
+
+
+                    questions.push({
+
+                        ...question,
+
+                        id:
+                            chapter.id +
+                            '_' +
+                            index,
+
+                        chapter:
+                            chapter.titre,
+
+                        annee:
+                            chapter.annee,
+
+                        matiere:
+                            chapter.matiere,
+
+                        correct:
+                            typeof question.correct === 'number'
+                                ? question.correct
+                                : 0
+
+                    });
+
+                }
+            );
+
+        });
+
+
+    if (filter === 'mistakes') {
+
+        return questions.filter(function(question) {
+
+            return state.mistakes.includes(
+                question.id
+            );
+
+        });
+
+    }
+
+
+    if (
+        filter === 'maths' ||
+        filter === 'geo'
+    ) {
+
+        return questions.filter(function(question) {
+
+            return question.matiere === filter;
+
+        });
+
+    }
+
+
+    return questions;
+}
+
+
+/* =========================================================
+   QUIZ
+   ========================================================= */
+
+function startQuiz(mode) {
+
+    let questions =
+        flattenQuestions(
+            mode === 'maths' || mode === 'geo'
+                ? mode
+                : 'all'
+        );
+
+
+    if (mode === 'mistakes') {
+        questions = flattenQuestions('mistakes');
+    }
+
+
+    if (mode === 'truefalse') {
+
+        questions = [
+
+            {
+                id: 'tf1',
+                question:
+                    'Deux triangles isométriques ont leurs côtés homologues de même longueur.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Triangles isométriques'
+            },
+
+            {
+                id: 'tf2',
+                question:
+                    'Des triangles semblables ont toujours leurs côtés de même longueur.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Triangles semblables'
+            },
+
+            {
+                id: 'tf3',
+                question:
+                    'Le théorème de Thalès permet de travailler avec des rapports de longueurs.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Théorème de Thalès'
+            },
+
+            {
+                id: 'tf4',
+                question:
+                    '√(a²) = |a| pour tout réel a.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Racines carrées'
+            },
+
+            {
+                id: 'tf5',
+                question:
+                    'Un zéro d’une fonction correspond à une intersection avec l’axe des abscisses.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Fonctions'
+            }
+
+        ];
+    }
+
+
+    if (mode === 'mixed') {
+        questions = flattenQuestions('all');
+    }
+
+
+    if (!questions.length) {
+
+        showView('games');
+
+        const panel =
+            document.getElementById('gamePanel');
+
+        if (panel) {
+
+            panel.innerHTML = `
+
+                <div class="empty">
+
+                    Aucune question disponible
+                    pour le moment.
+
+                </div>
+
+            `;
         }
 
-
-        chapter.exercices.forEach(
-            function (question, index) {
-
-                if (
-                    !Array.isArray(
-                        question.options
-                    ) ||
-                    !question.options.length
-                ) {
-                    return;
-                }
+        return;
+    }
 
 
-                questions.push({
+    questions =
+        shuffle(questions).slice(
+            0,
+            Math.min(10, questions.length)
+        );
+
+
+    quizState = {
+
+        questions: questions,
+
+        index: 0,
+
+        score: 0
+
+    };
+
+
+    showView('games');
+
+    renderQuiz();
+}
+
+
+/* =========================================================
+   MELANGE
+   ========================================================= */
+
+function shuffle(array) {
+
+    return [...array].sort(
+        () => Math.random() - 0.5
+    );
+}
+
+
+/* =========================================================
+   QUIZ CHAPITRE
+   ========================================================= */
+
+function quizChapter(id) {
+
+    const chapter =
+        findChapter(id);
+
+
+    if (!chapter) {
+        return;
+    }
+
+
+    let questions =
+        Array.isArray(chapter.exercices)
+            ? chapter.exercices
+            : [];
+
+
+    questions =
+        questions
+            .filter(function(question) {
+
+                return (
+                    Array.isArray(question.options) &&
+                    question.options.length
+                );
+
+            })
+            .map(function(question, index) {
+
+                return {
 
                     ...question,
 
@@ -1043,282 +1102,11 @@ function flattenQuestions(filter) {
                         chapter.annee,
 
                     matiere:
-                        chapter.matiere,
+                        chapter.matiere
 
-                    correct:
-                        typeof question.correct === 'number'
-                            ? question.correct
-                            : 0
+                };
 
-                });
-
-            }
-        );
-
-    });
-
-
-    if (
-        filter === 'maths' ||
-        filter === 'geo'
-    ) {
-
-        return questions.filter(
-            function (question) {
-
-                return question.matiere === filter;
-
-            }
-        );
-
-    }
-
-
-    if (filter === 'mistakes') {
-
-        return questions.filter(
-            function (question) {
-
-                return state.mistakes.includes(
-                    question.id
-                );
-
-            }
-        );
-
-    }
-
-
-    return questions;
-
-}
-
-
-/* =========================================================
-   QUIZ
-   ========================================================= */
-
-function startQuiz(mode) {
-
-    let questions = [];
-
-
-    if (mode === 'truefalse') {
-
-        questions = buildTrueFalseQuestions();
-
-    }
-
-    else if (mode === 'mistakes') {
-
-        questions =
-            flattenQuestions(
-                'mistakes'
-            );
-
-
-        if (!questions.length) {
-
-            const panel =
-                document.getElementById(
-                    'gamePanel'
-                );
-
-
-            if (panel) {
-
-                panel.innerHTML = `
-                    <div class="empty">
-                        🧠
-                        <br><br>
-                        Aucune erreur enregistrée
-                        pour le moment.
-                        <br><br>
-                        Fais d'abord un quiz !
-                    </div>
-                `;
-
-            }
-
-            showView('games');
-
-            return;
-
-        }
-
-    }
-
-    else {
-
-        const filter =
-            mode === 'mixed'
-                ? 'all'
-                : mode;
-
-
-        questions =
-            flattenQuestions(
-                filter
-            );
-
-    }
-
-
-    if (!questions.length) {
-
-        const panel =
-            document.getElementById(
-                'gamePanel'
-            );
-
-
-        if (panel) {
-
-            panel.innerHTML = `
-                <div class="empty">
-                    Aucune question disponible
-                    pour ce mode.
-                </div>
-            `;
-
-        }
-
-        showView('games');
-
-        return;
-
-    }
-
-
-    quizState = {
-
-        qs:
-            shuffle(
-                questions
-            ).slice(0, 10),
-
-        index: 0,
-
-        score: 0,
-
-        mode: mode,
-
-        recorded: false
-
-    };
-
-
-    showView('games');
-
-
-    renderQuiz();
-
-}
-
-
-/* =========================================================
-   VRAI / FAUX
-   ========================================================= */
-
-function buildTrueFalseQuestions() {
-
-    const questions = [];
-
-
-    allChaps('maths')
-        .concat(
-            allChaps('geo')
-        )
-        .forEach(function (chapter) {
-
-            if (
-                !Array.isArray(
-                    chapter.exercices
-                )
-            ) {
-                return;
-            }
-
-
-            chapter.exercices
-                .forEach(
-                    function (exercise, index) {
-
-                        if (
-                            !exercise.question
-                        ) {
-                            return;
-                        }
-
-
-                        const statement =
-                            exercise.question;
-
-
-                        const answer =
-                            index % 2 === 0;
-
-
-                        questions.push({
-
-                            id:
-                                'tf_' +
-                                chapter.id +
-                                '_' +
-                                index,
-
-                            question:
-                                statement,
-
-                            options:
-                                [
-                                    'Vrai',
-                                    'Faux'
-                                ],
-
-                            correct:
-                                answer
-                                    ? 0
-                                    : 1,
-
-                            matiere:
-                                chapter.matiere,
-
-                            annee:
-                                chapter.annee,
-
-                            chapter:
-                                chapter.titre
-
-                        });
-
-                    }
-                );
-
-        });
-
-
-    return questions;
-
-}
-
-
-/* =========================================================
-   QUIZ D'UN CHAPITRE
-   ========================================================= */
-
-function quizChapter(id) {
-
-    const questions =
-        flattenQuestions(
-            'all'
-        ).filter(function (question) {
-
-            return question.id.startsWith(
-                id + '_'
-            );
-
-        });
+            });
 
 
     if (!questions.length) {
@@ -1328,213 +1116,152 @@ function quizChapter(id) {
         );
 
         return;
-
     }
 
 
     quizState = {
 
-        qs:
-            shuffle(questions),
+        questions: shuffle(questions),
 
         index: 0,
 
-        score: 0,
-
-        mode: 'chapter',
-
-        recorded: false
+        score: 0
 
     };
 
 
     showView('games');
 
-
     renderQuiz();
-
 }
 
 
 /* =========================================================
-   AFFICHAGE DU QUIZ
+   RENDU QUIZ
    ========================================================= */
 
 function renderQuiz() {
 
     const panel =
-        document.getElementById(
-            'gamePanel'
-        );
+        document.getElementById('gamePanel');
 
 
-    if (!panel) {
+    if (!panel || !quizState) {
         return;
     }
 
 
     if (
-        !quizState ||
         quizState.index >=
-        quizState.qs.length
+        quizState.questions.length
     ) {
 
-        if (!quizState) {
-
-            panel.innerHTML = `
-                <div class="empty">
-                    Choisis un jeu pour commencer.
-                </div>
-            `;
-
-            return;
-
-        }
-
-
-        const score =
-            quizState.score;
-
-
         const total =
-            quizState.qs.length;
+            quizState.questions.length;
 
 
-        const percentage =
-            total
-                ? Math.round(
-                    score /
-                    total *
-                    100
-                )
-                : 0;
+        state.results.push({
+
+            date:
+                new Date().toISOString(),
+
+            score:
+                quizState.score,
+
+            total:
+                total
+
+        });
 
 
-        if (!quizState.recorded) {
-
-            state.results.push({
-
-                date:
-                    Date.now(),
-
-                score:
-                    score,
-
-                total:
-                    total,
-
-                mode:
-                    quizState.mode
-
-            });
-
-
-            quizState.recorded = true;
-
-
-            save();
-
-        }
+        save();
 
 
         panel.innerHTML = `
 
-            <div class="result">
+            <div class="quiz-result">
 
-                <b>
-                    ${percentage}%
-                </b>
+                <h2>🎉 Quiz terminé !</h2>
 
                 <p>
-                    ${score}
-                    bonne(s) réponse(s)
-                    sur
-                    ${total}
+                    Score :
+                    <strong>
+                        ${quizState.score}/${total}
+                    </strong>
                 </p>
 
                 <button
                     type="button"
                     class="primary"
-                    onclick="
-                        startQuiz('${quizState.mode}')
-                    "
+                    onclick="startQuiz('mixed')"
                 >
-                    Rejouer
+                    🔄 Recommencer
                 </button>
 
                 <button
                     type="button"
-                    class="secondary"
-                    onclick="
-                        quizState=null;
-                        showView('games')
-                    "
+                    onclick="showView('home')"
                 >
-                    Retour aux jeux
+                    Retour à l'accueil
                 </button>
 
             </div>
 
         `;
 
+        renderHome();
 
         return;
-
     }
 
 
     const question =
-        quizState.qs[
+        quizState.questions[
             quizState.index
         ];
 
 
-    const options =
-        Array.isArray(
-            question.options
-        )
-            ? question.options
-            : [];
-
-
     panel.innerHTML = `
 
-        <div class="quiz-meta">
+        <div class="quiz">
 
-            <span>
-                Question
-                ${quizState.index + 1}
-                /
-                ${quizState.qs.length}
-            </span>
+            <div class="quiz-header">
 
-            <span>
-                ${
-                    question.matiere === 'maths'
-                        ? '📐 Maths'
-                        : '🌍 Géo'
-                }
-                ·
-                ${question.annee}
-            </span>
+                <span>
+                    Question
+                    ${quizState.index + 1}
+                    /
+                    ${quizState.questions.length}
+                </span>
 
-        </div>
+                <span>
+                    Score :
+                    ${quizState.score}
+                </span>
+
+            </div>
 
 
-        <div class="question">
+            <div class="quiz-question">
 
-            ${question.question}
+                <span class="badge">
+                    ${question.annee || ''}
+                </span>
 
-        </div>
+                <p>
+                    ${question.question}
+                </p>
+
+            </div>
 
 
-        <div class="options">
+            <div class="quiz-options">
 
-            ${
-                options
-                    .map(function (option, index) {
+                ${question.options.map(
+                    function(option, index) {
 
                         return `
+
                             <button
                                 type="button"
                                 onclick="
@@ -1543,16 +1270,17 @@ function renderQuiz() {
                             >
                                 ${option}
                             </button>
+
                         `;
 
-                    })
-                    .join('')
-            }
+                    }
+                ).join('')}
+
+            </div>
 
         </div>
 
     `;
-
 }
 
 
@@ -1568,27 +1296,18 @@ function answerQuiz(index) {
 
 
     const question =
-        quizState.qs[
+        quizState.questions[
             quizState.index
         ];
 
 
-    if (
-        index ===
-        question.correct
-    ) {
+    if (index === question.correct) {
 
         quizState.score++;
 
-    }
+    } else {
 
-    else {
-
-        if (
-            !state.mistakes.includes(
-                question.id
-            )
-        ) {
+        if (!state.mistakes.includes(question.id)) {
 
             state.mistakes.push(
                 question.id
@@ -1601,145 +1320,104 @@ function answerQuiz(index) {
 
     quizState.index++;
 
-
     save();
 
-
     renderQuiz();
-
 }
 
 
 /* =========================================================
-   JEU DES CAPITALES
+   MENU JEUX
    ========================================================= */
 
-function startCapitals() {
+function renderGameMenu() {
 
-    if (
-        typeof CAPITALES === 'undefined' ||
-        !Array.isArray(CAPITALES) ||
-        !CAPITALES.length
-    ) {
-
-        const panel =
-            document.getElementById(
-                'gamePanel'
-            );
+    const panel =
+        document.getElementById('gamePanel');
 
 
-        if (panel) {
-
-            panel.innerHTML = `
-                <div class="empty">
-                    Le jeu des capitales
-                    n'est pas disponible.
-                </div>
-            `;
-
-        }
-
-
-        showView('games');
-
+    if (!panel) {
         return;
-
     }
 
 
-    const questions =
-        shuffle(
-            CAPITALES
-        )
-        .slice(0, 10)
-        .map(function (
-            capital,
-            index
-        ) {
-
-            const others =
-                shuffle(
-                    CAPITALES.filter(
-                        function (item) {
-
-                            return (
-                                item.capitale !==
-                                capital.capitale
-                            );
-
-                        }
-                    )
-                )
-                .slice(0, 3)
-                .map(function (item) {
-
-                    return item.capitale;
-
-                });
+    if (quizState) {
+        return;
+    }
 
 
-            const options =
-                shuffle([
-                    capital.capitale,
-                    ...others
-                ]);
+    panel.innerHTML = `
+
+        <div class="grid2">
+
+            <div class="panel">
+
+                <h2>🎯 Quiz mixte</h2>
+
+                <p>
+                    Questions Maths + Géographie.
+                </p>
+
+                <button
+                    type="button"
+                    class="primary"
+                    onclick="startQuiz('mixed')"
+                >
+                    Commencer
+                </button>
+
+            </div>
 
 
-            return {
+            <div class="panel">
 
-                id:
-                    'capital_' +
-                    index,
+                <h2>✓ Vrai / Faux</h2>
 
-                question:
-                    'Quelle est la capitale de ' +
-                    capital.pays +
-                    ' ?',
+                <p>
+                    Test rapide de connaissances.
+                </p>
 
-                options:
-                    options,
+                <button
+                    type="button"
+                    class="primary"
+                    onclick="startQuiz('truefalse')"
+                >
+                    Commencer
+                </button>
 
-                correct:
-                    options.indexOf(
-                        capital.capitale
-                    ),
-
-                matiere:
-                    'geo',
-
-                annee:
-                    '—'
-
-            };
-
-        });
+            </div>
 
 
-    quizState = {
+            <div class="panel">
 
-        qs:
-            questions,
+                <h2>📐 Quiz Maths</h2>
 
-        index:
-            0,
+                <button
+                    type="button"
+                    onclick="startQuiz('maths')"
+                >
+                    Maths
+                </button>
 
-        score:
-            0,
-
-        mode:
-            'capitales',
-
-        recorded:
-            false
-
-    };
+            </div>
 
 
-    showView('games');
+            <div class="panel">
 
+                <h2>🌍 Quiz Géo</h2>
 
-    renderQuiz();
+                <button
+                    type="button"
+                    onclick="startQuiz('geo')"
+                >
+                    Géographie
+                </button>
 
+            </div>
+
+        </div>
+
+    `;
 }
 
 
@@ -1749,10 +1427,7 @@ function startCapitals() {
 
 function quickRevision() {
 
-    showView('games');
-
     startQuiz('mixed');
-
 }
 
 
@@ -1760,52 +1435,37 @@ function quickRevision() {
    MEMO
    ========================================================= */
 
-function memoTab(
-    mode,
-    button
-) {
+function memoTab(mode, button) {
 
-    memoMode =
-        mode;
+    memoMode = mode;
 
 
     document
-        .querySelectorAll(
-            '.memo-tabs button'
-        )
-        .forEach(function (item) {
+        .querySelectorAll('.memo-tabs button')
+        .forEach(function(btn) {
 
-            item.classList.remove(
-                'active'
-            );
+            btn.classList.remove('active');
 
         });
 
 
     if (button) {
-
-        button.classList.add(
-            'active'
-        );
-
+        button.classList.add('active');
     }
 
 
     renderMemo();
-
 }
 
 
 /* =========================================================
-   MEMO — FORMULES / VOCABULAIRE
+   MEMO
    ========================================================= */
 
 function renderMemo() {
 
     const box =
-        document.getElementById(
-            'memoContent'
-        );
+        document.getElementById('memoContent');
 
 
     if (!box) {
@@ -1813,37 +1473,29 @@ function renderMemo() {
     }
 
 
-    const searchElement =
-        document.getElementById(
-            'memoSearch'
-        );
-
-
-    const yearElement =
-        document.getElementById(
-            'memoYear'
-        );
-
-
-    const term =
-        (
-            searchElement
-                ? searchElement.value
-                : ''
-        )
-        .toLowerCase()
-        .trim();
+    const search =
+        document.getElementById('memoSearch');
 
 
     const year =
-        yearElement
-            ? yearElement.value
+        document.getElementById('memoYear');
+
+
+    const term =
+        search
+            ? search.value.toLowerCase().trim()
+            : '';
+
+
+    const selected =
+        year
+            ? year.value
             : 'all';
 
 
-    /* -------------------------
+    /* =====================================================
        VOCABULAIRE
-       ------------------------- */
+       ===================================================== */
 
     if (memoMode === 'vocab') {
 
@@ -1851,168 +1503,102 @@ function renderMemo() {
 
 
         if (
-            typeof GEO_VOCAB_DATA !==
-                'undefined' &&
-            Array.isArray(
-                GEO_VOCAB_DATA
-            )
+            typeof GEO_VOCAB !== 'undefined' &&
+            Array.isArray(GEO_VOCAB)
         ) {
 
-            vocabulary =
-                GEO_VOCAB_DATA;
-
-        }
-
-        else if (
-            typeof GEO_VOCAB !==
-                'undefined'
-        ) {
-
-            if (
-                Array.isArray(
-                    GEO_VOCAB
-                )
-            ) {
-
-                vocabulary =
-                    GEO_VOCAB;
-
-            }
-
-            else if (
-                typeof GEO_VOCAB ===
-                'object'
-            ) {
-
-                vocabulary =
-                    Object.values(
-                        GEO_VOCAB
-                    ).flat();
-
-            }
+            vocabulary = GEO_VOCAB;
 
         }
 
 
         const filtered =
-            vocabulary.filter(
-                function (item) {
+            vocabulary.filter(function(item) {
 
-                    const text =
-                        (
-                            item.terme ||
-                            item.mot ||
-                            ''
-                        ) +
-                        ' ' +
-                        (
-                            item.definition ||
-                            item.def ||
-                            ''
-                        ) +
-                        ' ' +
-                        (
-                            item.exemple ||
-                            ''
-                        ) +
-                        ' ' +
-                        (
-                            item.categorie ||
-                            item.theme ||
-                            ''
-                        );
+                const text = (
+
+                    item.mot ||
+                    item.terme ||
+                    ''
+
+                ) + ' ' + (
+
+                    item.def ||
+                    item.definition ||
+                    ''
+
+                ) + ' ' + (
+
+                    item.theme ||
+                    item.categorie ||
+                    ''
+
+                );
 
 
-                    const matchesTerm =
-                        text
-                            .toLowerCase()
-                            .includes(
-                                term
-                            );
+                const matchesSearch =
+                    text
+                        .toLowerCase()
+                        .includes(term);
 
 
-                    const matchesYear =
-                        year === 'all' ||
-                        (
-                            item.niveau ||
-                            item.annee
-                        ) === year;
+                const itemYear =
+                    item.annee ||
+                    item.niveau ||
+                    '';
 
 
-                    return (
-                        matchesTerm &&
-                        matchesYear
-                    );
+                const matchesYear =
+                    selected === 'all' ||
+                    itemYear === selected;
 
-                }
-            );
+
+                return (
+                    matchesSearch &&
+                    matchesYear
+                );
+
+            });
 
 
         box.innerHTML =
             filtered.length
 
-                ? filtered
-                    .map(function (item) {
+                ? filtered.map(function(item) {
 
-                        return `
+                    return `
 
-                            <article class="memo-card">
+                        <article class="memo-card">
 
-                                <div class="top">
+                            <div class="top">
 
-                                    <h3>
-                                        ${
-                                            item.terme ||
-                                            item.mot ||
-                                            'Terme'
-                                        }
-                                    </h3>
+                                <h3>
+                                    ${item.mot || item.terme}
+                                </h3>
 
-                                    <span class="badge">
-
-                                        ${
-                                            item.niveau ||
-                                            item.annee ||
-                                            '—'
-                                        }
-
-                                        ·
-
-                                        ${
-                                            item.categorie ||
-                                            item.theme ||
-                                            'Géographie'
-                                        }
-
-                                    </span>
-
-                                </div>
-
-                                <p>
+                                <span class="badge">
                                     ${
-                                        item.definition ||
-                                        item.def ||
+                                        item.annee ||
+                                        item.niveau ||
                                         ''
                                     }
-                                </p>
+                                </span>
 
+                            </div>
+
+                            <p>
                                 ${
-                                    item.exemple
-                                        ? `
-                                            <p class="exemple">
-                                                📌
-                                                ${item.exemple}
-                                            </p>
-                                        `
-                                        : ''
+                                    item.def ||
+                                    item.definition ||
+                                    ''
                                 }
+                            </p>
 
-                            </article>
+                        </article>
 
-                        `;
+                    `;
 
-                    })
-                    .join('')
+                }).join('')
 
                 : `
                     <div class="empty">
@@ -2022,33 +1608,27 @@ function renderMemo() {
 
 
         return;
-
     }
 
 
-    /* -------------------------
+    /* =====================================================
        FORMULES
-       ------------------------- */
+       ===================================================== */
 
     let formulas = [];
 
 
     if (
-        typeof FORMULES_DATA !==
-        'undefined'
+        typeof FORMULES_DATA !== 'undefined'
     ) {
 
         Object.values(
             FORMULES_DATA
-        ).forEach(function (list) {
+        ).forEach(function(list) {
 
-            if (
-                Array.isArray(list)
-            ) {
+            if (Array.isArray(list)) {
 
-                formulas.push(
-                    ...list
-                );
+                formulas.push(...list);
 
             }
 
@@ -2057,126 +1637,85 @@ function renderMemo() {
     }
 
 
-    formulas =
-        formulas.filter(
-            function (formula) {
+    const filtered =
+        formulas.filter(function(formula) {
 
-                const text =
-                    (
-                        formula.titre ||
-                        ''
-                    ) +
-                    ' ' +
-                    (
-                        formula.definition ||
-                        ''
-                    ) +
-                    ' ' +
-                    (
-                        formula.exemple ||
-                        ''
-                    ) +
-                    ' ' +
-                    (
-                        formula.categorie ||
-                        ''
-                    );
+            const text = (
+
+                formula.titre ||
+                ''
+
+            ) + ' ' + (
+
+                formula.definition ||
+                ''
+
+            ) + ' ' + (
+
+                formula.exemple ||
+                ''
+
+            );
 
 
-                const matchesTerm =
-                    text
-                        .toLowerCase()
-                        .includes(
-                            term
-                        );
+            const matchesSearch =
+                text
+                    .toLowerCase()
+                    .includes(term);
 
 
-                const matchesYear =
-                    year === 'all' ||
-                    formula.annee === year ||
-                    !formula.annee;
+            const matchesYear =
+                selected === 'all' ||
+                !formula.annee ||
+                formula.annee === selected;
 
 
-                return (
-                    matchesTerm &&
-                    matchesYear
-                );
+            return (
+                matchesSearch &&
+                matchesYear
+            );
 
-            }
-        );
+        });
 
 
     box.innerHTML =
-        formulas.length
+        filtered.length
 
-            ? formulas
-                .map(function (formula) {
+            ? filtered.map(function(formula) {
 
-                    return `
+                return `
 
-                        <article class="memo-card">
+                    <article class="memo-card">
 
-                            <div class="top">
+                        <h3>
+                            ${formula.titre || 'Formule'}
+                        </h3>
 
-                                <h3>
-                                    ${
-                                        formula.icone ||
-                                        '📐'
-                                    }
-
-                                    ${formula.titre}
-
-                                </h3>
-
-                                <span class="badge">
-
-                                    ${
-                                        formula.annee ||
-                                        'Toutes'
-                                    }
-
-                                    ·
-
-                                    ${
-                                        formula.categorie ||
-                                        'Maths'
-                                    }
-
-                                </span>
-
-                            </div>
-
-                            <p>
-                                ${
-                                    formula.definition ||
-                                    ''
-                                }
-                            </p>
-
+                        <div class="formula">
                             ${
-                                formula.exemple
-                                    ? `
-                                        <p class="exemple">
-                                            📌
-                                            ${formula.exemple}
-                                        </p>
-                                    `
-                                    : ''
+                                formula.formule ||
+                                formula.expression ||
+                                ''
                             }
+                        </div>
 
-                        </article>
+                        ${
+                            formula.definition
+                                ? `<p>${formula.definition}</p>`
+                                : ''
+                        }
 
-                    `;
+                    </article>
 
-                })
-                .join('')
+                `;
+
+            }).join('')
 
             : `
                 <div class="empty">
                     Aucune formule trouvée.
                 </div>
             `;
-
 }
 
 
@@ -2184,78 +1723,150 @@ function renderMemo() {
    EXAMENS
    ========================================================= */
 
-function startExam(subject) {
+function renderExamMenu() {
+
+    const panel =
+        document.getElementById('examPanel');
+
+
+    if (!panel) {
+        return;
+    }
+
+
+    if (
+        typeof EXAMENS_CESS === 'undefined' ||
+        !Array.isArray(EXAMENS_CESS)
+    ) {
+
+        panel.innerHTML = `
+
+            <div class="empty">
+
+                Aucun examen disponible.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    panel.innerHTML = `
+
+        <div class="grid2">
+
+            ${
+                EXAMENS_CESS.map(function(exam, index) {
+
+                    return `
+
+                        <div class="panel">
+
+                            <h2>
+                                📝
+                                ${
+                                    exam.titre ||
+                                    exam.nom ||
+                                    'Examen'
+                                }
+                            </h2>
+
+                            <p>
+                                ${
+                                    exam.desc ||
+                                    exam.description ||
+                                    ''
+                                }
+                            </p>
+
+                            <button
+                                type="button"
+                                class="primary"
+                                onclick="
+                                    startExam(${index})
+                                "
+                            >
+                                Commencer
+                            </button>
+
+                        </div>
+
+                    `;
+
+                }).join('')
+            }
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   DEMARRER EXAMEN
+   ========================================================= */
+
+function startExam(index) {
+
+    if (
+        typeof EXAMENS_CESS === 'undefined' ||
+        !EXAMENS_CESS[index]
+    ) {
+        return;
+    }
+
+
+    const exam =
+        EXAMENS_CESS[index];
+
 
     const questions =
-        flattenQuestions(
-            subject
-        );
+        Array.isArray(exam.questions)
+            ? exam.questions
+            : (
+                Array.isArray(exam.exercices)
+                    ? exam.exercices
+                    : []
+            );
 
 
     if (!questions.length) {
 
-        showView('exam');
-
-
-        const panel =
-            document.getElementById(
-                'examPanel'
-            );
-
-
-        if (panel) {
-
-            panel.innerHTML = `
-                <div class="empty">
-                    Aucune question disponible
-                    pour cet examen.
-                </div>
-            `;
-
-        }
+        alert(
+            'Cet examen ne contient pas encore de questions.'
+        );
 
         return;
-
     }
 
 
     examState = {
 
-        qs:
-            shuffle(
-                questions
-            ).slice(0, 15),
+        questions: questions,
 
-        index:
-            0,
+        index: 0,
 
-        score:
-            0,
-
-        subject:
-            subject
+        score: 0
 
     };
 
 
     showView('exam');
 
-
     renderExam();
-
 }
 
 
 /* =========================================================
-   AFFICHAGE EXAMEN
+   RENDU EXAMEN
    ========================================================= */
 
 function renderExam() {
 
     const panel =
-        document.getElementById(
-            'examPanel'
-        );
+        document.getElementById('examPanel');
 
 
     if (!panel || !examState) {
@@ -2265,53 +1876,32 @@ function renderExam() {
 
     if (
         examState.index >=
-        examState.qs.length
+        examState.questions.length
     ) {
-
-        const percentage =
-            examState.qs.length
-                ? Math.round(
-                    examState.score /
-                    examState.qs.length *
-                    100
-                )
-                : 0;
-
 
         panel.innerHTML = `
 
-            <div class="result">
+            <div class="quiz-result">
 
-                <b>
-                    ${percentage}%
-                </b>
+                <h2>🏁 Examen terminé</h2>
 
                 <p>
-                    ${examState.score}
-                    /
-                    ${examState.qs.length}
-                    réponses correctes.
+                    Score :
+                    <strong>
+                        ${examState.score}/
+                        ${examState.questions.length}
+                    </strong>
                 </p>
 
                 <button
                     type="button"
                     class="primary"
                     onclick="
-                        startExam('${examState.subject}')
-                    "
-                >
-                    Recommencer
-                </button>
-
-                <button
-                    type="button"
-                    class="secondary"
-                    onclick="
                         examState=null;
-                        showView('exam')
+                        renderExamMenu();
                     "
                 >
-                    Retour
+                    Retour aux examens
                 </button>
 
             </div>
@@ -2319,93 +1909,83 @@ function renderExam() {
         `;
 
         return;
-
     }
 
 
     const question =
-        examState.qs[
+        examState.questions[
             examState.index
         ];
 
 
     const options =
-        Array.isArray(
-            question.options
-        )
+        Array.isArray(question.options)
             ? question.options
             : [];
 
 
-    if (!options.length) {
-
-        examState.index++;
-
-        renderExam();
-
-        return;
-
-    }
-
-
     panel.innerHTML = `
 
-        <div class="quiz-meta">
+        <div class="quiz">
 
-            <span>
-                Examen
+            <div class="quiz-header">
+
+                <span>
+                    Question
+                    ${examState.index + 1}
+                    /
+                    ${examState.questions.length}
+                </span>
+
+                <span>
+                    Score :
+                    ${examState.score}
+                </span>
+
+            </div>
+
+
+            <div class="quiz-question">
+
+                <p>
+                    ${
+                        question.question ||
+                        question.enonce ||
+                        ''
+                    }
+                </p>
+
+            </div>
+
+
+            <div class="quiz-options">
+
                 ${
-                    examState.subject === 'maths'
-                        ? 'Maths'
-                        : 'Géographie'
+                    options.map(
+                        function(option, index) {
+
+                            return `
+
+                                <button
+                                    type="button"
+                                    onclick="
+                                        answerExam(${index})
+                                    "
+                                >
+                                    ${option}
+                                </button>
+
+                            `;
+
+                        }
+                    ).join('')
                 }
-            </span>
 
-            <span>
-                Question
-                ${examState.index + 1}
-                /
-                ${examState.qs.length}
-            </span>
-
-        </div>
-
-
-        <div class="question">
-
-            ${question.question}
-
-        </div>
-
-
-        <div class="options">
-
-            ${
-                options
-                    .map(function (
-                        option,
-                        index
-                    ) {
-
-                        return `
-                            <button
-                                type="button"
-                                onclick="
-                                    answerExam(${index})
-                                "
-                            >
-                                ${option}
-                            </button>
-                        `;
-
-                    })
-                    .join('')
-            }
+            </div>
 
         </div>
 
     `;
-
 }
 
 
@@ -2421,50 +2001,29 @@ function answerExam(index) {
 
 
     const question =
-        examState.qs[
+        examState.questions[
             examState.index
         ];
 
 
     if (
-        index ===
-        question.correct
+        typeof question.correct === 'number' &&
+        index === question.correct
     ) {
 
         examState.score++;
 
     }
 
-    else {
-
-        if (
-            !state.mistakes.includes(
-                question.id
-            )
-        ) {
-
-            state.mistakes.push(
-                question.id
-            );
-
-        }
-
-    }
-
 
     examState.index++;
 
-
-    save();
-
-
     renderExam();
-
 }
 
 
 /* =========================================================
-   SUIVI
+   PROGRESSION
    ========================================================= */
 
 function renderProgress() {
@@ -2484,147 +2043,140 @@ function renderProgress() {
         ['maths', 'geo'];
 
 
-    const rows =
-        subjects.map(
-            function (subject) {
-
-                const global =
-                    pctSubject(
-                        subject
-                    );
-
-
-                const years =
-                    ['3e', '4e', '5e', '6e'];
-
-
-                const yearRows =
-                    years.map(
-                        function (year) {
-
-                            const chapters =
-                                Array.isArray(
-                                    SUBJECTS[
-                                        subject
-                                    ].data()[year]
-                                )
-                                    ? SUBJECTS[
-                                        subject
-                                    ].data()[year]
-                                    : [];
-
-
-                            const done =
-                                chapters.filter(
-                                    function (chapter) {
-
-                                        return Number(
-                                            state.progress[
-                                                chapter.id
-                                            ] || 0
-                                        ) >= 100;
-
-                                    }
-                                ).length;
-
-
-                            const percentage =
-                                chapters.length
-                                    ? Math.round(
-                                        done /
-                                        chapters.length *
-                                        100
-                                    )
-                                    : 0;
-
-
-                            return `
-
-                                <div class="progress-row">
-
-                                    <div class="progress-label">
-
-                                        <span>
-                                            ${year}
-                                        </span>
-
-                                        <span>
-                                            ${percentage}%
-                                        </span>
-
-                                    </div>
-
-                                    <div class="bar">
-
-                                        <i
-                                            style="
-                                                width:${percentage}%
-                                            "
-                                        ></i>
-
-                                    </div>
-
-                                </div>
-
-                            `;
-
-                        }
-                    ).join('');
-
-
-                return `
-
-                    <div class="panel">
-
-                        <h2>
-                            ${SUBJECTS[subject].icon}
-                            ${SUBJECTS[subject].label}
-                        </h2>
-
-
-                        <div class="progress-row">
-
-                            <div class="progress-label">
-
-                                <span>
-                                    Progression globale
-                                </span>
-
-                                <span>
-                                    ${global}%
-                                </span>
-
-                            </div>
-
-
-                            <div class="bar">
-
-                                <i
-                                    style="
-                                        width:${global}%
-                                    "
-                                ></i>
-
-                            </div>
-
-                        </div>
-
-
-                        ${yearRows}
-
-                    </div>
-
-                `;
-
-            }
-        ).join('');
-
-
     container.innerHTML = `
 
         <div class="grid2">
 
-            ${rows}
+            ${
+                subjects.map(function(subject) {
+
+                    const global =
+                        pctSubject(subject);
+
+
+                    const years =
+                        ['3e', '4e', '5e', '6e'];
+
+
+                    return `
+
+                        <div class="panel">
+
+                            <h2>
+                                ${
+                                    SUBJECTS[subject].icon
+                                }
+                                ${
+                                    SUBJECTS[subject].label
+                                }
+                            </h2>
+
+
+                            <div class="progress-row">
+
+                                <div class="progress-label">
+
+                                    <span>
+                                        Progression globale
+                                    </span>
+
+                                    <span>
+                                        ${global}%
+                                    </span>
+
+                                </div>
+
+
+                                <div class="bar">
+
+                                    <i
+                                        style="
+                                            width:${global}%
+                                        "
+                                    ></i>
+
+                                </div>
+
+                            </div>
+
+
+                            ${
+                                years.map(function(year) {
+
+                                    const chapters =
+                                        Array.isArray(
+                                            SUBJECTS[subject]
+                                                .data()[year]
+                                        )
+                                            ? SUBJECTS[subject]
+                                                .data()[year]
+                                            : [];
+
+
+                                    const done =
+                                        chapters.filter(
+                                            function(chapter) {
+
+                                                return Number(
+                                                    state.progress[
+                                                        chapter.id
+                                                    ] || 0
+                                                ) >= 100;
+
+                                            }
+                                        ).length;
+
+
+                                    const percentage =
+                                        chapters.length
+                                            ? Math.round(
+                                                done /
+                                                chapters.length *
+                                                100
+                                            )
+                                            : 0;
+
+
+                                    return `
+
+                                        <div class="progress-row">
+
+                                            <div class="progress-label">
+
+                                                <span>
+                                                    ${year}
+                                                </span>
+
+                                                <span>
+                                                    ${percentage}%
+                                                </span>
+
+                                            </div>
+
+
+                                            <div class="bar">
+
+                                                <i
+                                                    style="
+                                                        width:${percentage}%
+                                                    "
+                                                ></i>
+
+                                            </div>
+
+                                        </div>
+
+                                    `;
+
+                                }).join('')
+                            }
+
+                        </div>
+
+                    `;
+
+                }).join('')
+            }
 
         </div>
 
@@ -2634,30 +2186,23 @@ function renderProgress() {
             style="margin-top:20px"
         >
 
-            <h2>
-                🏆 Historique
-            </h2>
+            <h2>🏆 Historique</h2>
 
             <p>
 
                 Quiz réalisés :
-                <b>
-                    ${state.results.length}
-                </b>
+                <b>${state.results.length}</b>
 
                 ·
 
-                Erreurs enregistrées :
-                <b>
-                    ${state.mistakes.length}
-                </b>
+                Erreurs :
+                <b>${state.mistakes.length}</b>
 
             </p>
 
         </div>
 
     `;
-
 }
 
 
@@ -2667,35 +2212,36 @@ function renderProgress() {
 
 document.addEventListener(
     'DOMContentLoaded',
-    function () {
+    function() {
+
+        /* thème */
 
         if (
             state.theme === 'dark'
         ) {
 
-            document.body.classList.add(
-                'dark'
-            );
+            document.body.classList.add('dark');
 
         }
 
 
+        /* affichage initial */
+
         renderHome();
 
-        renderSubject(
-            'maths'
-        );
+        renderSubject('maths');
 
-        renderSubject(
-            'geo'
-        );
+        renderSubject('geo');
 
         renderMemo();
 
+        renderExamMenu();
 
-        console.log(
-            'Carnet CESS chargé correctement.'
-        );
+
+        /* accueil */
+
+        showView('home');
 
     }
 );
+```
