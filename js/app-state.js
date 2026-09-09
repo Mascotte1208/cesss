@@ -17,7 +17,8 @@ var cessState = {
 
 var cessSelectedYear = {
     maths: '3e',
-    geo: '3e'
+    geo: '3e',
+    bio: '3e'
 };
 
 var cessMemoMode = 'formules';
