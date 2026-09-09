@@ -1,4403 +1,1222 @@
-/* =========================================================
-   CARNET CESS
-   APP.JS
-   Interface Gaming × Carnet de révision
-   ========================================================= */
+// ============================================================
+// CESS — MATHS
+// Carnet de révision — 3e + 4e
+// Basé sur les cours fournis
+// ============================================================
 
+const MATHS_CHAPITRES = {
 
-/* =========================================================
-   ÉTAT
-   ========================================================= */
+    "3e": [
 
-var USER_DATA = {
-    progress: {},
-    quizResults: {},
-    revisions: {},
-    streak: 0,
-    xp: 0
-};
+        // =====================================================
+        // 3E — GÉOMÉTRIE
+        // =====================================================
 
-var favorisFormules = [];
+        {
+            id: "3e_isometrie",
+            titre: "Triangles isométriques",
+            short: "Isométrie",
+            desc: "Reconnaître, justifier et exploiter des triangles isométriques.",
+            niveau: "3e",
+            icone: "📐",
+            categorie: "Géométrie",
 
-var currentTab = "dashboard";
-var currentMatiere = "maths";
-var currentAnnee = "3e";
+            aSavoir: [
+                "Deux figures sont isométriques lorsqu'elles sont superposables.",
+                "Les côtés qui se superposent sont les côtés homologues.",
+                "Les angles qui se superposent sont les angles homologues.",
+                "Les sommets qui se superposent sont les sommets homologues.",
+                "Deux triangles isométriques ont leurs côtés homologues de même longueur et leurs angles homologues de même amplitude."
+            ],
 
-var currentQuiz = {
-    index: 0,
-    questions: [],
-    answers: [],
-    score: 0,
-    total: 0,
-    answered: false
-};
-
-var currentExamen = {
-    index: 0,
-    questions: [],
-    answers: [],
-    score: 0,
-    total: 0,
-    timer: null,
-    timeLeft: 0,
-    niveau: "3e"
-};
-
-var currentCessExam = {
-    index: 0,
-    questions: [],
-    score: 0,
-    total: 0
-};
-
-var currentCapitales = {
-    index: 0,
-    questions: [],
-    score: 0,
-    total: 0
-};
-
-var activeFormulaCategory = "all";
-
-var QUESTIONS_QUIZ = [];
-
-
-/* =========================================================
-   MATIÈRES
-   ========================================================= */
-
-var MATIERES = {
-    maths: typeof CHAPITRES !== "undefined" ? CHAPITRES : {},
-    geographie:
-        typeof GEO_CHAPITRES !== "undefined"
-            ? GEO_CHAPITRES
-            : {}
-};
-
-var MATIERE_INFO = {
-    maths: {
-        nom: "Mathématiques",
-        icone: "📐",
-        description: "Algèbre, géométrie, analyse, statistiques et plus."
-    },
-
-    geographie: {
-        nom: "Géographie",
-        icone: "🌍",
-        description: "Territoires, populations, ressources et mondialisation."
-    }
-};
-
-
-/* =========================================================
-   UTILITAIRES
-   ========================================================= */
-
-function escapeHtml(value) {
-    if (value === null || value === undefined) return "";
-
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-
-function shuffle(array) {
-    var copy = array.slice();
-
-    for (var i = copy.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-
-        var temp = copy[i];
-        copy[i] = copy[j];
-        copy[j] = temp;
-    }
-
-    return copy;
-}
-
-
-function getChapterTitle(chapter) {
-    return chapter && (chapter.titre || chapter.title)
-        ? (chapter.titre || chapter.title)
-        : "Chapitre";
-}
-
-
-function getChapterDescription(chapter) {
-    return chapter && (chapter.desc || chapter.description)
-        ? (chapter.desc || chapter.description)
-        : "";
-}
-
-
-function getChapterIcon(chapter) {
-    return chapter && chapter.icone
-        ? chapter.icone
-        : "📚";
-}
-
-
-function getChapterExercises(chapter) {
-    if (!chapter) return [];
-
-    return Array.isArray(chapter.exercices)
-        ? chapter.exercices
-        : [];
-}
-
-
-function getAllChapters(matiere) {
-    var result = [];
-
-    var data = MATIERES[matiere] || {};
-
-    for (var annee in data) {
-
-        var chapters = data[annee] || [];
-
-        for (var i = 0; i < chapters.length; i++) {
-
-            result.push({
-                chapter: chapters[i],
-                annee: annee,
-                matiere: matiere
-            });
-        }
-    }
-
-    return result;
-}
-
-
-function getAllQuestions() {
-    var questions = [];
-
-    for (var matiere in MATIERES) {
-
-        var data = MATIERES[matiere] || {};
-
-        for (var annee in data) {
-
-            var chapters = data[annee] || [];
-
-            for (var c = 0; c < chapters.length; c++) {
-
-                var chapter = chapters[c];
-                var exercises = getChapterExercises(chapter);
-
-                for (var e = 0; e < exercises.length; e++) {
-
-                    var ex = exercises[e];
-
-                    if (!ex || !ex.question) continue;
-
-                    questions.push({
-                        id:
-                            "q_" +
-                            matiere +
-                            "_" +
-                            annee +
-                            "_" +
-                            chapter.id +
-                            "_" +
-                            e,
-
-                        matiere: matiere,
-                        annee: annee,
-                        chapitre: chapter.id,
-
-                        chapitreTitre: getChapterTitle(chapter),
-
-                        question: ex.question,
-
-                        options:
-                            Array.isArray(ex.options)
-                                ? ex.options
-                                : [],
-
-                        correct:
-                            typeof ex.correct === "number"
-                                ? ex.correct
-                                : 0,
-
-                        correction:
-                            ex.correction || ""
-                    });
+            formules: [
+                {
+                    titre: "CCC",
+                    formule: "Côté – Côté – Côté",
+                    explication: "Si les trois côtés homologues de deux triangles ont la même longueur, les triangles sont isométriques."
+                },
+                {
+                    titre: "CAC",
+                    formule: "Côté – Angle – Côté",
+                    explication: "Deux côtés homologues de même longueur et l'angle compris de même amplitude suffisent."
+                },
+                {
+                    titre: "ACA",
+                    formule: "Angle – Côté – Angle",
+                    explication: "Un côté de même longueur, adjacent à deux angles homologues de même amplitude, suffit."
+                },
+                {
+                    titre: "HA",
+                    formule: "Hypoténuse – Angle aigu",
+                    explication: "Pour deux triangles rectangles : même hypoténuse et même angle aigu."
+                },
+                {
+                    titre: "HC",
+                    formule: "Hypoténuse – Côté",
+                    explication: "Pour deux triangles rectangles : même hypoténuse et même côté de l'angle droit."
                 }
-            }
-        }
-    }
+            ],
 
-    return questions;
-}
-
-
-/* =========================================================
-   LOCAL STORAGE
-   ========================================================= */
-
-function loadUserData() {
-
-    try {
-
-        var saved = localStorage.getItem("cesMathData");
-
-        if (saved) {
-
-            var parsed = JSON.parse(saved);
-
-            if (parsed && typeof parsed === "object") {
-
-                for (var key in parsed) {
-                    USER_DATA[key] = parsed[key];
+            methodes: [
+                {
+                    titre: "Prouver que deux triangles sont isométriques",
+                    etapes: [
+                        "Repérer les deux triangles concernés.",
+                        "Lister les données connues.",
+                        "Identifier un critère : CCC, CAC, ACA, HA ou HC.",
+                        "Écrire clairement les égalités utilisées.",
+                        "Conclure que les deux triangles sont isométriques.",
+                        "En déduire l'égalité de côtés ou d'angles homologues."
+                    ]
                 }
-            }
-        }
-
-
-        var favs = localStorage.getItem("cesMathFavoris");
-
-        if (favs) {
-
-            var parsedFavs = JSON.parse(favs);
-
-            if (Array.isArray(parsedFavs)) {
-                favorisFormules = parsedFavs;
-            }
-        }
-
-    } catch (error) {
-
-        console.warn(
-            "Impossible de charger les données sauvegardées.",
-            error
-        );
-    }
-
-
-    if (!USER_DATA.progress) {
-        USER_DATA.progress = {};
-    }
-
-    if (!USER_DATA.quizResults) {
-        USER_DATA.quizResults = {};
-    }
-
-    if (!USER_DATA.revisions) {
-        USER_DATA.revisions = {};
-    }
-
-    if (typeof USER_DATA.streak !== "number") {
-        USER_DATA.streak = 0;
-    }
-
-    if (typeof USER_DATA.xp !== "number") {
-        USER_DATA.xp = 0;
-    }
-}
-
-
-function saveUserData() {
-
-    try {
-
-        localStorage.setItem(
-            "cesMathData",
-            JSON.stringify(USER_DATA)
-        );
-
-        localStorage.setItem(
-            "cesMathFavoris",
-            JSON.stringify(favorisFormules)
-        );
-
-    } catch (error) {
-
-        console.warn(
-            "Impossible de sauvegarder les données.",
-            error
-        );
-    }
-}
-
-
-/* =========================================================
-   XP / NIVEAU
-   ========================================================= */
-
-function getLevel() {
-
-    var xp = Number(USER_DATA.xp) || 0;
-
-    return Math.floor(xp / 100) + 1;
-}
-
-
-function getLevelXP() {
-
-    var xp = Number(USER_DATA.xp) || 0;
-
-    return xp % 100;
-}
-
-
-function addXP(amount) {
-
-    amount = Number(amount) || 0;
-
-    USER_DATA.xp = (Number(USER_DATA.xp) || 0) + amount;
-
-    saveUserData();
-
-    updateHeaderStats();
-}
-
-
-function updateHeaderStats() {
-
-    var xp = Number(USER_DATA.xp) || 0;
-    var level = getLevel();
-    var levelXP = getLevelXP();
-
-
-    var headerXP = document.getElementById("headerXP");
-
-    if (headerXP) {
-        headerXP.textContent = xp;
-    }
-
-
-    var headerStreak =
-        document.getElementById("headerStreak");
-
-    if (headerStreak) {
-        headerStreak.textContent =
-            USER_DATA.streak || 0;
-    }
-
-
-    var sideLevel =
-        document.getElementById("sideLevel");
-
-    if (sideLevel) {
-        sideLevel.textContent = level;
-    }
-
-
-    var sideXP =
-        document.getElementById("sideXP");
-
-    if (sideXP) {
-        sideXP.textContent =
-            levelXP + " / 100 XP";
-    }
-
-
-    var fill =
-        document.getElementById("sideXPFill");
-
-    if (fill) {
-        fill.style.width =
-            Math.min(levelXP, 100) + "%";
-    }
-}
-
-
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
-
-function showTab(tab) {
-
-    currentTab = tab;
-
-    var tabs = [
-        "dashboard",
-        "cours",
-        "formules",
-        "entrainer",
-        "suivi"
-    ];
-
-
-    for (var i = 0; i < tabs.length; i++) {
-
-        var element =
-            document.getElementById(tabs[i]);
-
-        if (element) {
-            element.classList.add("hidden");
-        }
-
-
-        var nav =
-            document.getElementById(
-                "nav" +
-                tabs[i].charAt(0).toUpperCase() +
-                tabs[i].slice(1)
-            );
-
-        if (nav) {
-            nav.classList.remove("active");
-        }
-    }
-
-
-    var target =
-        document.getElementById(tab);
-
-    if (target) {
-        target.classList.remove("hidden");
-    }
-
-
-    var navTarget =
-        document.getElementById(
-            "nav" +
-            tab.charAt(0).toUpperCase() +
-            tab.slice(1)
-        );
-
-    if (navTarget) {
-        navTarget.classList.add("active");
-    }
-
-
-    updateMobileNavigation(tab);
-
-
-    if (tab === "dashboard") {
-        renderDashboard();
-    }
-
-    if (tab === "cours") {
-        renderMatiereSelector();
-    }
-
-    if (tab === "formules") {
-        renderFormules();
-    }
-
-    if (tab === "entrainer") {
-        updateQuizChapitres();
-    }
-
-    if (tab === "suivi") {
-        renderSuivi();
-    }
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
-
-
-function updateMobileNavigation(tab) {
-
-    var buttons = [
-        "mobileDashboard",
-        "mobileCours",
-        "mobileFormules",
-        "mobileEntrainer",
-        "mobileSuivi"
-    ];
-
-    for (var i = 0; i < buttons.length; i++) {
-
-        var element =
-            document.getElementById(buttons[i]);
-
-        if (element) {
-            element.classList.remove("active");
-        }
-    }
-
-
-    var map = {
-        dashboard: "mobileDashboard",
-        cours: "mobileCours",
-        formules: "mobileFormules",
-        entrainer: "mobileEntrainer",
-        suivi: "mobileSuivi"
-    };
-
-
-    if (map[tab]) {
-
-        var active =
-            document.getElementById(map[tab]);
-
-        if (active) {
-            active.classList.add("active");
-        }
-    }
-}
-
-
-function goHome() {
-    showTab("dashboard");
-}
-
-
-function toggleTheme() {
-
-    document.body.classList.toggle("dark");
-
-    var dark =
-        document.body.classList.contains("dark");
-
-
-    var button =
-        document.getElementById("themeBtn");
-
-    if (button) {
-        button.textContent =
-            dark ? "☀️" : "🌙";
-    }
-
-
-    localStorage.setItem(
-        "cesTheme",
-        dark ? "dark" : "light"
-    );
-}
-
-
-function loadTheme() {
-
-    var saved =
-        localStorage.getItem("cesTheme");
-
-    if (saved === "dark") {
-
-        document.body.classList.add("dark");
-
-        var button =
-            document.getElementById("themeBtn");
-
-        if (button) {
-            button.textContent = "☀️";
-        }
-    }
-}
-
-
-/* =========================================================
-   DASHBOARD
-   ========================================================= */
-
-function renderDashboard() {
-
-    updateHeaderStats();
-
-    renderSubjectProgress();
-
-    renderUrgentChapters();
-
-    renderFormulesDuJour();
-
-    updateGlobalProgress();
-
-    renderSuivi();
-}
-
-
-function countChapters() {
-
-    var total = 0;
-    var completed = 0;
-
-
-    for (var matiere in MATIERES) {
-
-        var data = MATIERES[matiere] || {};
-
-        for (var annee in data) {
-
-            var chapters = data[annee] || [];
-
-            total += chapters.length;
-
-
-            for (var i = 0; i < chapters.length; i++) {
-
-                if (
-                    Number(
-                        USER_DATA.progress[
-                            chapters[i].id
-                        ] || 0
-                    ) >= 100
-                ) {
-                    completed++;
+            ],
+
+            exemple: {
+                question: "Deux triangles ont trois côtés homologues respectivement égaux. Que peut-on conclure ?",
+                solution: "Ils sont isométriques par le critère CCC. On peut alors déduire que leurs angles homologues ont la même amplitude."
+            },
+
+            exercices: [
+                {
+                    question: "Quel critère utilise trois côtés homologues de même longueur ?",
+                    options: ["CCC", "CAC", "ACA", "HA"],
+                    correct: 0,
+                    correction: "CCC signifie Côté-Côté-Côté."
+                },
+                {
+                    question: "Dans le critère CAC, où doit se trouver l'angle ?",
+                    options: [
+                        "N'importe où",
+                        "Entre les deux côtés considérés",
+                        "Sur un troisième côté",
+                        "Uniquement à 90°"
+                    ],
+                    correct: 1,
+                    correction: "L'angle doit être compris entre les deux côtés homologues."
+                },
+                {
+                    question: "Deux triangles rectangles ont même hypoténuse et même côté de l'angle droit. Quel critère ?",
+                    options: ["CCC", "CAC", "HA", "HC"],
+                    correct: 3,
+                    correction: "C'est le critère HC : Hypoténuse-Côté."
                 }
-            }
-        }
-    }
+            ]
+        },
 
+        {
+            id: "3e_semblables",
+            titre: "Triangles semblables",
+            short: "Similitude",
+            desc: "Reconnaître des triangles semblables et utiliser les rapports de longueurs.",
+            niveau: "3e",
+            icone: "🔺",
+            categorie: "Géométrie",
 
-    return {
-        total: total,
-        completed: completed
-    };
-}
+            aSavoir: [
+                "Deux triangles semblables ont leurs angles homologues de même amplitude.",
+                "Les côtés homologues sont proportionnels.",
+                "Il faut toujours identifier correctement les côtés homologues.",
+                "La similitude permet de calculer une longueur inconnue grâce à une proportion."
+            ],
 
-
-function updateGlobalProgress() {
-
-    var stats = countChapters();
-
-    var percent =
-        stats.total > 0
-            ? Math.round(
-                stats.completed /
-                stats.total *
-                100
-            )
-            : 0;
-
-
-    var element =
-        document.getElementById("globalProgress");
-
-    if (element) {
-        element.textContent = percent;
-    }
-
-
-    var ring =
-        document.querySelector(".progress-ring");
-
-    if (ring) {
-
-        ring.style.background =
-            "conic-gradient(" +
-            "var(--primary) " +
-            (percent * 3.6) +
-            "deg, " +
-            "var(--line) " +
-            (percent * 3.6) +
-            "deg)";
-    }
-}
-
-
-function renderSubjectProgress() {
-
-    var container =
-        document.getElementById(
-            "progressionMatieres"
-        );
-
-    if (!container) return;
-
-
-    var html = "";
-
-    var matieres = [
-        "maths",
-        "geographie"
-    ];
-
-
-    for (var i = 0; i < matieres.length; i++) {
-
-        var matiere = matieres[i];
-
-        var info = MATIERE_INFO[matiere];
-
-        var stats = {
-            total: 0,
-            completed: 0
-        };
-
-
-        var data = MATIERES[matiere] || {};
-
-
-        for (var annee in data) {
-
-            var chapters = data[annee] || [];
-
-            stats.total += chapters.length;
-
-            for (
-                var c = 0;
-                c < chapters.length;
-                c++
-            ) {
-
-                if (
-                    Number(
-                        USER_DATA.progress[
-                            chapters[c].id
-                        ] || 0
-                    ) >= 100
-                ) {
-                    stats.completed++;
+            formules: [
+                {
+                    titre: "Rapports de similitude",
+                    formule: "AB/A'B' = AC/A'C' = BC/B'C'",
+                    explication: "Les rapports des longueurs homologues sont égaux."
+                },
+                {
+                    titre: "Coefficient de similitude",
+                    formule: "k = longueur image / longueur originale",
+                    explication: "Le même coefficient relie toutes les longueurs homologues."
                 }
-            }
-        }
-
-
-        var percent =
-            stats.total > 0
-                ? Math.round(
-                    stats.completed /
-                    stats.total *
-                    100
-                )
-                : 0;
-
-
-        html += `
-            <article
-                class="subject-card ${matiere === "maths" ? "maths" : "geo"}"
-                onclick="showMatiere('${matiere}')"
-            >
-
-                <div class="subject-icon">
-                    ${info.icone}
-                </div>
-
-                <h3>
-                    ${escapeHtml(info.nom)}
-                </h3>
-
-                <p>
-                    ${escapeHtml(info.description)}
-                </p>
-
-                <div class="subject-progress">
-
-                    <div class="subject-progress-line">
-                        <span>
-                            ${stats.completed} / ${stats.total} chapitres
-                        </span>
-
-                        <span>
-                            ${percent}%
-                        </span>
-                    </div>
-
-                    <div class="subject-progress-bar">
-                        <div
-                            style="width:${percent}%"
-                        ></div>
-                    </div>
-
-                </div>
-
-            </article>
-        `;
-    }
-
-
-    container.innerHTML = html;
-}
-
-
-function renderUrgentChapters() {
-
-    var container =
-        document.getElementById(
-            "chapitresUrgents"
-        );
-
-    if (!container) return;
-
-
-    var chapters = getAllChapters(
-        currentMatiere
-    );
-
-
-    chapters.sort(function(a, b) {
-
-        return (
-            Number(
-                USER_DATA.progress[a.chapter.id] || 0
-            ) -
-            Number(
-                USER_DATA.progress[b.chapter.id] || 0
-            )
-        );
-    });
-
-
-    var selected = chapters.slice(0, 4);
-
-    var html = "";
-
-
-    if (selected.length === 0) {
-
-        container.innerHTML = `
-            <div class="empty-state">
-                Aucun chapitre disponible.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    for (var i = 0; i < selected.length; i++) {
-
-        var item = selected[i];
-
-        var chapter = item.chapter;
-
-        var progress =
-            Number(
-                USER_DATA.progress[chapter.id] || 0
-            );
-
-
-        html += `
-            <div class="urgent-item">
-
-                <div class="urgent-main">
-
-                    <div class="urgent-icon">
-                        ${getChapterIcon(chapter)}
-                    </div>
-
-                    <div>
-
-                        <div class="urgent-title">
-                            ${escapeHtml(
-                                getChapterTitle(chapter)
-                            )}
-                        </div>
-
-                        <div class="urgent-sub">
-                            ${escapeHtml(item.annee)}
-                            · ${progress}% maîtrisé
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <button
-                    class="urgent-action"
-                    onclick="event.stopPropagation(); showAnnee('${item.annee}', '${item.matiere}')"
-                >
-                    Réviser →
-                </button>
-
-            </div>
-        `;
-    }
-
-
-    container.innerHTML = html;
-}
-
-
-function startRevision() {
-
-    var chapters = getAllChapters(
-        currentMatiere
-    );
-
-
-    if (chapters.length === 0) {
-
-        showTab("cours");
-
-        return;
-    }
-
-
-    chapters.sort(function(a, b) {
-
-        return (
-            Number(
-                USER_DATA.progress[a.chapter.id] || 0
-            ) -
-            Number(
-                USER_DATA.progress[b.chapter.id] || 0
-            )
-        );
-    });
-
-
-    var next = chapters[0];
-
-
-    showTab("cours");
-
-    showMatiere(next.matiere);
-
-    showAnnee(
-        next.annee,
-        next.matiere
-    );
-}
-
-
-/* =========================================================
-   COURS
-   ========================================================= */
-
-function renderMatiereSelector() {
-
-    var container =
-        document.getElementById(
-            "choixMatiere"
-        );
-
-    if (!container) return;
-
-
-    document
-        .getElementById("choixAnnee")
-        ?.classList.add("hidden");
-
-    document
-        .getElementById("contenuAnnee")
-        ?.classList.add("hidden");
-
-
-    var html = "";
-
-
-    var matieres = [
-        "maths",
-        "geographie"
-    ];
-
-
-    for (var i = 0; i < matieres.length; i++) {
-
-        var m = matieres[i];
-
-        var info = MATIERE_INFO[m];
-
-
-        html += `
-            <button
-                type="button"
-                class="subject-choice ${
-                    currentMatiere === m
-                        ? "active"
-                        : ""
-                }"
-                onclick="showMatiere('${m}')"
-            >
-
-                <div class="subject-choice-icon">
-                    ${info.icone}
-                </div>
-
-                <div>
-
-                    <strong>
-                        ${escapeHtml(info.nom)}
-                    </strong>
-
-                    <span>
-                        ${escapeHtml(info.description)}
-                    </span>
-
-                </div>
-
-            </button>
-        `;
-    }
-
-
-    container.innerHTML = html;
-}
-
-
-function showMatiere(matiere) {
-
-    if (!MATIERES[matiere]) {
-        matiere = "maths";
-    }
-
-
-    currentMatiere = matiere;
-
-
-    var selector =
-        document.getElementById(
-            "choixMatiere"
-        );
-
-    var years =
-        document.getElementById(
-            "choixAnnee"
-        );
-
-    var content =
-        document.getElementById(
-            "contenuAnnee"
-        );
-
-
-    if (selector) {
-        selector.classList.remove("hidden");
-    }
-
-    if (years) {
-        years.classList.remove("hidden");
-    }
-
-    if (content) {
-        content.classList.add("hidden");
-    }
-
-
-    if (selector) {
-        renderMatiereSelector();
-    }
-
-
-    var html = "";
-
-    var annees = [
-        "3e",
-        "4e",
-        "5e",
-        "6e"
-    ];
-
-
-    for (var i = 0; i < annees.length; i++) {
-
-        var annee = annees[i];
-
-        var count =
-            (MATIERES[matiere][annee] || [])
-                .length;
-
-
-        var progress = 0;
-
-        var chapters =
-            MATIERES[matiere][annee] || [];
-
-
-        for (
-            var c = 0;
-            c < chapters.length;
-            c++
-        ) {
-
-            if (
-                Number(
-                    USER_DATA.progress[
-                        chapters[c].id
-                    ] || 0
-                ) >= 100
-            ) {
-                progress++;
-            }
-        }
-
-
-        var percent =
-            count > 0
-                ? Math.round(
-                    progress /
-                    count *
-                    100
-                )
-                : 0;
-
-
-        html += `
-            <button
-                type="button"
-                class="year-card ${
-                    currentAnnee === annee
-                        ? "active"
-                        : ""
-                }"
-                onclick="showAnnee('${annee}')"
-            >
-
-                <strong>
-                    ${annee}
-                </strong>
-
-                <span>
-                    ${count} chapitres · ${percent}%
-                </span>
-
-            </button>
-        `;
-    }
-
-
-    if (years) {
-        years.innerHTML = html;
-    }
-}
-
-
-function showAnnee(annee, matiereOverride) {
-
-    if (matiereOverride) {
-        currentMatiere = matiereOverride;
-    }
-
-
-    currentAnnee = annee;
-
-
-    var years =
-        document.getElementById(
-            "choixAnnee"
-        );
-
-    var content =
-        document.getElementById(
-            "contenuAnnee"
-        );
-
-
-    if (years) {
-        years.classList.remove("hidden");
-    }
-
-    if (!content) return;
-
-
-    content.classList.remove("hidden");
-
-
-    var chapters =
-        (
-            MATIERES[currentMatiere] &&
-            MATIERES[currentMatiere][annee]
-        ) || [];
-
-
-    var info =
-        MATIERE_INFO[currentMatiere];
-
-
-    var html = `
-
-        <div class="course-header">
-
-            <div class="course-title">
-
-                <span class="eyebrow">
-                    ${info.icone}
-                    ${escapeHtml(info.nom)}
-                </span>
-
-                <h2>
-                    ${escapeHtml(annee)} année
-                </h2>
-
-                <p>
-                    ${chapters.length}
-                    chapitres dans ton carnet.
-                </p>
-
-            </div>
-
-            <button
-                class="soft-btn"
-                onclick="showTab('entrainer'); prepareQuiz('${annee}')"
-            >
-                🎮 S'entraîner
-            </button>
-
-        </div>
-
-        <div class="chapter-grid">
-    `;
-
-
-    if (chapters.length === 0) {
-
-        html += `
-            <div class="paper-panel">
-                Aucun chapitre disponible pour cette année.
-            </div>
-        `;
-
-    } else {
-
-        for (
-            var i = 0;
-            i < chapters.length;
-            i++
-        ) {
-
-            var chapter = chapters[i];
-
-            var progress =
-                Number(
-                    USER_DATA.progress[
-                        chapter.id
-                    ] || 0
-                );
-
-
-            html += `
-
-                <article
-                    class="chapter-card"
-                    onclick="openChapter('${chapter.id}', '${currentMatiere}', '${annee}')"
-                >
-
-                    <div class="chapter-card-top">
-
-                        <span class="chapter-number">
-                            CHAPITRE ${i + 1}
-                        </span>
-
-                        <span>
-                            ${getChapterIcon(chapter)}
-                        </span>
-
-                    </div>
-
-                    <h3>
-                        ${escapeHtml(
-                            getChapterTitle(chapter)
-                        )}
-                    </h3>
-
-                    <p>
-                        ${escapeHtml(
-                            getChapterDescription(chapter)
-                        )}
-                    </p>
-
-                    <div class="chapter-meta">
-
-                        <span class="chapter-tag">
-                            ${progress}% maîtrisé
-                        </span>
-
-                        <span class="chapter-tag">
-                            ${getChapterExercises(chapter).length}
-                            exercice(s)
-                        </span>
-
-                    </div>
-
-                </article>
-            `;
-        }
-    }
-
-
-    html += `
-        </div>
-    `;
-
-
-    content.innerHTML = html;
-
-
-    content.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-}
-
-
-function openChapter(id, matiere, annee) {
-
-    var chapters =
-        (
-            MATIERES[matiere] &&
-            MATIERES[matiere][annee]
-        ) || [];
-
-
-    var chapter = null;
-
-
-    for (
-        var i = 0;
-        i < chapters.length;
-        i++
-    ) {
-
-        if (chapters[i].id === id) {
-
-            chapter = chapters[i];
-
-            break;
-        }
-    }
-
-
-    if (!chapter) return;
-
-
-    var content =
-        document.getElementById(
-            "contenuAnnee"
-        );
-
-    if (!content) return;
-
-
-    var progress =
-        Number(
-            USER_DATA.progress[id] || 0
-        );
-
-
-    var html = `
-
-        <div class="course-detail">
-
-            <div class="course-header">
-
-                <div class="course-title">
-
-                    <span class="eyebrow">
-                        ${getChapterIcon(chapter)}
-                        ${escapeHtml(annee)}
-                    </span>
-
-                    <h2>
-                        ${escapeHtml(
-                            getChapterTitle(chapter)
-                        )}
-                    </h2>
-
-                    <p>
-                        Progression :
-                        <strong>${progress}%</strong>
-                    </p>
-
-                </div>
-
-                <button
-                    class="soft-btn"
-                    onclick="markChapter('${id}')"
-                >
-                    ✓ Marquer comme révisé
-                </button>
-
-            </div>
-
-    `;
-
-
-    if (chapter.cours) {
-
-        html += `
-            <div class="course-body">
-                ${chapter.cours}
-            </div>
-        `;
-    }
-
-
-    if (
-        Array.isArray(chapter.objectifs) &&
-        chapter.objectifs.length
-    ) {
-
-        html += `
-            <h3>
-                🎯 Objectifs
-            </h3>
-
-            <ul>
-        `;
-
-
-        for (
-            var o = 0;
-            o < chapter.objectifs.length;
-            o++
-        ) {
-
-            html += `
-                <li>
-                    ${escapeHtml(
-                        chapter.objectifs[o]
-                    )}
-                </li>
-            `;
-        }
-
-
-        html += `
-            </ul>
-        `;
-    }
-
-
-    if (
-        Array.isArray(chapter.matieres) &&
-        chapter.matieres.length
-    ) {
-
-        html += `
-            <h3>
-                🧩 Notions clés
-            </h3>
-
-            <div class="chapter-meta">
-        `;
-
-
-        for (
-            var m = 0;
-            m < chapter.matieres.length;
-            m++
-        ) {
-
-            html += `
-                <span class="chapter-tag">
-                    ${escapeHtml(
-                        chapter.matieres[m]
-                    )}
-                </span>
-            `;
-        }
-
-
-        html += `
-            </div>
-        `;
-    }
-
-
-    if (
-        getChapterExercises(chapter).length
-    ) {
-
-        html += `
-            <h3>
-                🎮 Exercices disponibles
-            </h3>
-
-            <p>
-                ${getChapterExercises(chapter).length}
-                question(s) dans ce chapitre.
-            </p>
-
-            <button
-                class="primary-btn"
-                style="margin-top:15px"
-                onclick="launchChapterQuiz('${id}', '${matiere}', '${annee}')"
-            >
-                Commencer les exercices →
-            </button>
-        `;
-    }
-
-
-    html += `
-        </div>
-    `;
-
-
-    content.innerHTML = html;
-
-
-    content.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-}
-
-
-function markChapter(id) {
-
-    USER_DATA.progress[id] = 100;
-
-    USER_DATA.revisions[id] =
-        (USER_DATA.revisions[id] || 0) + 1;
-
-
-    addXP(25);
-
-    saveUserData();
-
-    renderDashboard();
-
-
-    alert(
-        "Chapitre marqué comme révisé ! +25 XP ⭐"
-    );
-}
-
-
-/* =========================================================
-   FORMULES
-   ========================================================= */
-
-function getAllFormulas() {
-
-    var all = [];
-
-    if (
-        typeof FORMULES_DATA === "undefined"
-    ) {
-        return all;
-    }
-
-
-    for (
-        var categorie in FORMULES_DATA
-    ) {
-
-        var list =
-            FORMULES_DATA[categorie] || [];
-
-
-        for (
-            var i = 0;
-            i < list.length;
-            i++
-        ) {
-
-            var formula = list[i];
-
-            formula._categorie =
-                categorie;
-
-            all.push(formula);
-        }
-    }
-
-
-    return all;
-}
-
-
-function renderFormules() {
-
-    var container =
-        document.getElementById(
-            "formulesList"
-        );
-
-    if (!container) return;
-
-
-    var searchInput =
-        document.getElementById(
-            "formuleSearch"
-        );
-
-
-    var search =
-        searchInput
-            ? searchInput.value.toLowerCase().trim()
-            : "";
-
-
-    var formulas =
-        getAllFormulas();
-
-
-    var html = "";
-
-    var total = 0;
-
-
-    for (
-        var i = 0;
-        i < formulas.length;
-        i++
-    ) {
-
-        var f = formulas[i];
-
-
-        if (
-            activeFormulaCategory !== "all" &&
-            f._categorie !==
-                activeFormulaCategory
-        ) {
-            continue;
-        }
-
-
-        var searchable =
-            (
-                (f.titre || "") +
-                " " +
-                (f.definition || "") +
-                " " +
-                (f.exemple || "")
-            ).toLowerCase();
-
-
-        if (
-            search &&
-            searchable.indexOf(search) === -1
-        ) {
-            continue;
-        }
-
-
-        total++;
-
-
-        var favorite =
-            favorisFormules.indexOf(f.id) !== -1;
-
-
-        html += `
-
-            <article
-                class="formula-card"
-            >
-
-                <button
-                    class="favorite-formula ${
-                        favorite ? "active" : ""
-                    }"
-                    onclick="toggleFavoriFormule('${f.id}')"
-                    title="Ajouter aux favoris"
-                >
-                    ${favorite ? "⭐" : "☆"}
-                </button>
-
-
-                <small>
-                    ${escapeHtml(
-                        f.categorie ||
-                        f._categorie ||
-                        "Formule"
-                    )}
-                </small>
-
-
-                <h3>
-                    ${f.icone || "📐"}
-                    ${escapeHtml(
-                        f.titre || ""
-                    )}
-                </h3>
-
-
-                <div class="formula-expression">
-                    ${f.exemple || ""}
-                </div>
-
-
-                <p>
-                    ${f.definition || ""}
-                </p>
-
-            </article>
-
-        `;
-    }
-
-
-    var count =
-        document.getElementById(
-            "formulesCount"
-        );
-
-    if (count) {
-        count.textContent = total;
-    }
-
-
-    container.innerHTML =
-        total > 0
-            ? html
-            : `
-                <div class="paper-panel">
-                    Aucune formule trouvée.
-                </div>
-            `;
-}
-
-
-function rechercherFormule() {
-    renderFormules();
-}
-
-
-function filtrerFormules(
-    categorie,
-    button
-) {
-
-    activeFormulaCategory =
-        categorie;
-
-
-    var pills =
-        document.querySelectorAll(
-            "#filtresFormules .pill"
-        );
-
-
-    for (
-        var i = 0;
-        i < pills.length;
-        i++
-    ) {
-        pills[i].classList.remove(
-            "active"
-        );
-    }
-
-
-    if (button) {
-        button.classList.add("active");
-    }
-
-
-    renderFormules();
-}
-
-
-function toggleFavoriFormule(id) {
-
-    var index =
-        favorisFormules.indexOf(id);
-
-
-    if (index !== -1) {
-
-        favorisFormules.splice(
-            index,
-            1
-        );
-
-    } else {
-
-        favorisFormules.push(id);
-    }
-
-
-    saveUserData();
-
-    renderFormules();
-
-    renderSuivi();
-}
-
-
-function renderFormulesDuJour() {
-
-    var container =
-        document.getElementById(
-            "formulesDuJour"
-        );
-
-    if (!container) return;
-
-
-    var formulas =
-        getAllFormulas();
-
-
-    if (formulas.length === 0) {
-
-        container.innerHTML =
-            "<div>Aucune formule disponible.</div>";
-
-        return;
-    }
-
-
-    var selected =
-        shuffle(formulas).slice(0, 3);
-
-
-    var html = "";
-
-
-    for (
-        var i = 0;
-        i < selected.length;
-        i++
-    ) {
-
-        var f = selected[i];
-
-
-        html += `
-            <div class="formula-mini">
-
-                <small>
-                    ${f.icone || "📐"}
-                    ${escapeHtml(
-                        f.categorie ||
-                        "Maths"
-                    )}
-                </small>
-
-                <strong>
-                    ${escapeHtml(
-                        f.titre || ""
-                    )}
-                </strong>
-
-                <div>
-                    ${f.exemple || ""}
-                </div>
-
-            </div>
-        `;
-    }
-
-
-    container.innerHTML = html;
-}
-
-
-/* =========================================================
-   QUIZ
-   ========================================================= */
-
-function buildQuestionsQuiz() {
-
-    QUESTIONS_QUIZ =
-        getAllQuestions();
-
-    return QUESTIONS_QUIZ;
-}
-
-
-function updateQuizChapitres() {
-
-    var yearSelect =
-        document.getElementById(
-            "quizAnnee"
-        );
-
-    var chapterSelect =
-        document.getElementById(
-            "quizChapitre"
-        );
-
-
-    if (!yearSelect || !chapterSelect) {
-        return;
-    }
-
-
-    var annee =
-        yearSelect.value;
-
-
-    chapterSelect.innerHTML =
-        `<option value="all">
-            Tous les chapitres
-        </option>`;
-
-
-    for (
-        var matiere in MATIERES
-    ) {
-
-        var chapters =
-            MATIERES[matiere][annee] || [];
-
-
-        for (
-            var i = 0;
-            i < chapters.length;
-            i++
-        ) {
-
-            chapterSelect.innerHTML += `
-                <option value="${escapeHtml(
-                    chapters[i].id
-                )}">
-                    ${getChapterIcon(chapters[i])}
-                    ${escapeHtml(
-                        getChapterTitle(
-                            chapters[i]
-                        )
-                    )}
-                </option>
-            `;
-        }
-    }
-}
-
-
-function prepareQuiz(annee) {
-
-    var select =
-        document.getElementById(
-            "quizAnnee"
-        );
-
-
-    if (select) {
-        select.value = annee;
-
-        updateQuizChapitres();
-    }
-}
-
-
-function startQuiz() {
-
-    var yearSelect =
-        document.getElementById(
-            "quizAnnee"
-        );
-
-    var chapterSelect =
-        document.getElementById(
-            "quizChapitre"
-        );
-
-
-    var annee =
-        yearSelect
-            ? yearSelect.value
-            : "3e";
-
-
-    var chapitre =
-        chapterSelect
-            ? chapterSelect.value
-            : "all";
-
-
-    buildQuestionsQuiz();
-
-
-    var questions =
-        QUESTIONS_QUIZ.filter(
-            function(q) {
-
-                if (q.annee !== annee) {
-                    return false;
+            ],
+
+            methodes: [
+                {
+                    titre: "Calculer une longueur avec des triangles semblables",
+                    etapes: [
+                        "Identifier les deux triangles.",
+                        "Identifier les côtés homologues.",
+                        "Écrire un rapport de longueurs correspondant.",
+                        "Construire une proportion.",
+                        "Résoudre la proportion.",
+                        "Vérifier que les unités sont cohérentes."
+                    ]
+                },
+                {
+                    titre: "Justifier que deux triangles sont semblables",
+                    etapes: [
+                        "Comparer les angles connus.",
+                        "Utiliser les critères de similitude vus au cours.",
+                        "Identifier les correspondances entre sommets.",
+                        "En déduire les rapports de côtés homologues."
+                    ]
                 }
+            ],
 
-                if (
-                    chapitre !== "all" &&
-                    q.chapitre !== chapitre
-                ) {
-                    return false;
+            exemple: {
+                question: "Deux triangles semblables ont un coefficient de similitude 2. Un côté du premier mesure 4 cm. Combien mesure le côté homologue ?",
+                solution: "4 × 2 = 8 cm."
+            },
+
+            exercices: [
+                {
+                    question: "Dans des triangles semblables, que peut-on dire des côtés homologues ?",
+                    options: [
+                        "Ils sont toujours égaux",
+                        "Ils sont proportionnels",
+                        "Ils sont perpendiculaires",
+                        "Ils n'ont aucun rapport"
+                    ],
+                    correct: 1,
+                    correction: "Les côtés homologues sont proportionnels."
+                },
+                {
+                    question: "Si le coefficient de similitude vaut 3 et qu'un côté mesure 5 cm, le côté homologue mesure...",
+                    options: ["8 cm", "15 cm", "2 cm", "25 cm"],
+                    correct: 1,
+                    correction: "5 × 3 = 15 cm."
                 }
+            ]
+        },
 
-                return true;
-            }
-        );
+        {
+            id: "3e_thales",
+            titre: "Théorème de Thalès",
+            short: "Thalès",
+            desc: "Utiliser les configurations de parallélisme et les rapports de longueurs.",
+            niveau: "3e",
+            icone: "📏",
+            categorie: "Géométrie",
 
+            aSavoir: [
+                "Le théorème de Thalès s'utilise dans une configuration avec des droites parallèles.",
+                "Il permet de mettre en relation des longueurs homologues.",
+                "La rédaction doit préciser la configuration et le parallélisme utilisé."
+            ],
 
-    if (questions.length === 0) {
+            formules: [
+                {
+                    titre: "Rapport de Thalès",
+                    formule: "AB/AC = AD/AE = BD/CE",
+                    explication: "Dans la configuration correspondante, les rapports de longueurs homologues sont égaux."
+                }
+            ],
 
-        alert(
-            "Aucune question disponible pour cette sélection."
-        );
+            methodes: [
+                {
+                    titre: "Calculer une longueur avec Thalès",
+                    etapes: [
+                        "Identifier les deux triangles concernés.",
+                        "Repérer les droites parallèles.",
+                        "Écrire les rapports de longueurs homologues.",
+                        "Remplacer par les valeurs connues.",
+                        "Résoudre la proportion.",
+                        "Conclure avec l'unité."
+                    ]
+                }
+            ],
 
-        return;
-    }
+            exemple: {
+                question: "Une configuration de Thalès donne AB/AC = AD/AE. Si trois longueurs sont connues, comment trouver la quatrième ?",
+                solution: "On remplace les longueurs connues dans la proportion puis on effectue un produit en croix."
+            },
 
+            exercices: [
+                {
+                    question: "Quelle information géométrique est essentielle pour appliquer Thalès ?",
+                    options: [
+                        "Des droites parallèles",
+                        "Deux angles droits obligatoires",
+                        "Un cercle",
+                        "Deux côtés égaux"
+                    ],
+                    correct: 0,
+                    correction: "Le parallélisme est l'élément clé de la configuration de Thalès."
+                }
+            ]
+        },
 
-    currentQuiz = {
-        index: 0,
-        questions:
-            shuffle(questions),
-        answers: [],
-        score: 0,
-        total: Math.min(
-            questions.length,
-            10
-        ),
-        answered: false
-    };
+        {
+            id: "3e_angles",
+            titre: "Angles et cercle",
+            short: "Angles",
+            desc: "Relations entre angles inscrits, angles au centre et angles associés.",
+            niveau: "3e",
+            icone: "⭕",
+            categorie: "Géométrie",
 
+            aSavoir: [
+                "Des angles inscrits peuvent intercepter le même arc.",
+                "Les angles au centre et les angles inscrits sont reliés par des propriétés spécifiques.",
+                "Des relations entre angles permettent de calculer des amplitudes inconnues.",
+                "Les angles à côtés perpendiculaires peuvent également être exploités."
+            ],
 
-    currentQuiz.questions =
-        currentQuiz.questions.slice(
-            0,
-            currentQuiz.total
-        );
+            formules: [
+                {
+                    titre: "Angle inscrit",
+                    formule: "Relations entre angles inscrits interceptant le même arc",
+                    explication: "Deux angles inscrits interceptant le même arc ont la même amplitude."
+                },
+                {
+                    titre: "Angle au centre / inscrit",
+                    formule: "angle au centre = 2 × angle inscrit",
+                    explication: "Lorsqu'ils interceptent le même arc."
+                }
+            ],
 
+            methodes: [
+                {
+                    titre: "Calculer un angle dans un cercle",
+                    etapes: [
+                        "Repérer les angles concernés.",
+                        "Identifier l'arc intercepté.",
+                        "Déterminer s'il s'agit d'un angle inscrit ou au centre.",
+                        "Appliquer la relation adaptée.",
+                        "Conclure avec l'amplitude en degrés."
+                    ]
+                }
+            ],
 
-    showTab("entrainer");
+            exercices: [
+                {
+                    question: "Deux angles inscrits interceptent le même arc. Que peut-on dire ?",
+                    options: [
+                        "Ils sont supplémentaires",
+                        "Ils ont la même amplitude",
+                        "Ils sont toujours droits",
+                        "Ils sont opposés"
+                    ],
+                    correct: 1,
+                    correction: "Deux angles inscrits qui interceptent le même arc ont la même amplitude."
+                }
+            ]
+        },
 
-    renderQuizQuestion();
-}
+        {
+            id: "3e_trigo",
+            titre: "Trigonométrie",
+            short: "Trigonométrie",
+            desc: "Calculer des longueurs et des angles dans un triangle rectangle.",
+            niveau: "3e",
+            icone: "📐",
+            categorie: "Trigonométrie",
 
+            aSavoir: [
+                "La trigonométrie relie les angles et les longueurs dans un triangle rectangle.",
+                "Il faut identifier le côté opposé, le côté adjacent et l'hypoténuse par rapport à l'angle étudié.",
+                "Le choix entre sinus, cosinus et tangente dépend des côtés connus et recherchés."
+            ],
 
-function launchChapterQuiz(
-    id,
-    matiere,
-    annee
-) {
+            formules: [
+                {
+                    titre: "Sinus",
+                    formule: "sin(α) = opposé / hypoténuse",
+                    explication: "À utiliser lorsque l'on travaille avec le côté opposé et l'hypoténuse."
+                },
+                {
+                    titre: "Cosinus",
+                    formule: "cos(α) = adjacent / hypoténuse",
+                    explication: "À utiliser avec le côté adjacent et l'hypoténuse."
+                },
+                {
+                    titre: "Tangente",
+                    formule: "tan(α) = opposé / adjacent",
+                    explication: "À utiliser avec les deux côtés de l'angle droit."
+                }
+            ],
 
-    var chapters =
-        (
-            MATIERES[matiere] &&
-            MATIERES[matiere][annee]
-        ) || [];
+            methodes: [
+                {
+                    titre: "Choisir la bonne relation",
+                    etapes: [
+                        "Repérer l'angle connu ou recherché.",
+                        "Identifier les côtés opposé, adjacent et hypoténuse.",
+                        "Regarder les deux longueurs disponibles.",
+                        "Choisir sinus, cosinus ou tangente.",
+                        "Écrire la relation.",
+                        "Isoler l'inconnue.",
+                        "Utiliser la calculatrice en mode degrés si nécessaire."
+                    ]
+                }
+            ],
 
+            exemple: {
+                question: "Dans un triangle rectangle, on connaît l'hypoténuse et le côté opposé à α. Quelle relation utiliser ?",
+                solution: "Le sinus : sin(α) = opposé / hypoténuse."
+            },
 
-    var chapter = null;
+            exercices: [
+                {
+                    question: "sin(α) correspond à...",
+                    options: [
+                        "adjacent / hypoténuse",
+                        "opposé / hypoténuse",
+                        "opposé / adjacent",
+                        "hypoténuse / opposé"
+                    ],
+                    correct: 1,
+                    correction: "sin(α) = côté opposé / hypoténuse."
+                },
+                {
+                    question: "cos(α) correspond à...",
+                    options: [
+                        "adjacent / hypoténuse",
+                        "opposé / hypoténuse",
+                        "opposé / adjacent",
+                        "hypoténuse / adjacent"
+                    ],
+                    correct: 0,
+                    correction: "cos(α) = côté adjacent / hypoténuse."
+                },
+                {
+                    question: "tan(α) correspond à...",
+                    options: [
+                        "opposé / hypoténuse",
+                        "adjacent / hypoténuse",
+                        "opposé / adjacent",
+                        "hypoténuse / adjacent"
+                    ],
+                    correct: 2,
+                    correction: "tan(α) = côté opposé / côté adjacent."
+                }
+            ]
+        },
 
+        // =====================================================
+        // 3E — ALGÈBRE
+        // =====================================================
 
-    for (
-        var i = 0;
-        i < chapters.length;
-        i++
-    ) {
+        {
+            id: "3e_racines",
+            titre: "Racines carrées et racines cubiques",
+            short: "Racines",
+            desc: "Manipuler, simplifier et calculer avec les radicaux.",
+            niveau: "3e",
+            icone: "√",
+            categorie: "Algèbre",
 
-        if (chapters[i].id === id) {
+            aSavoir: [
+                "La racine carrée d'un nombre positif est le nombre positif dont le carré donne ce nombre.",
+                "Pour simplifier une racine, on recherche un carré parfait dans le radicande.",
+                "Les propriétés des radicaux permettent de transformer certaines expressions.",
+                "La racine cubique de a est le nombre dont le cube vaut a."
+            ],
 
-            chapter = chapters[i];
+            formules: [
+                {
+                    titre: "Racine carrée",
+                    formule: "√(a²) = |a|",
+                    explication: "La racine carrée est toujours positive ou nulle."
+                },
+                {
+                    titre: "Produit",
+                    formule: "√(ab) = √a × √b",
+                    explication: "Pour des nombres auxquels cette propriété s'applique."
+                },
+                {
+                    titre: "Racine cubique",
+                    formule: "∛a × ∛a × ∛a = a",
+                    explication: "Définition de la racine cubique."
+                },
+                {
+                    titre: "Produit — racines cubiques",
+                    formule: "∛(ab) = ∛a × ∛b",
+                    explication: "Propriété présentée dans le cours."
+                }
+            ],
 
-            break;
+            methodes: [
+                {
+                    titre: "Simplifier une racine carrée",
+                    etapes: [
+                        "Décomposer le nombre sous la racine.",
+                        "Chercher le plus grand carré parfait possible.",
+                        "Séparer la racine.",
+                        "Extraire la racine du carré parfait.",
+                        "Laisser le reste sous le radical."
+                    ]
+                }
+            ],
+
+            exemple: {
+                question: "Simplifier √75.",
+                solution: "75 = 25 × 3, donc √75 = √25 × √3 = 5√3."
+            },
+
+            exercices: [
+                {
+                    question: "Quel carré parfait peut-on extraire de √75 ?",
+                    options: ["3", "5", "25", "75"],
+                    correct: 2,
+                    correction: "75 = 25 × 3 et 25 est un carré parfait."
+                },
+                {
+                    question: "Que signifie ∛27 ?",
+                    options: ["3", "9", "27²", "1/3"],
+                    correct: 0,
+                    correction: "3³ = 27, donc ∛27 = 3."
+                }
+            ]
+        },
+
+        {
+            id: "3e_polynomes",
+            titre: "Polynômes et factorisation",
+            short: "Polynômes",
+            desc: "Développer, factoriser et reconnaître les identités remarquables.",
+            niveau: "3e",
+            icone: "🔢",
+            categorie: "Algèbre",
+
+            aSavoir: [
+                "Factoriser consiste à transformer une somme ou différence en produit.",
+                "Il faut rechercher un facteur commun avant d'utiliser une identité remarquable.",
+                "Les identités remarquables sont des outils de développement et de factorisation.",
+                "La règle du produit nul permet ensuite de résoudre certaines équations."
+            ],
+
+            formules: [
+                {
+                    titre: "Carré d'une somme",
+                    formule: "(a+b)² = a² + 2ab + b²",
+                    explication: "Première identité remarquable."
+                },
+                {
+                    titre: "Carré d'une différence",
+                    formule: "(a-b)² = a² - 2ab + b²",
+                    explication: "Deuxième identité remarquable."
+                },
+                {
+                    titre: "Différence de carrés",
+                    formule: "a²-b² = (a-b)(a+b)",
+                    explication: "Troisième identité remarquable."
+                },
+                {
+                    titre: "Produit nul",
+                    formule: "A × B = 0 ⇔ A = 0 ou B = 0",
+                    explication: "Permet de résoudre une équation factorisée."
+                }
+            ],
+
+            methodes: [
+                {
+                    titre: "Factoriser par facteur commun",
+                    etapes: [
+                        "Chercher ce qui est commun aux termes.",
+                        "Mettre le facteur commun devant une parenthèse.",
+                        "Écrire ce qui reste dans la parenthèse.",
+                        "Vérifier en développant."
+                    ]
+                },
+                {
+                    titre: "Factoriser avec une identité remarquable",
+                    etapes: [
+                        "Reconnaître la forme de l'expression.",
+                        "Identifier a et b.",
+                        "Choisir l'identité remarquable.",
+                        "Écrire la forme factorisée."
+                    ]
+                }
+            ],
+
+            exemple: {
+                question: "Factoriser x² - 9.",
+                solution: "x² - 9 = x² - 3² = (x-3)(x+3)."
+            },
+
+            exercices: [
+                {
+                    question: "Quelle identité correspond à a²-b² ?",
+                    options: [
+                        "(a-b)²",
+                        "(a+b)²",
+                        "(a-b)(a+b)",
+                        "a²+2ab+b²"
+                    ],
+                    correct: 2,
+                    correction: "a²-b² = (a-b)(a+b)."
+                },
+                {
+                    question: "Si A × B = 0, alors...",
+                    options: [
+                        "A = B",
+                        "A = 0 ou B = 0",
+                        "A+B = 0",
+                        "A et B sont positifs"
+                    ],
+                    correct: 1,
+                    correction: "C'est la règle du produit nul."
+                }
+            ]
+        },
+
+        // =====================================================
+        // 3E — FONCTIONS
+        // =====================================================
+
+        {
+            id: "3e_fonctions",
+            titre: "Approche graphique d'une fonction",
+            short: "Fonctions",
+            desc: "Lire, interpréter et exploiter une fonction à partir d'un graphique, tableau ou formule.",
+            niveau: "3e",
+            icone: "📈",
+            categorie: "Analyse",
+
+            aSavoir: [
+                "Une fonction associe à un antécédent une image.",
+                "f(2)=3 signifie que l'image de 2 est 3.",
+                "Le domaine est l'ensemble des valeurs de x pour lesquelles la fonction est définie.",
+                "L'ensemble image rassemble les valeurs obtenues par la fonction.",
+                "Un zéro est une valeur de x telle que f(x)=0.",
+                "L'ordonnée à l'origine correspond à f(0).",
+                "Une fonction peut être croissante, décroissante ou constante sur un intervalle."
+            ],
+
+            formules: [
+                {
+                    titre: "Image",
+                    formule: "y = f(x)",
+                    explication: "y est l'image de l'antécédent x."
+                },
+                {
+                    titre: "Zéro",
+                    formule: "f(x) = 0",
+                    explication: "Les zéros correspondent graphiquement aux intersections avec l'axe des abscisses."
+                },
+                {
+                    titre: "Ordonnée à l'origine",
+                    formule: "f(0)",
+                    explication: "C'est la valeur lue sur l'axe des ordonnées lorsque x=0."
+                }
+            ],
+
+            methodes: [
+                {
+                    titre: "Lire une image sur un graphique",
+                    etapes: [
+                        "Partir de l'antécédent sur l'axe des x.",
+                        "Monter ou descendre jusqu'au graphique.",
+                        "Rejoindre l'axe des y.",
+                        "Lire l'image."
+                    ]
+                },
+                {
+                    titre: "Trouver un zéro",
+                    etapes: [
+                        "Repérer les intersections de la courbe avec l'axe des abscisses.",
+                        "Lire les abscisses de ces points.",
+                        "Ces abscisses sont les zéros."
+                    ]
+                },
+                {
+                    titre: "Déterminer le signe",
+                    etapes: [
+                        "Repérer les zéros.",
+                        "Observer les portions de courbe au-dessus de l'axe des x.",
+                        "Observer les portions sous l'axe des x.",
+                        "Écrire les intervalles où f(x)>0, f(x)<0 ou f(x)=0."
+                    ]
+                }
+            ],
+
+            exemple: {
+                question: "Que signifie f(2)=3 ?",
+                solution: "L'image de 2 par la fonction f est 3."
+            },
+
+            exercices: [
+                {
+                    question: "Que signifie f(2)=3 ?",
+                    options: [
+                        "L'image de 2 est 3",
+                        "L'antécédent de 3 est 2 uniquement",
+                        "Le domaine est 3",
+                        "La fonction vaut toujours 3"
+                    ],
+                    correct: 0,
+                    correction: "f(2)=3 signifie que l'image de 2 est 3."
+                },
+                {
+                    question: "Graphiquement, un zéro est...",
+                    options: [
+                        "Une intersection avec l'axe des ordonnées",
+                        "Une intersection avec l'axe des abscisses",
+                        "Le sommet",
+                        "Le point le plus haut"
+                    ],
+                    correct: 1,
+                    correction: "Un zéro correspond à f(x)=0, donc à l'axe des abscisses."
+                }
+            ]
+        },
+
+        {
+            id: "3e_premier_degre",
+            titre: "Fonction du premier degré",
+            short: "Premier degré",
+            desc: "Comprendre y = mx + p, pente, ordonnée à l'origine, signe et variations.",
+            niveau: "3e",
+            icone: "📊",
+            categorie: "Analyse",
+
+            aSavoir: [
+                "Une fonction du premier degré s'écrit f(x)=mx+p.",
+                "m est le taux d'accroissement, aussi appelé pente de la droite.",
+                "p est l'ordonnée à l'origine.",
+                "Si m>0, la fonction est croissante.",
+                "Si m<0, la fonction est décroissante.",
+                "Si m=0, la fonction est constante.",
+                "Si p=0, f(x)=mx est une fonction linéaire.",
+                "Si p≠0, on parle de fonction affine."
+            ],
+
+            formules: [
+                {
+                    titre: "Forme générale",
+                    formule: "f(x)=mx+p",
+                    explication: "m est le taux d'accroissement et p l'ordonnée à l'origine."
+                },
+                {
+                    titre: "Zéro",
+                    formule: "x₀ = -p/m",
+                    explication: "Pour une fonction du premier degré avec m≠0."
+                },
+                {
+                    titre: "Ordonnée à l'origine",
+                    formule: "f(0)=p",
+                    explication: "Le point d'intersection avec l'axe des ordonnées est (0,p)."
+                },
+                {
+                    titre: "Taux d'accroissement",
+                    formule: "m = (yB-yA)/(xB-xA)",
+                    explication: "Calcul à partir de deux points de la droite."
+                }
+            ],
+
+            methodes: [
+                {
+                    titre: "Déterminer m avec deux points",
+                    etapes: [
+                        "Choisir deux points A(xA,yA) et B(xB,yB).",
+                        "Calculer Δy = yB-yA.",
+                        "Calculer Δx = xB-xA.",
+                        "Calculer m = Δy/Δx.",
+                        "Utiliser ensuite un point pour trouver p."
+                    ]
+                },
+                {
+                    titre: "Trouver le zéro",
+                    etapes: [
+                        "Poser f(x)=0.",
+                        "Écrire mx+p=0.",
+                        "Isoler mx.",
+                        "Obtenir x=-p/m."
+                    ]
+                }
+            ],
+
+            exemple: {
+                question: "Pour f(x)=3x-2, déterminer l'ordonnée à l'origine et le zéro.",
+                solution: "p=-2. Le zéro vérifie 3x-2=0, donc x=2/3."
+            },
+
+            exercices: [
+                {
+                    question: "Dans f(x)=3x-2, quelle est la valeur de m ?",
+                    options: ["-2", "2", "3", "5"],
+                    correct: 2,
+                    correction: "Dans mx+p, m est le coefficient de x : m=3."
+                },
+                {
+                    question: "Une fonction du premier degré est croissante si...",
+                    options: ["m<0", "m>0", "p<0", "p>0"],
+                    correct: 1,
+                    correction: "Elle est croissante lorsque m>0."
+                },
+                {
+                    question: "L'ordonnée à l'origine de f(x)=mx+p vaut...",
+                    options: ["m", "p", "-p/m", "0"],
+                    correct: 1,
+                    correction: "f(0)=p."
+                }
+            ]
+        },
+
+        {
+            id: "3e_systemes",
+            titre: "Systèmes de deux équations",
+            short: "Systèmes",
+            desc: "Résoudre et interpréter graphiquement des systèmes à deux inconnues.",
+            niveau: "3e",
+            icone: "🧩",
+            categorie: "Algèbre",
+
+            aSavoir: [
+                "Un système associe deux équations à deux inconnues.",
+                "Une solution doit vérifier les deux équations.",
+                "Graphiquement, la solution correspond au point d'intersection des deux droites lorsqu'il existe.",
+                "Les systèmes peuvent modéliser des situations concrètes."
+            ],
+
+            formules: [
+                {
+                    titre: "Interprétation graphique",
+                    formule: "f(x)=g(x)",
+                    explication: "Résoudre f(x)=g(x), c'est chercher les abscisses des points communs aux deux graphiques."
+                }
+            ],
+
+            methodes: [
+                {
+                    titre: "Résoudre un système",
+                    etapes: [
+                        "Identifier les deux équations.",
+                        "Choisir une méthode adaptée.",
+                        "Trouver x et y.",
+                        "Vérifier les deux valeurs dans les deux équations.",
+                        "Présenter la solution sous forme de couple."
+                    ]
+                },
+                {
+                    titre: "Résolution graphique",
+                    etapes: [
+                        "Tracer les deux fonctions.",
+                        "Repérer leur point d'intersection.",
+                        "Lire ses coordonnées.",
+                        "Vérifier si une précision supplémentaire est nécessaire."
+                    ]
+                }
+            ],
+
+            exercices: [
+                {
+                    question: "Graphiquement, une solution de deux fonctions correspond à...",
+                    options: [
+                        "Un point de l'axe x",
+                        "Un point d'intersection des deux graphiques",
+                        "L'ordonnée à l'origine",
+                        "Un zéro uniquement"
+                    ],
+                    correct: 1,
+                    correction: "La solution correspond au point commun aux deux représentations."
+                }
+            ]
         }
-    }
+    ],
+
+    // =========================================================
+    // 4E
+    // =========================================================
+
+    "4e": [
+
+        {
+            id: "4e_fonctions_reference",
+            titre: "Fonctions de référence",
+            short: "Fonctions de référence",
+            desc: "Reconnaître les fonctions usuelles, leurs graphiques et leurs transformations.",
+            niveau: "4e",
+            icone: "📈",
+            categorie: "Analyse",
+
+            aSavoir: [
+                "Une fonction de référence sert de modèle pour étudier une famille de fonctions.",
+                "Le cours étudie notamment x, x², √x, x³, ∛x, 1/x et |x|.",
+                "Certaines fonctions sont réciproques : x² et √x dans le cadre étudié, ainsi que x³ et ∛x.",
+                "Les transformations permettent de déplacer ou modifier les graphiques.",
+                "On peut interpréter croissance, décroissance, extremum et parité graphiquement."
+            ],
+
+            fonctions: [
+                "f(x)=x",
+                "f(x)=x²",
+                "f(x)=√x",
+                "f(x)=x³",
+                "f(x)=∛x",
+                "f(x)=1/x",
+                "f(x)=|x|"
+            ],
+
+            formules: [
+                {
+                    titre: "Fonction identité",
+                    formule: "f(x)=x",
+                    explication: "Chaque nombre est envoyé sur lui-même."
+                },
+                {
+                    titre: "Fonction carré",
+                    formule: "f(x)=x²",
+                    explication: "La courbe est une parabole."
+                },
+                {
+                    titre: "Fonction racine",
+                    formule: "f(x)=√x",
+                    explication: "Elle est définie pour x≥0 dans les réels."
+                },
+                {
+                    titre: "Fonction cube",
+                    formule: "f(x)=x³",
+                    explication: "Elle est liée à la racine cubique."
+                },
+                {
+                    titre: "Fonction inverse",
+                    formule: "f(x)=1/x",
+                    explication: "Elle n'est pas définie en x=0."
+                },
+                {
+                    titre: "Valeur absolue",
+                    formule: "f(x)=|x|",
+                    explication: "Elle mesure la distance de x à 0."
+                }
+            ],
+
+            transformations: [
+                {
+                    titre: "Translation horizontale",
+                    exemple: "g(x)=f(x+k)",
+                    idee: "Modification horizontale du graphique."
+                },
+                {
+                    titre: "Translation verticale",
+                    exemple: "g(x)=f(x)+k",
+                    idee: "Modification verticale du graphique."
+                }
+            ],
+
+            methodes: [
+                {
+                    titre: "Identifier une fonction de référence",
+                    etapes: [
+                        "Observer la forme du graphique.",
+                        "Comparer avec les graphiques connus.",
+                        "Vérifier le domaine.",
+                        "Vérifier les propriétés caractéristiques.",
+                        "Associer le graphique à l'expression."
+                    ]
+                },
+                {
+                    titre: "Étudier une transformation",
+                    etapes: [
+                        "Partir de la fonction de référence.",
+                        "Identifier la modification dans l'expression.",
+                        "Déterminer le déplacement ou la transformation.",
+                        "Tracer le nouveau graphique."
+                    ]
+                }
+            ],
+
+            exercices: [
+                {
+                    question: "Quelle fonction a pour expression 1/x ?",
+                    options: [
+                        "Fonction carré",
+                        "Fonction inverse",
+                        "Fonction identité",
+                        "Fonction cube"
+                    ],
+                    correct: 1,
+                    correction: "f(x)=1/x est la fonction inverse."
+                },
+                {
+                    question: "Quelle fonction est définie par f(x)=x² ?",
+                    options: [
+                        "Fonction carré",
+                        "Fonction cube",
+                        "Fonction inverse",
+                        "Valeur absolue"
+                    ],
+                    correct: 0,
+                    correction: "x² est la fonction carré."
+                }
+            ]
+        },
+
+        {
+            id: "4e_trigonometrie",
+            titre: "Trigonométrie",
+            short: "Trigonométrie",
+            desc: "Approfondir les relations trigonométriques et leurs applications.",
+            niveau: "4e",
+            icone: "📐",
+            categorie: "Trigonométrie",
+
+            aSavoir: [
+                "La trigonométrie établit un lien entre angles et longueurs.",
+                "Elle peut être reliée aux triangles semblables.",
+                "Les relations sinus, cosinus et tangente permettent de calculer des longueurs ou des angles.",
+                "Ces outils permettent notamment de traiter des distances difficiles à mesurer directement."
+            ],
+
+            formules: [
+                {
+                    titre: "Sinus",
+                    formule: "sin(α)=opposé/hypoténuse",
+                    explication: "Relation trigonométrique."
+                },
+                {
+                    titre: "Cosinus",
+                    formule: "cos(α)=adjacent/hypoténuse",
+                    explication: "Relation trigonométrique."
+                },
+                {
+                    titre: "Tangente",
+                    formule: "tan(α)=opposé/adjacent",
+                    explication: "Relation trigonométrique."
+                }
+            ],
+
+            methodes: [
+                {
+                    titre: "Calculer une longueur",
+                    etapes: [
+                        "Faire un schéma.",
+                        "Identifier l'angle.",
+                        "Identifier les côtés connus.",
+                        "Choisir la relation trigonométrique.",
+                        "Remplacer par les valeurs.",
+                        "Isoler l'inconnue."
+                    ]
+                },
+                {
+                    titre: "Calculer un angle",
+                    etapes: [
+                        "Écrire la relation trigonométrique.",
+                        "Calculer le rapport de longueurs.",
+                        "Utiliser la fonction réciproque correspondante sur la calculatrice.",
+                        "Donner l'angle dans l'unité demandée."
+                    ]
+                }
+            ],
+
+            exercices: [
+                {
+                    question: "La tangente utilise quels deux côtés ?",
+                    options: [
+                        "Opposé et hypoténuse",
+                        "Adjacent et hypoténuse",
+                        "Opposé et adjacent",
+                        "Deux hypoténuses"
+                    ],
+                    correct: 2,
+                    correction: "tan(α)=opposé/adjacent."
+                }
+            ]
+        },
+
+        {
+            id: "4e_stats",
+            titre: "Statistique descriptive à une variable",
+            short: "Statistiques",
+            desc: "Décrire, représenter et interpréter une série statistique.",
+            niveau: "4e",
+            icone: "📊",
+            categorie: "Statistiques",
+
+            aSavoir: [
+                "La statistique descriptive sert à synthétiser, décrire, présenter et interpréter des données.",
+                "On distingue différents types de caractères statistiques.",
+                "Les indicateurs de position permettent de situer le centre d'une série.",
+                "Les indicateurs de dispersion permettent d'étudier l'étalement des données.",
+                "Les graphiques permettent de représenter et d'extraire des informations.",
+                "L'inégalité de Tchebychev peut être utilisée pour encadrer une proportion de données."
+            ],
+
+            vocabulaire: [
+                "Population",
+                "Individu",
+                "Caractère statistique",
+                "Modalité",
+                "Effectif",
+                "Fréquence",
+                "Série statistique"
+            ],
+
+            indicateurs: [
+                "Moyenne",
+                "Médiane",
+                "Quartiles",
+                "Indicateurs de dispersion",
+                "Écart-type"
+            ],
+
+            formules: [
+                {
+                    titre: "Moyenne simple",
+                    formule: "x̄=(x₁+x₂+...+xₙ)/n",
+                    explication: "Somme des valeurs divisée par le nombre de valeurs."
+                },
+                {
+                    titre: "Moyenne pondérée",
+                    formule: "x̄=Σ(nᵢxᵢ)/Σnᵢ",
+                    explication: "Chaque valeur est pondérée par son effectif."
+                },
+                {
+                    titre: "Étendue",
+                    formule: "Étendue = maximum - minimum",
+                    explication: "Mesure simple de dispersion."
+                },
+                {
+                    titre: "Variance",
+                    formule: "V = moyenne des carrés des écarts à la moyenne",
+                    explication: "Mesure de dispersion autour de la moyenne."
+                },
+                {
+                    titre: "Écart-type",
+                    formule: "σ = √V",
+                    explication: "Racine carrée de la variance."
+                }
+            ],
+
+            methodes: [
+                {
+                    titre: "Calculer une moyenne pondérée",
+                    etapes: [
+                        "Multiplier chaque valeur par son effectif.",
+                        "Additionner les produits.",
+                        "Additionner les effectifs.",
+                        "Diviser la première somme par la seconde."
+                    ]
+                },
+                {
+                    titre: "Interpréter un indicateur",
+                    etapes: [
+                        "Identifier l'indicateur utilisé.",
+                        "Regarder son unité.",
+                        "Comparer les valeurs si nécessaire.",
+                        "Relier le résultat au contexte."
+                    ]
+                },
+                {
+                    titre: "Choisir un graphique",
+                    etapes: [
+                        "Identifier le type de caractère.",
+                        "Choisir une représentation adaptée.",
+                        "Construire correctement les axes et les unités.",
+                        "Ajouter les informations nécessaires à la lecture."
+                    ]
+                }
+            ],
+
+            exercices: [
+                {
+                    question: "La statistique descriptive sert notamment à...",
+                    options: [
+                        "Synthétiser et interpréter des données",
+                        "Résoudre uniquement des équations",
+                        "Construire uniquement des triangles",
+                        "Calculer uniquement des angles"
+                    ],
+                    correct: 0,
+                    correction: "Elle sert à synthétiser, décrire, présenter et interpréter des données."
+                },
+                {
+                    question: "L'étendue d'une série vaut...",
+                    options: [
+                        "maximum + minimum",
+                        "maximum - minimum",
+                        "moyenne - médiane",
+                        "quartile 3 - moyenne"
+                    ],
+                    correct: 1,
+                    correction: "Étendue = maximum - minimum."
+                },
+                {
+                    question: "L'écart-type est lié à...",
+                    options: [
+                        "La dispersion",
+                        "Uniquement à la médiane",
+                        "Uniquement au maximum",
+                        "La géométrie"
+                    ],
+                    correct: 0,
+                    correction: "L'écart-type est un indicateur de dispersion."
+                }
+            ]
+        }
+    ]
+};
 
 
-    if (!chapter) return;
+// ============================================================
+// COMPATIBILITÉ AVEC L'ANCIEN SITE
+// ============================================================
+
+const CHAPITRES = MATHS_CHAPITRES;
 
 
-    var exercises =
-        getChapterExercises(chapter);
+// ============================================================
+// FORMULES — générées automatiquement depuis les chapitres
+// ============================================================
 
+const FORMULES_DATA = {};
 
-    var questions = [];
+MATHS_CHAPITRES["3e"].concat(MATHS_CHAPITRES["4e"]).forEach(chapitre => {
 
+    if (!chapitre.formules) return;
 
-    for (
-        var e = 0;
-        e < exercises.length;
-        e++
-    ) {
+    chapitre.formules.forEach((f, index) => {
 
-        var ex = exercises[e];
+        const categorie = chapitre.categorie || "Autres";
 
-        if (!ex.question) continue;
+        if (!FORMULES_DATA[categorie]) {
+            FORMULES_DATA[categorie] = [];
+        }
 
-
-        questions.push({
-
-            id:
-                id + "_" + e,
-
-            matiere:
-                matiere,
-
-            annee:
-                annee,
-
-            chapitre:
-                id,
-
-            chapitreTitre:
-                getChapterTitle(
-                    chapter
-                ),
-
-            question:
-                ex.question,
-
-            options:
-                ex.options || [],
-
-            correct:
-                typeof ex.correct === "number"
-                    ? ex.correct
-                    : 0,
-
-            correction:
-                ex.correction || ""
+        FORMULES_DATA[categorie].push({
+            id: `${chapitre.id}_formule_${index}`,
+            titre: f.titre,
+            definition: f.formule,
+            formule: f.formule,
+            explication: f.explication || "",
+            exemple: chapitre.exemple ? chapitre.exemple.solution : "",
+            chapitreId: chapitre.id,
+            chapitre: chapitre.titre,
+            niveau: chapitre.niveau,
+            icone: chapitre.icone || "📘",
+            categorie
         });
-    }
-
-
-    if (!questions.length) {
-
-        alert(
-            "Aucun exercice disponible."
-        );
-
-        return;
-    }
-
-
-    currentQuiz = {
-
-        index: 0,
-
-        questions:
-            shuffle(questions),
-
-        answers: [],
-
-        score: 0,
-
-        total: questions.length,
-
-        answered: false
-    };
-
-
-    showTab("entrainer");
-
-    renderQuizQuestion();
-}
-
-
-function renderQuizQuestion() {
-
-    var container =
-        document.getElementById(
-            "quizContent"
-        );
-
-
-    if (!container) return;
-
-
-    if (
-        currentQuiz.index >=
-        currentQuiz.total
-    ) {
-
-        showQuizResult();
-
-        return;
-    }
-
-
-    var q =
-        currentQuiz.questions[
-            currentQuiz.index
-        ];
-
-
-    currentQuiz.answered = false;
-
-
-    var percent =
-        currentQuiz.index /
-        currentQuiz.total *
-        100;
-
-
-    var html = `
-
-        <div class="quiz-container">
-
-            <div class="quiz-header">
-
-                <strong>
-                    Question
-                    ${currentQuiz.index + 1}
-                    /
-                    ${currentQuiz.total}
-                </strong>
-
-                <span>
-                    ⭐ ${currentQuiz.score}
-                </span>
-
-            </div>
-
-
-            <div class="quiz-progress">
-
-                <div
-                    style="width:${percent}%"
-                ></div>
-
-            </div>
-
-
-            <div
-                class="chapter-tag"
-                style="display:inline-block;margin-top:16px"
-            >
-                ${escapeHtml(
-                    q.annee
-                )}
-                ·
-                ${escapeHtml(
-                    q.chapitreTitre
-                )}
-            </div>
-
-
-            <div class="quiz-question">
-                ${q.question}
-            </div>
-
-
-            <div
-                class="quiz-options"
-                id="quizOptions"
-            >
-    `;
-
-
-    for (
-        var i = 0;
-        i < q.options.length;
-        i++
-    ) {
-
-        html += `
-
-            <button
-                type="button"
-                class="quiz-option"
-                onclick="answerQuiz(${i})"
-            >
-                <b>
-                    ${String.fromCharCode(
-                        65 + i
-                    )}.
-                </b>
-                ${escapeHtml(
-                    q.options[i]
-                )}
-            </button>
-
-        `;
-    }
-
-
-    html += `
-
-            </div>
-
-
-            <div
-                id="quizFeedback"
-                class="quiz-feedback hidden"
-            ></div>
-
-
-            <div class="quiz-footer">
-
-                <span>
-                    Score :
-                    ${currentQuiz.score}
-                </span>
-
-                <button
-                    id="quizNextBtn"
-                    class="primary-btn"
-                    style="display:none"
-                    onclick="nextQuizQuestion()"
-                >
-                    Question suivante →
-                </button>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    container.innerHTML = html;
-
-
-    container.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
     });
-}
-
-
-function answerQuiz(choice) {
-
-    if (currentQuiz.answered) {
-        return;
-    }
-
-
-    currentQuiz.answered = true;
-
-
-    var q =
-        currentQuiz.questions[
-            currentQuiz.index
-        ];
-
-
-    var correct =
-        Number(q.correct);
-
-
-    var options =
-        document.querySelectorAll(
-            "#quizOptions .quiz-option"
-        );
-
-
-    for (
-        var i = 0;
-        i < options.length;
-        i++
-    ) {
-
-        options[i].disabled = true;
-
-
-        if (i === correct) {
-            options[i].classList.add(
-                "correct"
-            );
-        }
-
-
-        if (
-            i === choice &&
-            i !== correct
-        ) {
-            options[i].classList.add(
-                "wrong"
-            );
-        }
-    }
-
-
-    var isCorrect =
-        choice === correct;
-
-
-    if (isCorrect) {
-
-        currentQuiz.score++;
-
-        USER_DATA.streak =
-            (USER_DATA.streak || 0) + 1;
-
-        addXP(10);
-
-    } else {
-
-        USER_DATA.streak = 0;
-    }
-
-
-    currentQuiz.answers.push({
-        question: q.id,
-        choice: choice,
-        correct: isCorrect
-    });
-
-
-    var feedback =
-        document.getElementById(
-            "quizFeedback"
-        );
-
-
-    if (feedback) {
-
-        feedback.classList.remove(
-            "hidden"
-        );
-
-
-        feedback.innerHTML =
-            isCorrect
-                ? `
-                    <strong>
-                        ✅ Bonne réponse !
-                    </strong>
-                    <br>
-                    +10 XP
-                  `
-                : `
-                    <strong>
-                        ❌ Pas tout à fait.
-                    </strong>
-                    <br>
-                    ${q.correction || ""}
-                  `;
-    }
-
-
-    var next =
-        document.getElementById(
-            "quizNextBtn"
-        );
-
-    if (next) {
-        next.style.display =
-            "inline-flex";
-    }
-
-
-    saveUserData();
-
-    updateHeaderStats();
-}
-
-
-function nextQuizQuestion() {
-
-    currentQuiz.index++;
-
-    renderQuizQuestion();
-}
-
-
-function showQuizResult() {
-
-    var container =
-        document.getElementById(
-            "quizContent"
-        );
-
-    if (!container) return;
-
-
-    var percent =
-        currentQuiz.total > 0
-            ? Math.round(
-                currentQuiz.score /
-                currentQuiz.total *
-                100
-            )
-            : 0;
-
-
-    var key =
-        "quiz_" +
-        Date.now();
-
-
-    USER_DATA.quizResults[key] =
-        percent;
-
-
-    if (percent >= 70) {
-
-        USER_DATA.streak =
-            (USER_DATA.streak || 0) + 1;
-
-    }
-
-
-    saveUserData();
-
-
-    var message =
-        percent >= 80
-            ? "Excellent travail ! 🏆"
-            : percent >= 60
-                ? "Très bien, continue ! 💪"
-                : "Encore quelques révisions et tu vas progresser ! 📖";
-
-
-    container.innerHTML = `
-
-        <div class="quiz-container">
-
-            <div style="text-align:center">
-
-                <div
-                    style="font-size:55px"
-                >
-                    ${
-                        percent >= 80
-                            ? "🏆"
-                            : percent >= 60
-                                ? "⭐"
-                                : "📖"
-                    }
-                </div>
-
-                <h2
-                    style="
-                        margin-top:10px;
-                        font-family:'Space Grotesk',sans-serif;
-                    "
-                >
-                    ${message}
-                </h2>
-
-                <p
-                    style="
-                        margin-top:8px;
-                        color:var(--text-soft);
-                    "
-                >
-                    Tu as obtenu
-                    <strong>
-                        ${currentQuiz.score}
-                        /
-                        ${currentQuiz.total}
-                    </strong>
-                    bonnes réponses.
-                </p>
-
-                <h1
-                    style="
-                        margin-top:15px;
-                        font-size:42px;
-                        font-family:'Space Grotesk',sans-serif;
-                    "
-                >
-                    ${percent}%
-                </h1>
-
-
-                <div
-                    style="
-                        display:flex;
-                        justify-content:center;
-                        gap:8px;
-                        margin-top:20px;
-                        flex-wrap:wrap;
-                    "
-                >
-
-                    <button
-                        class="primary-btn"
-                        onclick="startQuiz()"
-                    >
-                        🔄 Rejouer
-                    </button>
-
-                    <button
-                        class="soft-btn"
-                        onclick="showTab('cours')"
-                    >
-                        📖 Retour aux cours
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    renderSuivi();
-}
-
-
-/* =========================================================
-   DÉFI DU JOUR
-   ========================================================= */
-
-function startDefiJour() {
-
-    buildQuestionsQuiz();
-
-
-    if (QUESTIONS_QUIZ.length === 0) {
-
-        alert(
-            "Aucune question disponible."
-        );
-
-        return;
-    }
-
-
-    var questions =
-        shuffle(
-            QUESTIONS_QUIZ
-        ).slice(0, 5);
-
-
-    currentQuiz = {
-
-        index: 0,
-
-        questions: questions,
-
-        answers: [],
-
-        score: 0,
-
-        total: questions.length,
-
-        answered: false
-    };
-
-
-    showTab("entrainer");
-
-    renderQuizQuestion();
-}
-
-
-/* =========================================================
-   JEU DES CAPITALES
-   ========================================================= */
-
-function getCapitalQuestions() {
-
-    return [
-
-        {
-            question:
-                "Quelle est la capitale de la Belgique ?",
-
-            options: [
-                "Bruxelles",
-                "Anvers",
-                "Liège",
-                "Gand"
-            ],
-
-            correct: 0
-        },
-
-        {
-            question:
-                "Quelle est la capitale de la France ?",
-
-            options: [
-                "Lyon",
-                "Paris",
-                "Marseille",
-                "Lille"
-            ],
-
-            correct: 1
-        },
-
-        {
-            question:
-                "Quelle est la capitale de l'Allemagne ?",
-
-            options: [
-                "Munich",
-                "Hambourg",
-                "Berlin",
-                "Francfort"
-            ],
-
-            correct: 2
-        },
-
-        {
-            question:
-                "Quelle est la capitale de l'Italie ?",
-
-            options: [
-                "Milan",
-                "Rome",
-                "Naples",
-                "Turin"
-            ],
-
-            correct: 1
-        },
-
-        {
-            question:
-                "Quelle est la capitale de l'Espagne ?",
-
-            options: [
-                "Madrid",
-                "Barcelone",
-                "Séville",
-                "Valence"
-            ],
-
-            correct: 0
-        },
-
-        {
-            question:
-                "Quelle est la capitale du Portugal ?",
-
-            options: [
-                "Porto",
-                "Lisbonne",
-                "Braga",
-                "Faro"
-            ],
-
-            correct: 1
-        },
-
-        {
-            question:
-                "Quelle est la capitale des Pays-Bas ?",
-
-            options: [
-                "Rotterdam",
-                "Utrecht",
-                "Amsterdam",
-                "La Haye"
-            ],
-
-            correct: 2
-        },
-
-        {
-            question:
-                "Quelle est la capitale de l'Autriche ?",
-
-            options: [
-                "Salzbourg",
-                "Vienne",
-                "Graz",
-                "Innsbruck"
-            ],
-
-            correct: 1
-        },
-
-        {
-            question:
-                "Quelle est la capitale de la Suisse ?",
-
-            options: [
-                "Genève",
-                "Zurich",
-                "Berne",
-                "Bâle"
-            ],
-
-            correct: 2
-        },
-
-        {
-            question:
-                "Quelle est la capitale de la Grèce ?",
-
-            options: [
-                "Athènes",
-                "Thessalonique",
-                "Sparte",
-                "Patras"
-            ],
-
-            correct: 0
-        }
-
-    ];
-}
-
-
-function startJeuCapitales() {
-
-    currentCapitales = {
-
-        index: 0,
-
-        questions:
-            shuffle(
-                getCapitalQuestions()
-            ),
-
-        score: 0,
-
-        total: 10
-    };
-
-
-    showTab("entrainer");
-
-    renderCapitalQuestion();
-}
-
-
-function renderCapitalQuestion() {
-
-    var container =
-        document.getElementById(
-            "quizContent"
-        );
-
-
-    if (!container) return;
-
-
-    if (
-        currentCapitales.index >=
-        currentCapitales.total
-    ) {
-
-        showCapitalResult();
-
-        return;
-    }
-
-
-    var q =
-        currentCapitales.questions[
-            currentCapitales.index
-        ];
-
-
-    var percent =
-        currentCapitales.index /
-        currentCapitales.total *
-        100;
-
-
-    var html = `
-
-        <div class="quiz-container">
-
-            <div class="quiz-header">
-
-                <strong>
-                    🌍 Capitale
-                    ${currentCapitales.index + 1}
-                    /
-                    ${currentCapitales.total}
-                </strong>
-
-                <span>
-                    ⭐ ${currentCapitales.score}
-                </span>
-
-            </div>
-
-
-            <div class="quiz-progress">
-                <div
-                    style="width:${percent}%"
-                ></div>
-            </div>
-
-
-            <div class="quiz-question">
-                ${q.question}
-            </div>
-
-
-            <div
-                class="quiz-options"
-                id="capitalOptions"
-            >
-    `;
-
-
-    for (
-        var i = 0;
-        i < q.options.length;
-        i++
-    ) {
-
-        html += `
-            <button
-                class="quiz-option"
-                onclick="answerCapital(${i})"
-            >
-                ${escapeHtml(
-                    q.options[i]
-                )}
-            </button>
-        `;
-    }
-
-
-    html += `
-            </div>
-
-            <div
-                id="capitalFeedback"
-                class="quiz-feedback hidden"
-            ></div>
-
-            <div class="quiz-footer">
-
-                <span>
-                    Score :
-                    ${currentCapitales.score}
-                </span>
-
-                <button
-                    id="capitalNext"
-                    class="primary-btn"
-                    style="display:none"
-                    onclick="nextCapital()"
-                >
-                    Suivant →
-                </button>
-
-            </div>
-
-        </div>
-    `;
-
-
-    container.innerHTML = html;
-}
-
-
-function answerCapital(choice) {
-
-    var q =
-        currentCapitales.questions[
-            currentCapitales.index
-        ];
-
-
-    var buttons =
-        document.querySelectorAll(
-            "#capitalOptions .quiz-option"
-        );
-
-
-    for (
-        var i = 0;
-        i < buttons.length;
-        i++
-    ) {
-
-        buttons[i].disabled = true;
-
-
-        if (
-            i === q.correct
-        ) {
-            buttons[i].classList.add(
-                "correct"
-            );
-        }
-
-
-        if (
-            i === choice &&
-            choice !== q.correct
-        ) {
-            buttons[i].classList.add(
-                "wrong"
-            );
-        }
-    }
-
-
-    var correct =
-        choice === q.correct;
-
-
-    if (correct) {
-
-        currentCapitales.score++;
-
-        USER_DATA.streak =
-            (USER_DATA.streak || 0) + 1;
-
-        addXP(5);
-
-    } else {
-
-        USER_DATA.streak = 0;
-    }
-
-
-    var feedback =
-        document.getElementById(
-            "capitalFeedback"
-        );
-
-
-    if (feedback) {
-
-        feedback.classList.remove(
-            "hidden"
-        );
-
-        feedback.innerHTML =
-            correct
-                ? "✅ Bonne réponse ! +5 XP"
-                : "❌ Mauvaise réponse.";
-    }
-
-
-    var next =
-        document.getElementById(
-            "capitalNext"
-        );
-
-    if (next) {
-        next.style.display =
-            "inline-flex";
-    }
-
-
-    saveUserData();
-
-    updateHeaderStats();
-}
-
-
-function nextCapital() {
-
-    currentCapitales.index++;
-
-    renderCapitalQuestion();
-}
-
-
-function showCapitalResult() {
-
-    var container =
-        document.getElementById(
-            "quizContent"
-        );
-
-
-    var percent =
-        Math.round(
-            currentCapitales.score /
-            currentCapitales.total *
-            100
-        );
-
-
-    container.innerHTML = `
-
-        <div class="quiz-container">
-
-            <div style="text-align:center">
-
-                <div style="font-size:55px">
-                    🌍
-                </div>
-
-                <h2
-                    style="
-                        font-family:'Space Grotesk',sans-serif;
-                        margin-top:8px;
-                    "
-                >
-                    Partie terminée !
-                </h2>
-
-                <h1
-                    style="
-                        font-size:42px;
-                        margin-top:10px;
-                        font-family:'Space Grotesk',sans-serif;
-                    "
-                >
-                    ${percent}%
-                </h1>
-
-                <p
-                    style="
-                        color:var(--text-soft);
-                        margin-top:5px;
-                    "
-                >
-                    ${currentCapitales.score}
-                    /
-                    ${currentCapitales.total}
-                    bonnes réponses
-                </p>
-
-                <div
-                    style="
-                        display:flex;
-                        justify-content:center;
-                        gap:8px;
-                        margin-top:20px;
-                    "
-                >
-
-                    <button
-                        class="primary-btn"
-                        onclick="startJeuCapitales()"
-                    >
-                        🔄 Rejouer
-                    </button>
-
-                    <button
-                        class="soft-btn"
-                        onclick="showTab('entrainer')"
-                    >
-                        Retour
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-    `;
-}
-
-
-/* =========================================================
-   EXAMEN BLANC PAR ANNÉE
-   ========================================================= */
-
-function startExamen(niveau) {
-
-    buildQuestionsQuiz();
-
-
-    var questions =
-        QUESTIONS_QUIZ.filter(
-            function(q) {
-
-                if (niveau === "complet") {
-                    return true;
-                }
-
-                return q.annee === niveau;
-            }
-        );
-
-
-    if (!questions.length) {
-
-        alert(
-            "Aucune question disponible pour cet examen."
-        );
-
-        return;
-    }
-
-
-    var maxQuestions =
-        niveau === "3e"
-            ? 20
-            : niveau === "4e" ||
-              niveau === "5e"
-                ? 25
-                : niveau === "6e"
-                    ? 30
-                    : 50;
-
-
-    questions =
-        shuffle(questions).slice(
-            0,
-            Math.min(
-                maxQuestions,
-                questions.length
-            )
-        );
-
-
-    currentExamen = {
-
-        index: 0,
-
-        questions: questions,
-
-        answers: [],
-
-        score: 0,
-
-        total: questions.length,
-
-        timer: null,
-
-        timeLeft:
-            niveau === "3e"
-                ? 30 * 60
-                : niveau === "4e" ||
-                  niveau === "5e"
-                    ? 40 * 60
-                    : niveau === "6e"
-                        ? 50 * 60
-                        : 90 * 60,
-
-        niveau: niveau
-    };
-
-
-    showTab("entrainer");
-
-    renderExamenQuestion();
-}
-
-
-function renderExamenQuestion() {
-
-    var container =
-        document.getElementById(
-            "examenContent"
-        );
-
-
-    if (!container) return;
-
-
-    if (
-        currentExamen.index >=
-        currentExamen.total
-    ) {
-
-        finishExamen();
-
-        return;
-    }
-
-
-    var q =
-        currentExamen.questions[
-            currentExamen.index
-        ];
-
-
-    var percent =
-        currentExamen.index /
-        currentExamen.total *
-        100;
-
-
-    var html = `
-
-        <div class="quiz-container">
-
-            <div class="quiz-header">
-
-                <strong>
-                    Examen ${escapeHtml(
-                        currentExamen.niveau
-                    )}
-                </strong>
-
-                <span>
-                    Question
-                    ${currentExamen.index + 1}
-                    /
-                    ${currentExamen.total}
-                </span>
-
-            </div>
-
-
-            <div class="quiz-progress">
-
-                <div
-                    style="width:${percent}%"
-                ></div>
-
-            </div>
-
-
-            <div class="chapter-tag"
-                style="
-                    display:inline-block;
-                    margin-top:15px;
-                "
-            >
-                ${escapeHtml(q.chapitreTitre)}
-            </div>
-
-
-            <div class="quiz-question">
-                ${q.question}
-            </div>
-
-
-            <div
-                class="quiz-options"
-                id="examOptions"
-            >
-    `;
-
-
-    for (
-        var i = 0;
-        i < q.options.length;
-        i++
-    ) {
-
-        html += `
-            <button
-                class="quiz-option"
-                onclick="answerExamen(${i})"
-            >
-                ${String.fromCharCode(
-                    65 + i
-                )}.
-                ${escapeHtml(
-                    q.options[i]
-                )}
-            </button>
-        `;
-    }
-
-
-    html += `
-
-            </div>
-
-
-            <div
-                id="examFeedback"
-                class="quiz-feedback hidden"
-            ></div>
-
-
-            <div class="quiz-footer">
-
-                <span>
-                    Score :
-                    ${currentExamen.score}
-                </span>
-
-                <button
-                    id="examNext"
-                    class="primary-btn"
-                    style="display:none"
-                    onclick="nextExamen()"
-                >
-                    Continuer →
-                </button>
-
-            </div>
-
-        </div>
-    `;
-
-
-    container.innerHTML = html;
-}
-
-
-function answerExamen(choice) {
-
-    var q =
-        currentExamen.questions[
-            currentExamen.index
-        ];
-
-
-    var buttons =
-        document.querySelectorAll(
-            "#examOptions .quiz-option"
-        );
-
-
-    for (
-        var i = 0;
-        i < buttons.length;
-        i++
-    ) {
-
-        buttons[i].disabled = true;
-
-
-        if (
-            i === q.correct
-        ) {
-            buttons[i].classList.add(
-                "correct"
-            );
-        }
-
-
-        if (
-            i === choice &&
-            choice !== q.correct
-        ) {
-            buttons[i].classList.add(
-                "wrong"
-            );
-        }
-    }
-
-
-    var correct =
-        choice === q.correct;
-
-
-    if (correct) {
-
-        currentExamen.score++;
-
-        addXP(8);
-
-        USER_DATA.streak =
-            (USER_DATA.streak || 0) + 1;
-
-    } else {
-
-        USER_DATA.streak = 0;
-    }
-
-
-    currentExamen.answers.push({
-        question:
-            q.id,
-        choice:
-            choice,
-        correct:
-            correct
-    });
-
-
-    var feedback =
-        document.getElementById(
-            "examFeedback"
-        );
-
-
-    if (feedback) {
-
-        feedback.classList.remove(
-            "hidden"
-        );
-
-        feedback.innerHTML =
-            correct
-                ? "✅ Correct"
-                : "❌ Incorrect";
-    }
-
-
-    var next =
-        document.getElementById(
-            "examNext"
-        );
-
-    if (next) {
-        next.style.display =
-            "inline-flex";
-    }
-
-
-    saveUserData();
-
-    updateHeaderStats();
-}
-
-
-function nextExamen() {
-
-    currentExamen.index++;
-
-    renderExamenQuestion();
-}
-
-
-function finishExamen() {
-
-    var container =
-        document.getElementById(
-            "examenContent"
-        );
-
-
-    var percent =
-        currentExamen.total > 0
-            ? Math.round(
-                currentExamen.score /
-                currentExamen.total *
-                100
-            )
-            : 0;
-
-
-    USER_DATA.quizResults[
-        "examen_" +
-        Date.now()
-    ] = percent;
-
-
-    saveUserData();
-
-
-    container.innerHTML = `
-
-        <div class="quiz-container">
-
-            <div style="text-align:center">
-
-                <div style="font-size:55px">
-                    ${
-                        percent >= 60
-                            ? "🏆"
-                            : "📚"
-                    }
-                </div>
-
-                <h2
-                    style="
-                        font-family:'Space Grotesk',sans-serif;
-                        margin-top:10px;
-                    "
-                >
-                    Examen terminé
-                </h2>
-
-                <h1
-                    style="
-                        font-size:44px;
-                        margin-top:12px;
-                        font-family:'Space Grotesk',sans-serif;
-                    "
-                >
-                    ${percent}%
-                </h1>
-
-                <p
-                    style="
-                        color:var(--text-soft);
-                        margin-top:5px;
-                    "
-                >
-                    ${currentExamen.score}
-                    /
-                    ${currentExamen.total}
-                    bonnes réponses
-                </p>
-
-
-                <div
-                    style="
-                        margin-top:20px;
-                        display:flex;
-                        justify-content:center;
-                        gap:8px;
-                        flex-wrap:wrap;
-                    "
-                >
-
-                    <button
-                        class="primary-btn"
-                        onclick="startExamen('${currentExamen.niveau}')"
-                    >
-                        🔄 Refaire
-                    </button>
-
-                    <button
-                        class="soft-btn"
-                        onclick="showTab('suivi')"
-                    >
-                        🏆 Voir ma progression
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-    `;
-
-
-    renderSuivi();
-}
-
-
-/* =========================================================
-   EXAMEN BLANC CESS
-   ========================================================= */
-
-function startExamenCess() {
-
-    buildQuestionsQuiz();
-
-
-    var questions =
-        shuffle(
-            QUESTIONS_QUIZ
-        ).slice(0, 30);
-
-
-    if (!questions.length) {
-
-        alert(
-            "Données de l'examen non chargées."
-        );
-
-        return;
-    }
-
-
-    currentCessExam = {
-
-        index: 0,
-
-        questions: questions,
-
-        score: 0,
-
-        total: questions.length
-    };
-
-
-    showTab("entrainer");
-
-    renderCessQuestion();
-}
-
-
-function renderCessQuestion() {
-
-    var container =
-        document.getElementById(
-            "quizContent"
-        );
-
-
-    if (!container) return;
-
-
-    if (
-        currentCessExam.index >=
-        currentCessExam.total
-    ) {
-
-        showCessResult();
-
-        return;
-    }
-
-
-    var q =
-        currentCessExam.questions[
-            currentCessExam.index
-        ];
-
-
-    var percent =
-        currentCessExam.index /
-        currentCessExam.total *
-        100;
-
-
-    var html = `
-
-        <div class="quiz-container">
-
-            <div class="quiz-header">
-
-                <strong>
-                    🔴 Examen blanc CESS
-                </strong>
-
-                <span>
-                    ${currentCessExam.index + 1}
-                    /
-                    ${currentCessExam.total}
-                </span>
-
-            </div>
-
-
-            <div class="quiz-progress">
-                <div
-                    style="width:${percent}%"
-                ></div>
-            </div>
-
-
-            <div
-                class="chapter-tag"
-                style="display:inline-block;margin-top:15px"
-            >
-                ${escapeHtml(
-                    q.matiere === "maths"
-                        ? "Mathématiques"
-                        : "Géographie"
-                )}
-            </div>
-
-
-            <div class="quiz-question">
-                ${q.question}
-            </div>
-
-
-            <div
-                class="quiz-options"
-                id="cessOptions"
-            >
-    `;
-
-
-    for (
-        var i = 0;
-        i < q.options.length;
-        i++
-    ) {
-
-        html += `
-            <button
-                class="quiz-option"
-                onclick="answerCess(${i})"
-            >
-                ${escapeHtml(
-                    q.options[i]
-                )}
-            </button>
-        `;
-    }
-
-
-    html += `
-
-            </div>
-
-
-            <div
-                id="cessFeedback"
-                class="quiz-feedback hidden"
-            ></div>
-
-
-            <div class="quiz-footer">
-
-                <span>
-                    Score :
-                    ${currentCessExam.score}
-                </span>
-
-                <button
-                    id="cessNext"
-                    class="primary-btn"
-                    style="display:none"
-                    onclick="nextCessQuestion()"
-                >
-                    Continuer →
-                </button>
-
-            </div>
-
-        </div>
-    `;
-
-
-    container.innerHTML = html;
-}
-
-
-function answerCess(choice) {
-
-    var q =
-        currentCessExam.questions[
-            currentCessExam.index
-        ];
-
-
-    var buttons =
-        document.querySelectorAll(
-            "#cessOptions .quiz-option"
-        );
-
-
-    for (
-        var i = 0;
-        i < buttons.length;
-        i++
-    ) {
-
-        buttons[i].disabled = true;
-
-
-        if (
-            i === q.correct
-        ) {
-
-            buttons[i].classList.add(
-                "correct"
-            );
-        }
-
-
-        if (
-            i === choice &&
-            choice !== q.correct
-        ) {
-
-            buttons[i].classList.add(
-                "wrong"
-            );
-        }
-    }
-
-
-    var correct =
-        choice === q.correct;
-
-
-    if (correct) {
-
-        currentCessExam.score++;
-
-        addXP(10);
-
-    }
-
-
-    var feedback =
-        document.getElementById(
-            "cessFeedback"
-        );
-
-
-    if (feedback) {
-
-        feedback.classList.remove(
-            "hidden"
-        );
-
-
-        feedback.innerHTML =
-            correct
-                ? "✅ Bonne réponse !"
-                : `
-                    ❌ Mauvaise réponse.
-                    <br>
-                    ${
-                        q.correction || ""
-                    }
-                  `;
-    }
-
-
-    var next =
-        document.getElementById(
-            "cessNext"
-        );
-
-
-    if (next) {
-        next.style.display =
-            "inline-flex";
-    }
-
-
-    saveUserData();
-}
-
-
-function nextCessQuestion() {
-
-    currentCessExam.index++;
-
-    renderCessQuestion();
-}
-
-
-function showCessResult() {
-
-    var container =
-        document.getElementById(
-            "quizContent"
-        );
-
-
-    var percent =
-        currentCessExam.total > 0
-            ? Math.round(
-                currentCessExam.score /
-                currentCessExam.total *
-                100
-            )
-            : 0;
-
-
-    container.innerHTML = `
-
-        <div class="quiz-container">
-
-            <div style="text-align:center">
-
-                <div style="font-size:60px">
-                    🏆
-                </div>
-
-                <h2
-                    style="
-                        margin-top:10px;
-                        font-family:'Space Grotesk',sans-serif;
-                    "
-                >
-                    Examen CESS terminé
-                </h2>
-
-                <h1
-                    style="
-                        margin-top:10px;
-                        font-size:45px;
-                        font-family:'Space Grotesk',sans-serif;
-                    "
-                >
-                    ${percent}%
-                </h1>
-
-                <p
-                    style="
-                        color:var(--text-soft);
-                        margin-top:5px;
-                    "
-                >
-                    ${currentCessExam.score}
-                    /
-                    ${currentCessExam.total}
-                    bonnes réponses
-                </p>
-
-
-                <button
-                    class="primary-btn"
-                    style="margin-top:20px"
-                    onclick="startExamenCess()"
-                >
-                    🔄 Recommencer
-                </button>
-
-            </div>
-
-        </div>
-    `;
-
-
-    renderSuivi();
-}
-
-
-/* =========================================================
-   PROGRESSION
-   ========================================================= */
-
-function renderSuivi() {
-
-    var stats =
-        countChapters();
-
-
-    var percent =
-        stats.total > 0
-            ? Math.round(
-                stats.completed /
-                stats.total *
-                100
-            )
-            : 0;
-
-
-    var revisites =
-        document.getElementById(
-            "statsRevisites"
-        );
-
-    if (revisites) {
-        revisites.textContent =
-            percent + "%";
-    }
-
-
-    var quizTotal =
-        document.getElementById(
-            "statsQuizTotal"
-        );
-
-    if (quizTotal) {
-
-        quizTotal.textContent =
-            Object.keys(
-                USER_DATA.quizResults || {}
-            ).length;
-    }
-
-
-    var best = 0;
-
-
-    for (
-        var key in USER_DATA.quizResults
-    ) {
-
-        var value =
-            Number(
-                USER_DATA.quizResults[key]
-            ) || 0;
-
-
-        if (value > best) {
-            best = value;
-        }
-    }
-
-
-    var bestElement =
-        document.getElementById(
-            "statsMeilleur"
-        );
-
-
-    if (bestElement) {
-        bestElement.textContent =
-            best + "%";
-    }
-
-
-    var streak =
-        document.getElementById(
-            "statsSerie"
-        );
-
-
-    if (streak) {
-        streak.textContent =
-            USER_DATA.streak || 0;
-    }
-
-
-    renderBadges();
-
-    renderFavorites();
-
-    updateHeaderStats();
-}
-
-
-function getBadges() {
-
-    var stats =
-        countChapters();
-
-
-    return [
-
-        {
-            id: "apprenti",
-
-            name:
-                "Apprenti",
-
-            description:
-                "3 chapitres maîtrisés",
-
-            icon:
-                "🥉",
-
-            unlocked:
-                stats.completed >= 3
-        },
-
-
-        {
-            id: "expert",
-
-            name:
-                "Expert",
-
-            description:
-                "10 chapitres maîtrisés",
-
-            icon:
-                "🥇",
-
-            unlocked:
-                stats.completed >= 10
-        },
-
-
-        {
-            id: "quiz",
-
-            name:
-                "Quiz Master",
-
-            description:
-                "5 quiz réalisés",
-
-            icon:
-                "🧠",
-
-            unlocked:
-                Object.keys(
-                    USER_DATA.quizResults || {}
-                ).length >= 5
-        },
-
-
-        {
-            id: "streak",
-
-            name:
-                "En feu",
-
-            description:
-                "10 bonnes réponses d'affilée",
-
-            icon:
-                "🔥",
-
-            unlocked:
-                Number(
-                    USER_DATA.streak || 0
-                ) >= 10
-        },
-
-
-        {
-            id: "xp",
-
-            name:
-                "Collectionneur",
-
-            description:
-                "500 XP gagnés",
-
-            icon:
-                "⭐",
-
-            unlocked:
-                Number(
-                    USER_DATA.xp || 0
-                ) >= 500
-        },
-
-
-        {
-            id: "cess",
-
-            name:
-                "Objectif CESS",
-
-            description:
-                "1000 XP gagnés",
-
-            icon:
-                "🎓",
-
-            unlocked:
-                Number(
-                    USER_DATA.xp || 0
-                ) >= 1000
-        }
-
-    ];
-}
-
-
-function renderBadges() {
-
-    var container =
-        document.getElementById(
-            "badgeDisplay"
-        );
-
-
-    if (!container) return;
-
-
-    var badges =
-        getBadges();
-
-
-    var html = "";
-
-
-    for (
-        var i = 0;
-        i < badges.length;
-        i++
-    ) {
-
-        var b = badges[i];
-
-
-        html += `
-
-            <div
-                class="badge ${
-                    b.unlocked
-                        ? "unlocked"
-                        : ""
-                }"
-            >
-
-                <div class="badge-icon">
-                    ${
-                        b.unlocked
-                            ? b.icon
-                            : "🔒"
-                    }
-                </div>
-
-                <strong>
-                    ${escapeHtml(b.name)}
-                </strong>
-
-                <small>
-                    ${escapeHtml(
-                        b.description
-                    )}
-                </small>
-
-            </div>
-
-        `;
-    }
-
-
-    container.innerHTML = html;
-}
-
-
-function renderFavorites() {
-
-    var container =
-        document.getElementById(
-            "favorisList"
-        );
-
-
-    if (!container) return;
-
-
-    if (
-        favorisFormules.length === 0
-    ) {
-
-        container.innerHTML = `
-            <div
-                style="
-                    color:var(--text-light);
-                    font-size:11px;
-                "
-            >
-                Aucune formule favorite
-                pour l'instant.
-                <br><br>
-                ⭐ Ajoute tes formules
-                préférées depuis le mémo.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    var formulas =
-        getAllFormulas();
-
-
-    var html = "";
-
-
-    for (
-        var i = 0;
-        i < favorisFormules.length;
-        i++
-    ) {
-
-        var id =
-            favorisFormules[i];
-
-
-        var formula = null;
-
-
-        for (
-            var f = 0;
-            f < formulas.length;
-            f++
-        ) {
-
-            if (
-                formulas[f].id === id
-            ) {
-
-                formula =
-                    formulas[f];
-
-                break;
-            }
-        }
-
-
-        if (!formula) continue;
-
-
-        html += `
-
-            <div class="favorite-item">
-
-                <strong>
-                    ${formula.icone || "📐"}
-                    ${escapeHtml(
-                        formula.titre || ""
-                    )}
-                </strong>
-
-                <span>
-                    ⭐ Favori
-                </span>
-
-            </div>
-
-        `;
-    }
-
-
-    container.innerHTML =
-        html ||
-        `
-            <div
-                style="
-                    color:var(--text-light);
-                    font-size:11px;
-                "
-            >
-                Aucun favori disponible.
-            </div>
-        `;
-}
-
-
-/* =========================================================
-   INITIALISATION
-   ========================================================= */
-
-function initApp() {
-
-    loadUserData();
-
-    loadTheme();
-
-    buildQuestionsQuiz();
-
-    updateQuizChapitres();
-
-    updateHeaderStats();
-
-    renderDashboard();
-
-    renderMatiereSelector();
-
-    renderFormules();
-
-    renderSuivi();
-
-    showTab("dashboard");
-}
-
-
-/* =========================================================
-   DÉMARRAGE
-   ========================================================= */
-
-if (
-    document.readyState ===
-    "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        initApp
-    );
-
-} else {
-
-    initApp();
-}
+});
+
+
+// ============================================================
+// COULEURS / INFOS
+// ============================================================
+
+const MATHS_CATEGORIES = {
+    "Algèbre": "🔢",
+    "Géométrie": "📐",
+    "Trigonométrie": "📐",
+    "Analyse": "📈",
+    "Statistiques": "📊"
+};
+
+const CAT_COLOR = {
+    "Algèbre": "#e53e3e",
+    "Géométrie": "#805ad5",
+    "Trigonométrie": "#dd6b20",
+    "Analyse": "#3182ce",
+    "Statistiques": "#38a169"
+};
+
+const CAT_COLOR_LIGHT = {
+    "Algèbre": "#fff5f5",
+    "Géométrie": "#faf5ff",
+    "Trigonométrie": "#fffaf0",
+    "Analyse": "#ebf8ff",
+    "Statistiques": "#f0fff4"
+};
+
+const ANNEE_COLOR = {
+    "3e": "#3182ce",
+    "4e": "#805ad5"
+};
+
+const ANNEE_DESC = {
+    "3e": "Géométrie, trigonométrie, algèbre et fonctions",
+    "4e": "Fonctions de référence, trigonométrie et statistiques"
+};
