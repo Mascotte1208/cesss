@@ -2204,3 +2204,160 @@ margin-top:14px
 .cours-section-body ol:first-child{
 margin-top:4px
 }
+
+
+/* =========================================================
+   VUES MATHEMATIQUES ET GEOGRAPHIE - MISE EN PAGE ALLEGEE
+   ========================================================= */
+
+/* Un en-tête plus court laisse davantage de place aux chapitres. */
+#maths .page-header,
+#geo .page-header{
+margin-bottom:20px;
+padding:20px 22px;
+border:1px solid var(--line);
+border-radius:var(--radius-lg);
+background:linear-gradient(135deg,var(--paper),var(--paper-soft));
+box-shadow:var(--shadow-sm)
+}
+
+#maths .page-header h1,
+#geo .page-header h1{
+font-size:clamp(27px,3vw,36px)
+}
+
+#maths .page-header p,
+#geo .page-header p{
+margin-top:7px
+}
+
+/* Les années restent faciles à parcourir sans prendre trop de hauteur. */
+#maths .year-selector,
+#geo .year-selector{
+display:grid;
+grid-template-columns:repeat(4,minmax(0,1fr));
+gap:8px;
+margin-bottom:14px
+}
+
+#maths .year-button,
+#geo .year-button{
+min-width:0;
+padding:9px 12px;
+text-align:center
+}
+
+#maths .year-button small,
+#geo .year-button small{
+margin-top:2px;
+white-space:nowrap
+}
+
+/* Deux colonnes raccourcissent la page et rendent le parcours plus rapide. */
+#mathContent .chapter-list,
+#geoContent .chapter-list{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:10px
+}
+
+#mathContent .chapter-item,
+#geoContent .chapter-item{
+min-height:70px;
+padding:12px 14px;
+border-color:transparent;
+background:var(--paper);
+box-shadow:var(--shadow-sm)
+}
+
+#mathContent .chapter-item:hover,
+#geoContent .chapter-item:hover{
+border-color:rgba(49,91,234,.28);
+box-shadow:var(--shadow);
+transform:translateY(-2px)
+}
+
+#geoContent .chapter-item:hover{
+border-color:rgba(22,165,121,.32)
+}
+
+#mathContent .chapter-icon,
+#geoContent .chapter-icon{
+width:36px;
+height:36px;
+background:var(--primary-soft)
+}
+
+#geoContent .chapter-icon{
+background:var(--green-soft)
+}
+
+#mathContent .chapter-main strong,
+#geoContent .chapter-main strong{
+font-size:12px
+}
+
+#mathContent .chapter-main small,
+#geoContent .chapter-main small{
+margin-top:3px;
+line-height:1.35
+}
+
+#mathContent .chapter-status,
+#geoContent .chapter-status{
+padding:4px 7px;
+border-radius:999px;
+background:var(--paper-soft);
+font-size:9px;
+white-space:nowrap
+}
+
+@media(max-width:900px){
+#mathContent .chapter-list,
+#geoContent .chapter-list{
+grid-template-columns:1fr
+}
+}
+
+@media(max-width:600px){
+#maths .page-header,
+#geo .page-header{
+padding:17px;
+margin-bottom:15px
+}
+
+#maths .page-header p,
+#geo .page-header p{
+display:none
+}
+
+#maths .year-selector,
+#geo .year-selector{
+display:flex;
+flex-wrap:nowrap;
+overflow-x:auto;
+padding-bottom:4px;
+scrollbar-width:none
+}
+
+#maths .year-selector::-webkit-scrollbar,
+#geo .year-selector::-webkit-scrollbar{
+display:none
+}
+
+#maths .year-button,
+#geo .year-button{
+flex:0 0 105px
+}
+
+#mathContent .chapter-item,
+#geoContent .chapter-item{
+min-height:62px;
+padding:10px 11px
+}
+
+#mathContent .chapter-main small,
+#geoContent .chapter-main small{
+display:none
+}
+}
