@@ -248,6 +248,32 @@ var GEO_VOCAB = [
 
 
     // =====================================================
+    // 3e — ÉTALEMENT URBAIN (NOUVEAU)
+    // =====================================================
+
+    {
+        mot: 'Étalement urbain',
+        def: 'Extension des villes vers les espaces périphériques, souvent accompagnée de migrations pendulaires.',
+        annee: '3e',
+        theme: 'Urbanisation'
+    },
+
+    {
+        mot: 'Migration pendulaire',
+        def: 'Déplacement régulier entre le domicile et le lieu de travail ou d’études.',
+        annee: '3e',
+        theme: 'Mobilités'
+    },
+
+    {
+        mot: 'Distance-temps',
+        def: 'Temps nécessaire pour parcourir une distance donnée entre deux lieux.',
+        annee: '3e',
+        theme: 'Mobilités'
+    },
+
+
+    // =====================================================
     // 4e — EAU
     // =====================================================
 
@@ -415,6 +441,39 @@ var GEO_VOCAB = [
 
 
     // =====================================================
+    // 4e — MIGRATIONS (NOUVEAU)
+    // =====================================================
+
+    {
+        mot: 'Migration',
+        def: 'Déplacement d’une personne ou d’un groupe impliquant un changement de lieu de résidence.',
+        annee: '4e',
+        theme: 'Migrations'
+    },
+
+    {
+        mot: 'Migration interne',
+        def: 'Déplacement d’une personne à l’intérieur d’un même pays.',
+        annee: '4e',
+        theme: 'Migrations'
+    },
+
+    {
+        mot: 'Migration internationale',
+        def: 'Déplacement d’une personne d’un pays vers un autre pays.',
+        annee: '4e',
+        theme: 'Migrations'
+    },
+
+    {
+        mot: 'Migration pendulaire',
+        def: 'Déplacement régulier entre le domicile et le lieu de travail ou d’études.',
+        annee: '4e',
+        theme: 'Migrations'
+    },
+
+
+    // =====================================================
     // 5e — ÉNERGIE
     // =====================================================
 
@@ -549,6 +608,32 @@ var GEO_VOCAB = [
 
 
     // =====================================================
+    // 5e — RESSOURCES (NOUVEAU)
+    // =====================================================
+
+    {
+        mot: 'Ressource naturelle',
+        def: 'Élément présent dans la nature pouvant être utilisé par les sociétés pour répondre à leurs besoins.',
+        annee: '5e',
+        theme: 'Ressources'
+    },
+
+    {
+        mot: 'Ressource stratégique',
+        def: 'Ressource considérée comme particulièrement importante pour l’économie ou la sécurité d’un territoire.',
+        annee: '5e',
+        theme: 'Ressources'
+    },
+
+    {
+        mot: 'Déforestation',
+        def: 'Disparition des forêts liée à l’exploitation du bois, à l’agriculture commerciale ou à l’élevage.',
+        annee: '5e',
+        theme: 'Environnement'
+    },
+
+
+    // =====================================================
     // 6e — DÉVELOPPEMENT
     // =====================================================
 
@@ -662,6 +747,32 @@ var GEO_VOCAB = [
 
     {
         mot: 'Prospective',
+        def: 'Démarche qui imagine les évolutions futures d’un territoire afin de les anticiper.',
+        annee: '6e',
+        theme: 'Géographie'
+    },
+
+
+    // =====================================================
+    // 6e — ACTEURS (NOUVEAU)
+    // =====================================================
+
+    {
+        mot: 'Acteur du territoire',
+        def: 'Personne, groupe, entreprise ou institution qui participe à l’organisation et à l’évolution d’un territoire.',
+        annee: '6e',
+        theme: 'Gouvernance'
+    },
+
+    {
+        mot: 'Gouvernance',
+        def: 'Manière dont les décisions sont prises et les territoires sont gérés par les différents acteurs.',
+        annee: '6e',
+        theme: 'Gouvernance'
+    },
+
+    {
+        mot: 'Prospective territoriale',
         def: 'Démarche qui imagine les évolutions futures d’un territoire afin de les anticiper.',
         annee: '6e',
         theme: 'Géographie'
