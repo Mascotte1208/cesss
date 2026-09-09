@@ -2361,3 +2361,87 @@ padding:10px 11px
 display:none
 }
 }
+
+
+/* RESUME COORDONNE DU CHAPITRE */
+
+.chapter-overview-grid{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:11px;
+margin-bottom:15px
+}
+
+.chapter-overview-card{
+display:flex;
+align-items:flex-start;
+gap:12px;
+min-width:0;
+padding:16px;
+border:1px solid var(--line);
+border-radius:var(--radius);
+background:var(--paper);
+box-shadow:var(--shadow-sm)
+}
+
+.chapter-overview-icon{
+width:34px;
+height:34px;
+display:grid;
+place-items:center;
+flex:0 0 auto;
+border-radius:10px;
+background:var(--primary-soft);
+font-size:16px
+}
+
+.chapter-overview-card>div{
+min-width:0
+}
+
+.chapter-overview-card h3{
+margin:1px 0 8px;
+font-size:13px
+}
+
+.chapter-overview-card ul{
+margin:0 0 0 17px;
+color:var(--text-soft);
+font-size:11px
+}
+
+.chapter-overview-card li{
+margin:3px 0
+}
+
+.cours-section{
+transition:border-color .18s,box-shadow .18s
+}
+
+.cours-section.open{
+border-color:rgba(49,91,234,.3);
+box-shadow:var(--shadow-sm)
+}
+
+.cours-section.open .cours-section-header{
+background:var(--primary-soft);
+color:var(--primary)
+}
+
+.cours-section-header{
+padding:11px 14px
+}
+
+.cours-section-body{
+padding:8px 16px 16px
+}
+
+@media(max-width:700px){
+.chapter-overview-grid{
+grid-template-columns:1fr
+}
+
+.chapter-overview-card{
+padding:13px
+}
+}
