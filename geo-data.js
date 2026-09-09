@@ -304,148 +304,244 @@ var GEO_CHAPITRES = {
 
                     <li>
                         <b>Polaire :</b>
-                        températures très faibles une grande partie
-                        de l'année.
+                        températures très basses et faibles précipitations.
                     </li>
                 </ul>
+
+                <br>
+
+                <h4>🔹 Bioclimats</h4>
+
+                <p>
+                    Un <b>bioclimat</b> correspond à l'association
+                    entre les conditions climatiques et les
+                    caractéristiques d'un milieu naturel.
+                </p>
+
+                <p>
+                    Les climats influencent notamment la végétation,
+                    les sols, les activités humaines et la répartition
+                    des populations.
+                </p>
             `,
 
             objectifs: [
-                'Identifier les facteurs climatiques',
-                'Relier climat et paysage naturel',
-                'Lire un diagramme ombrothermique'
+                'Identifier les principaux facteurs climatiques',
+                'Reconnaître les grands types de climats',
+                'Relier climat, végétation et activités humaines'
             ],
 
             matieres: [
-                'Facteurs du climat',
-                'Zones climatiques et biomes',
-                'Cartes climatiques'
+                'Latitude et altitude',
+                'Continentalité',
+                'Grands climats',
+                'Bioclimats'
             ],
 
             exercices: [
                 {
                     question:
-                        'Quel climat caractérise principalement la Belgique ?',
-
-                    options: [
-                        'Océanique',
-                        'Méditerranéen',
-                        'Désertique',
-                        'Tropical'
-                    ],
-
-                    correct: 0,
-
-                    correction:
-                        'La Belgique connaît un climat tempéré de type océanique.'
-                },
-
-                {
-                    question:
-                        "Quel facteur climatique est directement lié à la hauteur d'un lieu ?",
+                        "Quel facteur explique notamment la diminution de la température avec l'altitude ?",
 
                     options: [
                         "L'altitude",
                         'La longitude',
-                        'La continentalité',
-                        'La population'
+                        'La population',
+                        'Le PIB'
                     ],
 
                     correct: 0,
 
                     correction:
-                        "L'altitude influence notamment la température."
+                        "La température diminue généralement lorsque l'altitude augmente."
+                },
+
+                {
+                    question:
+                        'Quel climat est caractérisé par des étés chauds et secs ?',
+
+                    options: [
+                        'Méditerranéen',
+                        'Équatorial',
+                        'Polaire',
+                        'Océanique'
+                    ],
+
+                    correct: 0,
+
+                    correction:
+                        'Le climat méditerranéen connaît des étés chauds et secs.'
                 }
             ]
         },
 
 
         {
-            id: 'geo3_fonctions',
-            titre: "4. Les fonctions du territoire",
-            desc: "UAA3 - Logement, emploi, transport, tourisme.",
+            id: 'geo3_population',
+            titre: "4. Population & Répartition",
+            desc: "UAA1 - La répartition de la population mondiale.",
             niveau: '3e',
-            icone: '🏙️',
+            icone: '👥',
             color: '#3182ce',
 
             cours: `
-                <h4>🔹 Qu'est-ce qu'une fonction ?</h4>
+                <h4>🔹 Une population inégalement répartie</h4>
 
                 <p>
-                    Une fonction est un usage du territoire :
-                    <b>
-                        logement, santé, emploi, tourisme,
-                        loisir, transport, information...
-                    </b>
+                    La population mondiale est très inégalement
+                    répartie sur la planète.
                 </p>
 
                 <p>
-                    Ces fonctions sont inégalement réparties
-                    dans l'espace.
-                </p>
-
-                <br>
-
-                <h4>🔹 Les facteurs de localisation</h4>
-
-                <p>
-                    Une activité peut s'installer dans un lieu
-                    en raison de différents <b>atouts</b> :
-                    main-d'œuvre, transports, proximité des clients,
-                    ressources, espace disponible...
-                </p>
-
-                <p>
-                    Elle peut également être limitée par des
-                    <b>contraintes</b> :
-                    coût du terrain, réglementation, nuisances,
-                    accessibilité...
+                    Les principales concentrations de population
+                    se trouvent notamment en Asie orientale,
+                    en Asie du Sud et dans certaines régions
+                    d'Europe.
                 </p>
 
                 <br>
 
-                <h4>🔹 L'étalement urbain</h4>
+                <h4>🔹 Les foyers de population</h4>
+
+                <ul>
+                    <li>Asie orientale</li>
+                    <li>Asie du Sud</li>
+                    <li>Europe</li>
+                </ul>
+
+                <br>
+
+                <h4>🔹 Les espaces faiblement peuplés</h4>
 
                 <p>
-                    La croissance des villes vers les périphéries
-                    peut créer des <b>migrations pendulaires</b>
-                    entre le domicile et le lieu de travail.
+                    Certains territoires présentent de très faibles
+                    densités en raison de contraintes naturelles
+                    ou de conditions difficiles : déserts,
+                    hautes montagnes, régions polaires ou forêts
+                    équatoriales.
+                </p>
+
+                <br>
+
+                <h4>🔹 Densité de population</h4>
+
+                <p>
+                    La densité correspond au nombre d'habitants
+                    par unité de surface.
                 </p>
 
                 <p>
-                    Cela peut augmenter les
-                    <b>distances-temps</b> et les déplacements.
+                    <b>Densité = Population ÷ Superficie</b>
                 </p>
             `,
 
             objectifs: [
-                "Identifier les fonctions d'un territoire",
-                'Analyser les facteurs de localisation',
-                'Comprendre le rôle des infrastructures de transport'
+                'Localiser les principaux foyers de population',
+                'Identifier les espaces faiblement peuplés',
+                'Calculer et interpréter une densité de population'
             ],
 
             matieres: [
-                'Fonctions du territoire',
-                'Facteurs de localisation',
-                'Réseaux de transport'
+                'Répartition mondiale',
+                'Densité de population',
+                'Foyers et déserts humains'
             ],
 
             exercices: [
                 {
                     question:
-                        'La fonction "santé" correspond notamment à...',
+                        'La densité de population correspond...',
 
                     options: [
-                        'Les hôpitaux et cliniques',
-                        'Les bureaux et entreprises',
-                        'Les parcs et jardins',
-                        'Les routes et autoroutes'
+                        "Au nombre d'habitants par unité de surface",
+                        'Au nombre total de villes',
+                        'Au PIB par habitant',
+                        'À la superficie totale'
                     ],
 
                     correct: 0,
 
                     correction:
-                        'Les hôpitaux et cliniques participent à la fonction santé.'
+                        "La densité mesure le nombre d'habitants rapporté à une unité de surface."
+                }
+            ]
+        },
+
+
+        {
+            id: 'geo3_urbanisation',
+            titre: "5. Urbanisation & Métropolisation",
+            desc: "UAA1 - La croissance urbaine et les métropoles.",
+            niveau: '3e',
+            icone: '🏙️',
+            color: '#805ad5',
+
+            cours: `
+                <h4>🔹 L'urbanisation</h4>
+
+                <p>
+                    L'<b>urbanisation</b> désigne l'augmentation
+                    de la population vivant dans les villes ainsi
+                    que l'extension des espaces urbains.
+                </p>
+
+                <br>
+
+                <h4>🔹 La métropolisation</h4>
+
+                <p>
+                    La <b>métropolisation</b> correspond au renforcement
+                    du poids des grandes villes et métropoles dans
+                    l'organisation des territoires.
+                </p>
+
+                <p>
+                    Les métropoles concentrent souvent les fonctions
+                    de commandement : sièges d'entreprises,
+                    institutions, universités, transports,
+                    services spécialisés et activités culturelles.
+                </p>
+
+                <br>
+
+                <h4>🔹 Des contrastes urbains</h4>
+
+                <p>
+                    Les villes présentent des contrastes importants
+                    entre quartiers centraux, espaces périphériques,
+                    zones d'activités et quartiers résidentiels.
+                </p>
+            `,
+
+            objectifs: [
+                "Définir l'urbanisation",
+                'Expliquer la métropolisation',
+                'Identifier les fonctions de commandement des métropoles'
+            ],
+
+            matieres: [
+                'Urbanisation',
+                'Métropolisation',
+                'Fonctions urbaines',
+                'Contrastes socio-spatiaux'
+            ],
+
+            exercices: [
+                {
+                    question:
+                        'La métropolisation correspond principalement...',
+
+                    options: [
+                        'Au renforcement du poids des grandes villes',
+                        'À la disparition des villes',
+                        'À la baisse de la population urbaine',
+                        'À la diminution des transports'
+                    ],
+
+                    correct: 0,
+
+                    correction:
+                        'La métropolisation renforce le rôle des grandes villes dans les réseaux et les territoires.'
                 }
             ]
         }
@@ -461,112 +557,105 @@ var GEO_CHAPITRES = {
 
         {
             id: 'geo4_eau',
-            titre: "1. L'accès à l'eau",
-            desc: "UAA1 - L'inégale répartition de l'eau et le stress hydrique.",
+            titre: "1. L'eau : une ressource à gérer",
+            desc: "UAA2 - Disponibilité, usages et gestion de l'eau.",
             niveau: '4e',
             icone: '💧',
-            color: '#1d4ed8',
+            color: '#3182ce',
 
             cours: `
-                <h4>🔹 L'eau, une ressource vitale</h4>
+                <h4>🔹 Une ressource inégalement disponible</h4>
 
                 <p>
-                    L'eau douce représente une faible partie de
-                    l'ensemble de l'eau présente sur Terre et sa
-                    disponibilité varie fortement selon les régions.
+                    L'eau douce est une ressource indispensable
+                    mais sa disponibilité varie fortement selon
+                    les régions du monde.
                 </p>
 
                 <p>
-                    Certaines régions connaissent un
-                    <b>stress hydrique</b> lorsque les ressources
-                    disponibles sont insuffisantes par rapport
-                    aux besoins.
-                </p>
-
-                <br>
-
-                <h4>🔹 Le bassin hydrographique</h4>
-
-                <p>
-                    Le <b>bassin versant</b> d'un cours d'eau est
-                    l'ensemble du territoire dont les eaux
-                    s'écoulent vers ce cours d'eau.
-                </p>
-
-                <p>
-                    Les territoires situés en amont et en aval
-                    peuvent dépendre de la même ressource, ce qui
-                    peut provoquer des tensions ou nécessiter une
-                    coopération.
+                    Les précipitations, les ressources souterraines,
+                    les cours d'eau et les infrastructures expliquent
+                    en partie ces différences.
                 </p>
 
                 <br>
 
-                <h4>🔹 L'exemple de Mexico</h4>
+                <h4>🔹 Les usages de l'eau</h4>
+
+                <ul>
+                    <li><b>Agriculture :</b> irrigation et élevage.</li>
+                    <li><b>Industrie :</b> production et refroidissement.</li>
+                    <li><b>Population :</b> eau potable et usages domestiques.</li>
+                    <li><b>Énergie :</b> notamment hydroélectricité.</li>
+                </ul>
+
+                <br>
+
+                <h4>🔹 Le stress hydrique</h4>
 
                 <p>
-                    Mexico dépend fortement des eaux souterraines.
-                    Le pompage important des nappes peut contribuer
-                    à l'affaissement du sol.
+                    Le <b>stress hydrique</b> apparaît lorsque les
+                    besoins en eau deviennent importants par rapport
+                    aux ressources disponibles.
                 </p>
 
                 <br>
 
-                <h4>🔹 Gérer la ressource</h4>
+                <h4>🔹 Le bassin versant</h4>
 
                 <p>
-                    La gestion de l'eau nécessite des infrastructures
-                    et des politiques adaptées :
-                    barrages, réseaux, traitement des eaux,
-                    économies d'eau, protection des nappes...
+                    Un <b>bassin versant</b> est l'ensemble du territoire
+                    dont les eaux s'écoulent vers un même cours d'eau
+                    ou un même exutoire.
                 </p>
             `,
 
             objectifs: [
-                "Décrire la répartition de la ressource en eau",
-                'Expliquer le concept de stress hydrique',
-                "Analyser les conflits d'usage de l'eau"
+                "Expliquer l'inégale disponibilité de l'eau",
+                'Identifier les principaux usages de la ressource',
+                'Comprendre le stress hydrique et la gestion de l’eau'
             ],
 
             matieres: [
-                'Bassins hydrographiques et nappes aquifères',
+                'Ressource en eau',
+                'Bassin versant',
                 'Stress hydrique',
-                "Gestion de l'eau et aménagements"
+                'Gestion de la ressource'
             ],
 
             exercices: [
                 {
                     question:
-                        'Une nappe aquifère est...',
+                        'Le stress hydrique correspond à...',
 
                     options: [
-                        "Une réserve d'eau souterraine",
-                        'Un fleuve',
-                        'Un lac de barrage',
-                        'Une usine de dessalement'
+                        'Une situation où la demande en eau est importante par rapport aux ressources disponibles',
+                        'Une région où il pleut tous les jours',
+                        'Une rivière très longue',
+                        'Une réserve de pétrole'
                     ],
 
                     correct: 0,
 
                     correction:
-                        "Une nappe aquifère est une réserve d'eau souterraine."
+                        "Le stress hydrique apparaît lorsque les besoins sont élevés par rapport aux ressources disponibles."
                 },
 
                 {
                     question:
-                        'Pourquoi Mexico connaît-elle un problème lié aux eaux souterraines ?',
+                        "Qu'est-ce qu'un bassin versant ?",
 
                     options: [
-                        'À cause notamment du pompage important des nappes',
-                        'Parce que la ville est située sur un océan',
-                        'Parce qu’il ne pleut jamais',
-                        'À cause uniquement des glaciers'
+                        "Un territoire dont les eaux s'écoulent vers un même exutoire",
+                        'Une zone uniquement agricole',
+                        'Une nappe phréatique',
+                        'Un barrage'
                     ],
 
                     correct: 0,
 
                     correction:
-                        "Le pompage important des nappes peut provoquer un affaissement du sol."
+                        "Le bassin versant regroupe les territoires dont les eaux convergent vers un même cours d'eau ou exutoire."
                 }
             ]
         },
@@ -574,96 +663,265 @@ var GEO_CHAPITRES = {
 
         {
             id: 'geo4_nourriture',
-            titre: "2. L'accès à la nourriture",
-            desc: "UAA1 - Les systèmes agricoles et la sécurité alimentaire.",
+            titre: "2. Nourrir les hommes",
+            desc: "UAA2 - Agriculture, alimentation et sécurité alimentaire.",
             niveau: '4e',
             icone: '🌾',
             color: '#d69e2e',
 
             cours: `
-                <h4>🔹 Les types d'agriculture</h4>
-
-                <ul>
-                    <li>
-                        <b>Vivrière :</b>
-                        production destinée principalement à
-                        nourrir la famille ou la population locale.
-                    </li>
-
-                    <li>
-                        <b>Commerciale :</b>
-                        production destinée à la vente.
-                    </li>
-
-                    <li>
-                        <b>Intensive :</b>
-                        recherche de rendements élevés grâce à
-                        des investissements importants.
-                    </li>
-
-                    <li>
-                        <b>Extensive :</b>
-                        production réalisée sur de grandes superficies
-                        avec des rendements généralement plus faibles.
-                    </li>
-                </ul>
-
-                <br>
-
-                <h4>🔹 La sécurité alimentaire</h4>
+                <h4>🔹 Produire pour nourrir</h4>
 
                 <p>
-                    La sécurité alimentaire suppose que les personnes
-                    puissent avoir accès à une nourriture suffisante,
-                    saine et nutritive.
-                </p>
-
-                <p>
-                    Elle dépend notamment de la production,
-                    des revenus, des transports, des marchés,
-                    des conditions politiques et des conflits.
+                    Les systèmes agricoles sont très variés selon
+                    les milieux, les techniques utilisées,
+                    les marchés et les besoins des populations.
                 </p>
 
                 <br>
 
-                <h4>🔹 Les contraintes</h4>
+                <h4>🔹 Agriculture vivrière</h4>
 
                 <p>
-                    Parmi les contraintes figurent la pauvreté,
-                    les sécheresses, certaines conséquences du
-                    changement climatique, le gaspillage et
-                    les conflits.
+                    L'<b>agriculture vivrière</b> vise principalement
+                    à produire pour nourrir les populations locales.
+                </p>
+
+                <br>
+
+                <h4>🔹 Agriculture commerciale</h4>
+
+                <p>
+                    L'agriculture commerciale produit en grande partie
+                    pour la vente sur les marchés nationaux ou
+                    internationaux.
+                </p>
+
+                <br>
+
+                <h4>🔹 Agriculture intensive</h4>
+
+                <p>
+                    L'<b>agriculture intensive</b> recherche des
+                    rendements élevés grâce à l'utilisation importante
+                    de facteurs de production : mécanisation,
+                    irrigation, engrais ou produits phytosanitaires.
+                </p>
+
+                <br>
+
+                <h4>🔹 Sécurité alimentaire</h4>
+
+                <p>
+                    La sécurité alimentaire dépend de la disponibilité
+                    de nourriture, de son accessibilité et de la
+                    capacité des populations à se nourrir durablement.
                 </p>
             `,
 
             objectifs: [
-                'Différencier les systèmes agricoles',
-                'Comprendre les enjeux de la sécurité alimentaire',
-                'Mettre en évidence des contraintes'
+                'Distinguer agriculture vivrière et commerciale',
+                'Expliquer les caractéristiques de l’agriculture intensive',
+                'Comprendre les enjeux de la sécurité alimentaire'
             ],
 
             matieres: [
-                'Agriculture vivrière et commerciale',
-                'Agriculture intensive et extensive',
+                'Agriculture vivrière',
+                'Agriculture commerciale',
+                'Agriculture intensive',
                 'Sécurité alimentaire'
             ],
 
             exercices: [
                 {
                     question:
-                        "L'agriculture vivrière...",
+                        "L'agriculture vivrière est principalement destinée à...",
 
                     options: [
-                        'Nourrit principalement la famille ou la population locale',
-                        "Est toujours destinée à l'exportation",
-                        'Utilise obligatoirement beaucoup de machines',
-                        'Nécessite toujours de très grands espaces'
+                        'Nourrir les populations locales',
+                        'Exporter toutes les productions',
+                        'Produire uniquement des fleurs',
+                        'Alimenter les transports'
                     ],
 
                     correct: 0,
 
                     correction:
-                        "L'agriculture vivrière vise principalement l'autoconsommation ou l'alimentation locale."
+                        "L'agriculture vivrière vise principalement l'alimentation des populations locales."
+                }
+            ]
+        },
+
+
+        {
+            id: 'geo4_amenagement',
+            titre: "3. Aménager les territoires",
+            desc: "UAA3 - Accessibilité, services et inégalités territoriales.",
+            niveau: '4e',
+            icone: '🛣️',
+            color: '#dd6b20',
+
+            cours: `
+                <h4>🔹 Aménager un territoire</h4>
+
+                <p>
+                    Aménager consiste à organiser et transformer
+                    l'espace afin de répondre aux besoins des
+                    populations et des activités.
+                </p>
+
+                <br>
+
+                <h4>🔹 Accessibilité</h4>
+
+                <p>
+                    L'<b>accessibilité</b> désigne la facilité avec
+                    laquelle une population peut atteindre un lieu,
+                    un service ou une activité.
+                </p>
+
+                <p>
+                    Elle dépend notamment des réseaux de transport,
+                    de la distance et du temps nécessaire pour se
+                    déplacer.
+                </p>
+
+                <br>
+
+                <h4>🔹 Distance-temps</h4>
+
+                <p>
+                    La <b>distance-temps</b> mesure le temps nécessaire
+                    pour rejoindre un lieu.
+                </p>
+
+                <p>
+                    Deux lieux peuvent être éloignés en kilomètres
+                    mais proches en distance-temps si les transports
+                    sont rapides.
+                </p>
+
+                <br>
+
+                <h4>🔹 Inégalités territoriales</h4>
+
+                <p>
+                    Les territoires n'ont pas tous le même accès
+                    aux emplois, aux soins, à l'éducation,
+                    aux commerces ou aux transports.
+                </p>
+            `,
+
+            objectifs: [
+                'Définir aménagement du territoire et accessibilité',
+                'Utiliser la notion de distance-temps',
+                'Identifier des inégalités territoriales'
+            ],
+
+            matieres: [
+                'Aménagement',
+                'Accessibilité',
+                'Distance-temps',
+                'Services'
+            ],
+
+            exercices: [
+                {
+                    question:
+                        'La distance-temps correspond...',
+
+                    options: [
+                        'Au temps nécessaire pour rejoindre un lieu',
+                        'À la distance mesurée uniquement en kilomètres',
+                        'À la superficie du territoire',
+                        'Au nombre de routes'
+                    ],
+
+                    correct: 0,
+
+                    correction:
+                        "La distance-temps prend en compte le temps nécessaire pour se déplacer."
+                }
+            ]
+        },
+
+
+        {
+            id: 'geo4_transports',
+            titre: "4. Mobilités & Réseaux",
+            desc: "UAA3 - Déplacements, réseaux et accessibilité.",
+            niveau: '4e',
+            icone: '🚆',
+            color: '#319795',
+
+            cours: `
+                <h4>🔹 Les mobilités</h4>
+
+                <p>
+                    Une mobilité est un déplacement d'une personne
+                    entre deux lieux.
+                </p>
+
+                <p>
+                    Les mobilités peuvent être quotidiennes,
+                    touristiques, professionnelles ou liées
+                    aux migrations.
+                </p>
+
+                <br>
+
+                <h4>🔹 Les réseaux</h4>
+
+                <p>
+                    Les réseaux de transport relient les territoires
+                    entre eux. Ils comprennent notamment les routes,
+                    les voies ferrées, les ports et les aéroports.
+                </p>
+
+                <br>
+
+                <h4>🔹 Les nœuds</h4>
+
+                <p>
+                    Certains lieux concentrent les connexions :
+                    ce sont des <b>nœuds</b> ou pôles de transport.
+                </p>
+
+                <p>
+                    Une bonne connexion aux réseaux peut renforcer
+                    l'attractivité d'un territoire.
+                </p>
+            `,
+
+            objectifs: [
+                'Identifier différents types de mobilités',
+                'Comprendre le rôle des réseaux',
+                "Expliquer l'importance des nœuds de transport"
+            ],
+
+            matieres: [
+                'Mobilités',
+                'Réseaux',
+                'Nœuds',
+                'Accessibilité'
+            ],
+
+            exercices: [
+                {
+                    question:
+                        'Un réseau de transport sert principalement à...',
+
+                    options: [
+                        'Relier différents territoires',
+                        'Empêcher les déplacements',
+                        'Réduire toutes les villes',
+                        'Supprimer les échanges'
+                    ],
+
+                    correct: 0,
+
+                    correction:
+                        'Les réseaux de transport permettent de relier les territoires et de faciliter les mobilités.'
                 }
             ]
         }
@@ -679,47 +937,63 @@ var GEO_CHAPITRES = {
 
         {
             id: 'geo5_energie',
-            titre: "1. L'énergie",
-            desc: "Les ressources énergétiques et leur répartition.",
+            titre: "1. Énergie & Développement",
+            desc: "UAA3 - Ressources énergétiques et transitions.",
             niveau: '5e',
             icone: '⚡',
-            color: '#f59e0b',
+            color: '#ecc94b',
 
             cours: `
-                <h4>🔹 Les énergies fossiles</h4>
+                <h4>🔹 Les ressources énergétiques</h4>
 
                 <p>
-                    Le charbon, le pétrole et le gaz naturel
-                    sont des ressources fossiles.
-                    Elles sont limitées et leur combustion
-                    émet notamment du dioxyde de carbone.
+                    Les sociétés utilisent différentes sources
+                    d'énergie pour se déplacer, produire,
+                    se chauffer et faire fonctionner les activités.
                 </p>
 
                 <br>
 
-                <h4>🔹 Les énergies renouvelables</h4>
+                <h4>🔹 Énergies fossiles</h4>
 
                 <p>
-                    Elles utilisent des ressources qui se
-                    renouvellent à l'échelle humaine :
-                    soleil, vent, eau, biomasse...
+                    Le <b>pétrole</b>, le <b>gaz</b> et le
+                    <b>charbon</b> sont des énergies fossiles.
+                    Elles proviennent de ressources formées sur
+                    des temps géologiques très longs.
+                </p>
+
+                <p>
+                    Leur utilisation produit notamment des émissions
+                    de gaz à effet de serre.
                 </p>
 
                 <br>
 
-                <h4>🔹 Les enjeux</h4>
+                <h4>🔹 Énergies renouvelables</h4>
 
                 <p>
-                    La transition énergétique cherche à réduire
-                    la dépendance aux ressources fossiles et
-                    à diversifier les sources d'énergie.
+                    Les énergies renouvelables utilisent des ressources
+                    qui se renouvellent à l'échelle humaine :
+                    soleil, vent, eau, biomasse ou géothermie.
+                </p>
+
+                <br>
+
+                <h4>🔹 Transition énergétique</h4>
+
+                <p>
+                    La transition énergétique vise à transformer
+                    les systèmes de production et de consommation
+                    d'énergie afin de réduire les impacts
+                    environnementaux et de répondre aux besoins futurs.
                 </p>
             `,
 
             objectifs: [
-                'Distinguer énergie fossile et énergie renouvelable',
-                'Identifier les principaux enjeux énergétiques',
-                'Comprendre les différences entre les ressources'
+                'Distinguer énergies fossiles et renouvelables',
+                'Identifier les enjeux énergétiques',
+                'Comprendre la notion de transition énergétique'
             ],
 
             matieres: [
@@ -731,19 +1005,36 @@ var GEO_CHAPITRES = {
             exercices: [
                 {
                     question:
-                        'Laquelle est une énergie renouvelable ?',
+                        'Le pétrole est une énergie...',
 
                     options: [
-                        "L'énergie solaire",
-                        'Le pétrole',
-                        'Le charbon',
-                        'Le gaz naturel'
+                        'Fossile',
+                        'Renouvelable',
+                        'Solaire',
+                        'Éolienne'
                     ],
 
                     correct: 0,
 
                     correction:
-                        "L'énergie solaire provient d'une source renouvelable."
+                        'Le pétrole est une énergie fossile.'
+                },
+
+                {
+                    question:
+                        'Laquelle est une énergie renouvelable ?',
+
+                    options: [
+                        'Énergie solaire',
+                        'Charbon',
+                        'Pétrole',
+                        'Gaz naturel'
+                    ],
+
+                    correct: 0,
+
+                    correction:
+                        "L'énergie solaire est renouvelable."
                 }
             ]
         },
@@ -751,19 +1042,19 @@ var GEO_CHAPITRES = {
 
         {
             id: 'geo5_mondialisation',
-            titre: "2. Mondialisation & flux",
-            desc: "Les échanges et l'interdépendance entre les territoires.",
+            titre: "2. Mondialisation & Flux",
+            desc: "UAA3 - Interdépendance des territoires et échanges.",
             niveau: '5e',
             icone: '🌐',
-            color: '#2563eb',
+            color: '#4299e1',
 
             cours: `
                 <h4>🔹 La mondialisation</h4>
 
                 <p>
-                    La mondialisation correspond à l'intensification
-                    des échanges et des interdépendances entre
-                    les territoires.
+                    La <b>mondialisation</b> correspond à
+                    l'intensification des échanges et des
+                    interdépendances entre les territoires.
                 </p>
 
                 <br>
@@ -771,8 +1062,25 @@ var GEO_CHAPITRES = {
                 <h4>🔹 Les flux</h4>
 
                 <p>
-                    Les flux peuvent concerner des personnes,
-                    des marchandises, des capitaux ou des informations.
+                    Les <b>flux</b> sont des déplacements entre
+                    territoires.
+                </p>
+
+                <ul>
+                    <li>flux de marchandises ;</li>
+                    <li>flux de capitaux ;</li>
+                    <li>flux d'informations ;</li>
+                    <li>flux de personnes.</li>
+                </ul>
+
+                <br>
+
+                <h4>🔹 Les acteurs</h4>
+
+                <p>
+                    Les entreprises, les États, les organisations
+                    internationales et les populations participent
+                    à la mondialisation.
                 </p>
 
                 <br>
@@ -780,50 +1088,41 @@ var GEO_CHAPITRES = {
                 <h4>🔹 Les FTN</h4>
 
                 <p>
-                    Une <b>firme transnationale</b> possède ou contrôle
-                    des activités dans plusieurs pays.
-                </p>
-
-                <br>
-
-                <h4>🔹 Les pôles</h4>
-
-                <p>
-                    Certains territoires concentrent davantage
-                    les activités économiques, les sièges sociaux,
-                    les infrastructures et les échanges.
+                    Une <b>firme transnationale</b> est une entreprise
+                    qui possède ou contrôle des activités dans
+                    plusieurs pays.
                 </p>
             `,
 
             objectifs: [
                 'Définir la mondialisation',
                 'Identifier différents types de flux',
-                'Comprendre le rôle des firmes transnationales'
+                'Reconnaître les principaux acteurs'
             ],
 
             matieres: [
                 'Mondialisation',
                 'Flux',
-                'FTN',
-                'Pôles et réseaux'
+                'Interdépendance',
+                'FTN'
             ],
 
             exercices: [
                 {
                     question:
-                        'Un flux peut être...',
+                        'Un flux est...',
 
                     options: [
-                        'Un déplacement de marchandises ou de personnes',
-                        'Uniquement un fleuve',
-                        'Uniquement une frontière',
-                        'Uniquement une montagne'
+                        'Un déplacement entre territoires',
+                        'Une frontière',
+                        'Une montagne',
+                        'Une ressource naturelle'
                     ],
 
                     correct: 0,
 
                     correction:
-                        'Un flux correspond à un déplacement entre deux territoires.'
+                        'Un flux est un déplacement de personnes, de marchandises, de capitaux ou d’informations.'
                 }
             ]
         },
@@ -831,54 +1130,65 @@ var GEO_CHAPITRES = {
 
         {
             id: 'geo5_migrations',
-            titre: "3. Migrations",
-            desc: "Les mobilités humaines et les facteurs de départ et d'attraction.",
+            titre: "3. Migrations & Mobilités",
+            desc: "UAA3 - Les migrations internationales et leurs facteurs.",
             niveau: '5e',
             icone: '🧳',
-            color: '#8b5cf6',
+            color: '#667eea',
 
             cours: `
-                <h4>🔹 Les migrations</h4>
+                <h4>🔹 Migration</h4>
 
                 <p>
-                    Une migration correspond au déplacement d'une
-                    personne ou d'un groupe vers un autre territoire
-                    avec l'intention de s'y installer pour une
-                    certaine durée.
+                    Une migration est le déplacement d'une personne
+                    ou d'un groupe qui implique un changement
+                    de lieu de résidence.
                 </p>
 
                 <br>
 
-                <h4>🔹 Les facteurs de départ</h4>
+                <h4>🔹 Facteurs de départ : Push</h4>
 
                 <p>
-                    On parle de facteurs <b>push</b> :
-                    conflit, pauvreté, chômage, insécurité,
-                    catastrophe...
+                    Les facteurs <b>push</b> poussent les personnes
+                    à quitter leur territoire :
+                    conflits, chômage, pauvreté, catastrophes,
+                    persécutions...
                 </p>
 
                 <br>
 
-                <h4>🔹 Les facteurs d'attraction</h4>
+                <h4>🔹 Facteurs d'attraction : Pull</h4>
 
                 <p>
-                    On parle de facteurs <b>pull</b> :
-                    emploi, études, sécurité, meilleures conditions
-                    de vie...
+                    Les facteurs <b>pull</b> attirent les migrants
+                    vers un territoire :
+                    emploi, sécurité, études, meilleures conditions
+                    de vie ou regroupement familial.
+                </p>
+
+                <br>
+
+                <h4>🔹 Des mobilités variées</h4>
+
+                <p>
+                    Les migrations peuvent être temporaires ou
+                    permanentes, volontaires ou contraintes,
+                    internes ou internationales.
                 </p>
             `,
 
             objectifs: [
                 'Définir une migration',
-                'Identifier les facteurs push',
-                'Identifier les facteurs pull'
+                'Distinguer facteurs push et pull',
+                'Identifier différents types de mobilités'
             ],
 
             matieres: [
                 'Migrations',
-                'Push',
-                'Pull',
-                'Mobilités humaines'
+                'Mobilités',
+                'Facteurs push/pull',
+                'Migrations internationales'
             ],
 
             exercices: [
@@ -887,16 +1197,16 @@ var GEO_CHAPITRES = {
                         'Un facteur pull est...',
 
                     options: [
-                        'Un facteur qui attire vers un territoire',
-                        'Un facteur qui oblige à partir',
+                        "Un élément qui attire vers un territoire",
+                        'Un élément qui détruit une ville',
                         'Une frontière',
-                        'Une catastrophe naturelle'
+                        'Un réseau routier'
                     ],
 
                     correct: 0,
 
                     correction:
-                        'Un facteur pull attire une personne vers un territoire.'
+                        "Un facteur pull est un élément qui attire une personne vers un territoire."
                 }
             ]
         }
@@ -913,207 +1223,223 @@ var GEO_CHAPITRES = {
         {
             id: 'geo6_developpement',
             titre: "1. Développement durable",
-            desc: "Les dimensions économique, sociale et environnementale.",
+            desc: "UAA - Développement, ressources et durabilité.",
             niveau: '6e',
-            icone: '♻️',
-            color: '#16a34a',
+            icone: '🌱',
+            color: '#38a169',
 
             cours: `
-                <h4>🔹 Le développement durable</h4>
+                <h4>🔹 Développement durable</h4>
 
                 <p>
-                    Le développement durable cherche à répondre
-                    aux besoins actuels tout en prenant en compte
-                    les besoins des générations futures.
+                    Le <b>développement durable</b> cherche à répondre
+                    aux besoins actuels tout en permettant aux
+                    générations futures de répondre aux leurs.
                 </p>
 
                 <br>
 
-                <h4>🔹 Les trois dimensions</h4>
+                <h4>🔹 Trois dimensions</h4>
 
                 <ul>
                     <li>
                         <b>Économique :</b>
-                        production, emploi, revenus...
+                        produire et créer des richesses.
                     </li>
 
                     <li>
                         <b>Sociale :</b>
-                        santé, éducation, logement, égalité...
+                        améliorer les conditions de vie et réduire
+                        les inégalités.
                     </li>
 
                     <li>
                         <b>Environnementale :</b>
-                        ressources, biodiversité, climat,
-                        pollution...
+                        préserver les ressources et les milieux.
                     </li>
                 </ul>
 
                 <br>
 
-                <h4>🔹 Les ODD</h4>
+                <h4>🔹 Des choix difficiles</h4>
 
                 <p>
-                    Les Objectifs de développement durable
-                    constituent un ensemble d'objectifs visant
-                    notamment à réduire les inégalités et à
-                    protéger l'environnement.
-                </p>
-
-                <br>
-
-                <h4>🔹 Économie circulaire</h4>
-
-                <p>
-                    Elle cherche notamment à limiter le gaspillage
-                    des ressources en favorisant la réduction,
-                    la réutilisation, la réparation et le recyclage.
+                    Les politiques d'aménagement doivent souvent
+                    arbitrer entre plusieurs objectifs :
+                    développement économique, besoins sociaux
+                    et protection de l'environnement.
                 </p>
             `,
 
             objectifs: [
                 'Définir le développement durable',
                 'Identifier ses trois dimensions',
-                'Comprendre les ODD',
-                "Comprendre le principe de l'économie circulaire"
+                'Comprendre les arbitrages entre différents objectifs'
             ],
 
             matieres: [
                 'Développement durable',
-                'ODD',
-                'Économie circulaire'
+                'Économie',
+                'Société',
+                'Environnement'
             ],
 
             exercices: [
                 {
                     question:
-                        'Le développement durable repose notamment sur...',
+                        'Le développement durable cherche à concilier...',
 
                     options: [
-                        'Les dimensions économique, sociale et environnementale',
-                        'La seule croissance économique',
-                        'Les énergies fossiles uniquement',
-                        'Le PIB uniquement'
+                        'Économie, société et environnement',
+                        'Uniquement économie et industrie',
+                        'Uniquement environnement',
+                        'Uniquement croissance démographique'
                     ],
 
                     correct: 0,
 
                     correction:
-                        'Le développement durable prend en compte les dimensions économique, sociale et environnementale.'
+                        'Le développement durable cherche à articuler les dimensions économique, sociale et environnementale.'
                 }
             ]
         },
 
 
         {
-            id: 'geo6_amenagement_territoire',
-            titre: "2. Aménagement du territoire",
-            desc: "UAA3 - Conflits d'usage et gestion des fonctions.",
+            id: 'geo6_territoires',
+            titre: "2. Territoires & Fonctions",
+            desc: "UAA - Usages des territoires et organisation spatiale.",
             niveau: '6e',
-            icone: '🏙️',
-            color: '#1d4ed8',
+            icone: '🗺️',
+            color: '#805ad5',
 
             cours: `
-                <h4>🔹 Le conflit d'usage</h4>
+                <h4>🔹 Un territoire possède plusieurs fonctions</h4>
 
                 <p>
-                    Lorsqu'un territoire doit remplir plusieurs
-                    fonctions — logement, industrie, loisirs,
-                    transport, agriculture... — des conflits
-                    d'usage peuvent apparaître.
+                    Un territoire peut accueillir différentes
+                    fonctions : logement, emploi, commerce,
+                    tourisme, transport, agriculture, loisirs,
+                    services ou production.
                 </p>
 
                 <br>
 
-                <h4>🔹 L'exemple de la clinique du MontLégia</h4>
+                <h4>🔹 Des fonctions qui se complètent</h4>
 
                 <p>
-                    Le regroupement des activités hospitalières
-                    sur un même site peut permettre de rationaliser
-                    certains services et infrastructures.
-                </p>
-
-                <p>
-                    Un tel choix doit cependant tenir compte de
-                    la mobilité, de l'accessibilité, des contraintes
-                    urbanistiques et des conséquences pour les
-                    habitants et les riverains.
+                    Certaines fonctions sont complémentaires.
+                    Par exemple, un centre urbain peut concentrer
+                    des commerces, des services et des emplois.
                 </p>
 
                 <br>
 
-                <h4>🔹 Plan d'affectation du sol</h4>
+                <h4>🔹 Des conflits d'usage</h4>
 
                 <p>
-                    Un document d'affectation du sol définit les
-                    usages possibles de différentes parties du
-                    territoire : habitat, activités économiques,
-                    espaces verts, infrastructures...
+                    Un <b>conflit d'usage</b> apparaît lorsque
+                    plusieurs acteurs souhaitent utiliser le même
+                    espace de manière différente.
+                </p>
+
+                <p>
+                    Exemple : développement d'une infrastructure
+                    de transport contre préservation d'un espace
+                    naturel.
                 </p>
             `,
 
             objectifs: [
-                "Identifier les fonctions et conflits d'usage",
-                "Analyser la pertinence d'un aménagement",
-                'Comprendre les outils de gestion du territoire'
+                'Identifier différentes fonctions territoriales',
+                'Comprendre les conflits d’usage',
+                'Analyser les acteurs et leurs intérêts'
             ],
 
             matieres: [
-                "Conflits d'usage",
-                "Schéma d'aménagement",
-                "Plan d'affectation du sol"
+                'Fonctions du territoire',
+                'Usages',
+                'Acteurs',
+                'Conflits d’usage'
             ],
 
             exercices: [
                 {
                     question:
-                        "Un conflit d'usage survient quand...",
+                        "Un conflit d'usage apparaît lorsque...",
 
                     options: [
-                        'Deux fonctions ou acteurs revendiquent le même espace',
-                        'Il y a uniquement un tremblement de terre',
-                        'Le climat change automatiquement',
-                        'Une autoroute est toujours construite'
+                        'Plusieurs acteurs revendiquent des usages différents du même espace',
+                        'Un territoire est vide',
+                        'Il n’existe aucune activité',
+                        'La population diminue'
                     ],
 
                     correct: 0,
 
                     correction:
-                        "Un conflit d'usage apparaît lorsque plusieurs acteurs ou fonctions veulent utiliser le même espace de manière différente."
+                        "Un conflit d'usage oppose plusieurs usages ou intérêts sur un même espace."
                 }
             ]
         },
 
 
         {
-            id: 'geo6_geopolitique',
-            titre: "3. Géopolitique et conflits",
-            desc: "Puissance, ressources et tensions.",
+            id: 'geo6_puissance',
+            titre: "3. Puissance & Géopolitique",
+            desc: "UAA - Rivalités, ressources et influence des États.",
             niveau: '6e',
-            icone: '🕊️',
-            color: '#c0392b',
+            icone: '🌎',
+            color: '#c53030',
 
             cours: `
-                <h4>🔹 La notion de puissance</h4>
+                <h4>🔹 La puissance</h4>
 
                 <p>
-                    Un État peut exercer une influence grâce à
-                    différents moyens : militaires, économiques,
-                    diplomatiques, politiques ou culturels.
+                    La <b>puissance</b> correspond à la capacité
+                    d'un État ou d'un acteur à exercer une influence
+                    sur d'autres territoires ou acteurs.
                 </p>
 
                 <br>
 
-                <h4>🔹 Les tensions</h4>
+                <h4>🔹 Plusieurs formes de puissance</h4>
 
                 <ul>
                     <li>
-                        Contrôle des ressources :
-                        eau, énergie, terres, minerais...
+                        <b>Économique :</b>
+                        richesse, commerce, entreprises.
                     </li>
 
                     <li>
-                        Frontières contestées.
+                        <b>Militaire :</b>
+                        forces armées et capacités de défense.
+                    </li>
+
+                    <li>
+                        <b>Diplomatique :</b>
+                        capacité à influencer les relations
+                        internationales.
+                    </li>
+
+                    <li>
+                        <b>Culturelle :</b>
+                        langue, culture, médias et influence.
+                    </li>
+                </ul>
+
+                <br>
+
+                <h4>🔹 Ressources et tensions</h4>
+
+                <p>
+                    Les ressources naturelles peuvent être au cœur
+                    de rivalités entre acteurs.
+                </p>
+
+                <ul>
+                    <li>
+                        Contrôle des ressources.
                     </li>
 
                     <li>
