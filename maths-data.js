@@ -1,15 +1,19 @@
 // =========================================================
 // DONNÉES MATHÉMATIQUES - CESS
-// VERSION ENRICHIE AVEC LE CONTENU PÉDAGOGIQUE COMPLET
+// VERSION COMPLÈTE AVEC TOUS LES EXERCICES
 // =========================================================
 
 var CHAPITRES = {
 
     // =====================================================
-    // 3e — FONCTIONS
+    // 3e
     // =====================================================
 
     '3e': [
+
+        // =====================================================
+        // 3e — FONCTIONS
+        // =====================================================
 
         {
             id: '3e_fonctions',
@@ -124,6 +128,50 @@ var CHAPITRES = {
                     ],
                     correct: 0,
                     correction: 'Le zéro est l’abscisse du point d’intersection avec l’axe des x.'
+                },
+                {
+                    question: 'Une fonction est représentée par une courbe qui coupe l\'axe des x en -2 et 5. Quels sont les zéros de la fonction ?',
+                    options: [
+                        'x = -2 et x = 5',
+                        'x = 2 et x = -5',
+                        'x = 0 et x = 3',
+                        'x = -5 et x = 2'
+                    ],
+                    correct: 0,
+                    correction: 'Les zéros sont les abscisses où la courbe coupe l\'axe des x : -2 et 5.'
+                },
+                {
+                    question: 'Si f(3) = 8, alors l\'image de 3 est...',
+                    options: [
+                        '8',
+                        '3',
+                        'f(8)',
+                        '11'
+                    ],
+                    correct: 0,
+                    correction: 'f(3) = 8 signifie que l\'image de 3 est 8.'
+                },
+                {
+                    question: 'Sur un graphique, l\'ordonnée à l\'origine est le point où la courbe coupe...',
+                    options: [
+                        'L\'axe des ordonnées (x = 0)',
+                        'L\'axe des abscisses (y = 0)',
+                        'Le point le plus haut',
+                        'Le point le plus bas'
+                    ],
+                    correct: 0,
+                    correction: 'L\'ordonnée à l\'origine est la valeur de f(x) lorsque x = 0, donc l\'intersection avec l\'axe des y.'
+                },
+                {
+                    question: 'Une fonction est décroissante si...',
+                    options: [
+                        'Sa courbe descend de gauche à droite',
+                        'Sa courbe monte de gauche à droite',
+                        'Sa courbe est horizontale',
+                        'Sa courbe est verticale'
+                    ],
+                    correct: 0,
+                    correction: 'Une fonction décroissante descend lorsqu\'on lit de gauche à droite.'
                 }
             ]
         },
@@ -238,6 +286,50 @@ var CHAPITRES = {
                     ],
                     correct: 0,
                     correction: '2x(x-4)=0 donc x=0 ou x=4'
+                },
+                {
+                    question: 'Factoriser : x² - 16',
+                    options: [
+                        '(x-4)(x+4)',
+                        '(x-4)²',
+                        '(x+4)²',
+                        'x² - 16'
+                    ],
+                    correct: 0,
+                    correction: 'a² - b² = (a-b)(a+b) → x² - 16 = (x-4)(x+4)'
+                },
+                {
+                    question: 'Factoriser : 4x² - 12x',
+                    options: [
+                        '4x(x-3)',
+                        '4x(3-x)',
+                        'x(4x-12)',
+                        '4x(x+3)'
+                    ],
+                    correct: 0,
+                    correction: '4x² - 12x = 4x(x-3)'
+                },
+                {
+                    question: 'Résoudre : x² - 25 = 0',
+                    options: [
+                        'x = 5 ou x = -5',
+                        'x = 5',
+                        'x = -5',
+                        'x = 0 ou x = 25'
+                    ],
+                    correct: 0,
+                    correction: 'x² - 25 = (x-5)(x+5) = 0 → x = 5 ou x = -5'
+                },
+                {
+                    question: 'Développer : (2x+3)²',
+                    options: [
+                        '4x² + 12x + 9',
+                        '4x² + 9',
+                        '4x² + 6x + 9',
+                        '2x² + 6x + 3'
+                    ],
+                    correct: 0,
+                    correction: '(2x+3)² = 4x² + 12x + 9'
                 }
             ]
         },
@@ -350,6 +442,39 @@ var CHAPITRES = {
                     ],
                     correct: 0,
                     correction: '13² = 169 et 5² + 12² = 25 + 144 = 169 → le triangle est rectangle.'
+                },
+                {
+                    question: 'Un triangle rectangle a une hypoténuse de 10 cm et un côté de 6 cm. Que vaut l\'autre côté ?',
+                    options: [
+                        '8 cm',
+                        '4 cm',
+                        '12 cm',
+                        '16 cm'
+                    ],
+                    correct: 0,
+                    correction: 'a² + 6² = 10² → a² = 100 - 36 = 64 → a = 8 cm'
+                },
+                {
+                    question: 'Un carré a une diagonale de 10 cm. Quelle est la longueur de son côté ?',
+                    options: [
+                        '5√2 cm',
+                        '10√2 cm',
+                        '5 cm',
+                        '10 cm'
+                    ],
+                    correct: 0,
+                    correction: 'd = a√2 → 10 = a√2 → a = 10/√2 = 5√2 cm'
+                },
+                {
+                    question: 'Les côtés d\'un triangle mesurent 9, 12 et 15. Est-il rectangle ?',
+                    options: [
+                        'Oui, car 15² = 9² + 12²',
+                        'Non, car 15² ≠ 9² + 12²',
+                        'Oui, car 9² = 15² + 12²',
+                        'On ne peut pas savoir'
+                    ],
+                    correct: 0,
+                    correction: '15² = 225 et 9² + 12² = 81 + 144 = 225 → triangle rectangle.'
                 }
             ]
         },
@@ -445,6 +570,39 @@ var CHAPITRES = {
                     ],
                     correct: 0,
                     correction: '4x = 60 donc x = 15'
+                },
+                {
+                    question: 'Dans une configuration de Thalès, on a AB/AC = 3/5 et AE = 10. Que vaut AD ?',
+                    options: [
+                        '6',
+                        '8',
+                        '12',
+                        '15'
+                    ],
+                    correct: 0,
+                    correction: 'AB/AC = AD/AE → 3/5 = AD/10 → AD = 6'
+                },
+                {
+                    question: 'Deux droites sécantes sont coupées par deux parallèles. Les rapports des côtés correspondants sont...',
+                    options: [
+                        'Égaux',
+                        'Différents',
+                        'Inverses',
+                        'Nuls'
+                    ],
+                    correct: 0,
+                    correction: 'D\'après le théorème de Thalès, les rapports des côtés correspondants sont égaux.'
+                },
+                {
+                    question: 'Pour utiliser la réciproque de Thalès, il faut vérifier que...',
+                    options: [
+                        'Les rapports sont égaux',
+                        'Les rapports sont différents',
+                        'Les droites sont perpendiculaires',
+                        'Les droites sont sécantes'
+                    ],
+                    correct: 0,
+                    correction: 'La réciproque de Thalès permet de prouver que deux droites sont parallèles si les rapports sont égaux.'
                 }
             ]
         },
@@ -541,17 +699,55 @@ var CHAPITRES = {
                     ],
                     correct: 0,
                     correction: 'α = arctan(0.5) ≈ 26.6°'
+                },
+                {
+                    question: 'Dans un triangle rectangle, si cos(α) = 0,8, que vaut sin(α) ?',
+                    options: [
+                        '0,6',
+                        '0,2',
+                        '0,8',
+                        '0,4'
+                    ],
+                    correct: 0,
+                    correction: 'sin²(α) + cos²(α) = 1 → sin²(α) = 1 - 0,64 = 0,36 → sin(α) = 0,6'
+                },
+                {
+                    question: 'Si tan(α) = 1, que vaut α ?',
+                    options: [
+                        '45°',
+                        '30°',
+                        '60°',
+                        '90°'
+                    ],
+                    correct: 0,
+                    correction: 'tan(45°) = 1'
+                },
+                {
+                    question: 'Pour calculer la hauteur d\'un arbre, on mesure une distance de 15 m et un angle d\'élévation de 40°. Quelle formule utilise-t-on ?',
+                    options: [
+                        'h = 15 × tan(40°)',
+                        'h = 15 × sin(40°)',
+                        'h = 15 × cos(40°)',
+                        'h = 15 / tan(40°)'
+                    ],
+                    correct: 0,
+                    correction: 'tan(α) = opposé/adjacent → tan(40°) = h/15 → h = 15 × tan(40°)'
                 }
             ]
         }
 
     ],
 
+
     // =====================================================
-    // 4e — ÉQUATIONS 2ND DEGRÉ
+    // 4e
     // =====================================================
 
     '4e': [
+
+        // =====================================================
+        // 4e — ÉQUATIONS 2ND DEGRÉ
+        // =====================================================
 
         {
             id: '4e_polynomes_2deg',
@@ -670,6 +866,39 @@ var CHAPITRES = {
                     ],
                     correct: 0,
                     correction: 'Δ = (-5)² - 4×2×(-3) = 25 + 24 = 49'
+                },
+                {
+                    question: 'Pour x² - 4x + 3 = 0, que vaut le discriminant Δ ?',
+                    options: [
+                        '4',
+                        '8',
+                        '16',
+                        '0'
+                    ],
+                    correct: 0,
+                    correction: 'Δ = b² - 4ac = (-4)² - 4×1×3 = 16 - 12 = 4'
+                },
+                {
+                    question: 'Résoudre : x² - 5x + 6 = 0',
+                    options: [
+                        'x = 2 ou x = 3',
+                        'x = -2 ou x = -3',
+                        'x = 1 ou x = 6',
+                        'x = 2 ou x = -3'
+                    ],
+                    correct: 0,
+                    correction: 'Δ = 25 - 24 = 1 → x = (5 ± 1)/2 → x = 3 ou x = 2'
+                },
+                {
+                    question: 'Le sommet de la parabole f(x) = x² - 4x + 3 a pour abscisse...',
+                    options: [
+                        '2',
+                        '-2',
+                        '4',
+                        '-4'
+                    ],
+                    correct: 0,
+                    correction: 'xS = -b/(2a) = 4/2 = 2'
                 }
             ]
         },
@@ -1188,11 +1417,16 @@ var CHAPITRES = {
 
     ],
 
+
     // =====================================================
     // 5e
     // =====================================================
 
     '5e': [
+
+        // =====================================================
+        // 5e — LIMITES
+        // =====================================================
 
         {
             id: '5e_limites',
@@ -1279,9 +1513,46 @@ var CHAPITRES = {
                     ],
                     correct: 0,
                     correction: '0/0 ne permet pas de conclure directement.'
+                },
+                {
+                    question: 'Quelle est la limite de f(x) = (x² - 1)/(x - 1) quand x → 1 ?',
+                    options: [
+                        '2',
+                        '0',
+                        '1',
+                        '∞'
+                    ],
+                    correct: 0,
+                    correction: 'Factoriser : (x-1)(x+1)/(x-1) = x+1 → limite = 2'
+                },
+                {
+                    question: 'La droite x = 2 est une asymptote verticale si...',
+                    options: [
+                        'f(x) → ±∞ quand x → 2',
+                        'f(x) → 2 quand x → ∞',
+                        'f(x) = 2',
+                        'f(x) → 0 quand x → 2'
+                    ],
+                    correct: 0,
+                    correction: 'Une asymptote verticale est une droite x = a où la fonction tend vers ±∞.'
+                },
+                {
+                    question: 'Quelle est la limite de f(x) = 1/x² quand x → 0 ?',
+                    options: [
+                        '+∞',
+                        '0',
+                        '1',
+                        '-∞'
+                    ],
+                    correct: 0,
+                    correction: '1/x² devient très grand quand x s\'approche de 0 → +∞'
                 }
             ]
         },
+
+        // =====================================================
+        // 5e — INTRODUCTION À LA DÉRIVÉE
+        // =====================================================
 
         {
             id: '5e_derivees_intro',
@@ -1376,9 +1647,35 @@ var CHAPITRES = {
                     ],
                     correct: 0,
                     correction: "(xⁿ)’ = n·xⁿ⁻¹, donc (x³)’ = 3x²"
+                },
+                {
+                    question: 'Quelle est la dérivée de f(x) = x⁵ ?',
+                    options: [
+                        '5x⁴',
+                        'x⁴',
+                        '5x⁵',
+                        '4x⁵'
+                    ],
+                    correct: 0,
+                    correction: '(xⁿ)\' = n·xⁿ⁻¹ → (x⁵)\' = 5x⁴'
+                },
+                {
+                    question: 'Le nombre dérivé f\'(a) représente la pente de...',
+                    options: [
+                        'La tangente en a',
+                        'La sécante en a',
+                        'La courbe entière',
+                        'La droite verticale'
+                    ],
+                    correct: 0,
+                    correction: 'f\'(a) est la pente de la tangente à la courbe au point d\'abscisse a.'
                 }
             ]
         },
+
+        // =====================================================
+        // 5e — NOMBRES COMPLEXES
+        // =====================================================
 
         {
             id: '5e_complexes',
@@ -1483,6 +1780,10 @@ var CHAPITRES = {
             ]
         },
 
+        // =====================================================
+        // 5e — GÉOMÉTRIE ANALYTIQUE
+        // =====================================================
+
         {
             id: '5e_geo_analytique',
             titre: '4. Géométrie analytique plane',
@@ -1570,6 +1871,10 @@ var CHAPITRES = {
                 }
             ]
         },
+
+        // =====================================================
+        // 5e — STATISTIQUE À DEUX VARIABLES
+        // =====================================================
 
         {
             id: '5e_stat_2var',
@@ -1666,6 +1971,10 @@ var CHAPITRES = {
                 }
             ]
         },
+
+        // =====================================================
+        // 5e — FONCTIONS TRIGONOMÉTRIQUES
+        // =====================================================
 
         {
             id: '5e_fonctions_trigo',
@@ -1776,11 +2085,16 @@ var CHAPITRES = {
 
     ],
 
+
     // =====================================================
     // 6e
     // =====================================================
 
     '6e': [
+
+        // =====================================================
+        // 6e — DÉRIVÉES
+        // =====================================================
 
         {
             id: '6e_derivees',
@@ -1879,6 +2193,10 @@ var CHAPITRES = {
             ]
         },
 
+        // =====================================================
+        // 6e — INTÉGRALES
+        // =====================================================
+
         {
             id: '6e_integrales',
             titre: '2. Intégrales',
@@ -1974,6 +2292,10 @@ var CHAPITRES = {
             ]
         },
 
+        // =====================================================
+        // 6e — PROBABILITÉS
+        // =====================================================
+
         {
             id: '6e_probabilites',
             titre: '3. Probabilités',
@@ -2053,6 +2375,10 @@ var CHAPITRES = {
                 }
             ]
         },
+
+        // =====================================================
+        // 6e — SUITES
+        // =====================================================
 
         {
             id: '6e_suites',
@@ -2152,6 +2478,10 @@ var CHAPITRES = {
                 }
             ]
         },
+
+        // =====================================================
+        // 6e — LOIS DE PROBABILITÉS
+        // =====================================================
 
         {
             id: '6e_lois_proba',
@@ -2253,6 +2583,10 @@ var CHAPITRES = {
                 }
             ]
         },
+
+        // =====================================================
+        // 6e — EXPONENTIELLES ET LOGARITHMES
+        // =====================================================
 
         {
             id: '6e_exp_log',
@@ -2358,6 +2692,10 @@ var CHAPITRES = {
             ]
         },
 
+        // =====================================================
+        // 6e — GÉOMÉTRIE ANALYTIQUE DE L'ESPACE
+        // =====================================================
+
         {
             id: '6e_geo_analytique_espace',
             titre: '7. Géométrie analytique de l’espace',
@@ -2459,11 +2797,16 @@ var CHAPITRES = {
 
     ],
 
+
     // =====================================================
     // TRANSVERSAL
     // =====================================================
 
     'transversal': [
+
+        // =====================================================
+        // MÉTHODE DE RÉSOLUTION
+        // =====================================================
 
         {
             id: 'trans_methode',
@@ -2540,6 +2883,10 @@ var CHAPITRES = {
             ]
         },
 
+        // =====================================================
+        // PIÈGES FRÉQUENTS
+        // =====================================================
+
         {
             id: 'trans_pieges',
             titre: 'Pièges fréquents au CESS',
@@ -2578,7 +2925,7 @@ var CHAPITRES = {
                     </ul>
                 </div>
 
-                <h4>🔹 Check-list finale</h4>
+                <h4>🔹 Check-list</h4>
                 <div class="checklist">
                     <ul>
                         <li>☐ Je vérifie le domaine de définition</li>
@@ -2630,688 +2977,102 @@ var CHAPITRES = {
 
 
 // =========================================================
-// FORMULES — COMPLÉTÉES AVEC LE CONTENU DU PDF
+// FORMULES — COMPLÈTES
 // =========================================================
 
 var FORMULES_DATA = {
 
     algebre: [
-
-        {
-            id: 'alg_1',
-            annee: '3e',
-            titre: 'Identité remarquable — Carré somme',
-            definition: '(a+b)² = a² + 2ab + b²',
-            exemple: '(x+3)² = x² + 6x + 9',
-            icone: '🔢',
-            categorie: 'Algèbre'
-        },
-
-        {
-            id: 'alg_2',
-            annee: '3e',
-            titre: 'Identité remarquable — Carré différence',
-            definition: '(a-b)² = a² - 2ab + b²',
-            exemple: '(x-3)² = x² - 6x + 9',
-            icone: '🔢',
-            categorie: 'Algèbre'
-        },
-
-        {
-            id: 'alg_3',
-            annee: '3e',
-            titre: 'Identité remarquable — Différence de carrés',
-            definition: 'a² - b² = (a-b)(a+b)',
-            exemple: 'x² - 9 = (x-3)(x+3)',
-            icone: '🔢',
-            categorie: 'Algèbre'
-        },
-
-        {
-            id: 'alg_4',
-            annee: '3e',
-            titre: 'Produit nul',
-            definition: 'AB = 0 ⇔ A = 0 ou B = 0',
-            exemple: '(x-3)(x+3)=0 → x=3 ou x=-3',
-            icone: '🔢',
-            categorie: 'Algèbre'
-        },
-
-        {
-            id: 'alg_5',
-            annee: '4e',
-            titre: 'Discriminant',
-            definition: 'Δ = b² - 4ac',
-            exemple: 'Pour x² + 2x - 3, Δ = 16',
-            icone: '🔢',
-            categorie: 'Algèbre'
-        },
-
-        {
-            id: 'alg_6',
-            annee: '4e',
-            titre: 'Racines du 2nd degré',
-            definition: 'x = (-b ± √Δ)/2a',
-            exemple: 'x = (-2 ± 4)/2 → 1 ou -3',
-            icone: '🔢',
-            categorie: 'Algèbre'
-        },
-
-        {
-            id: 'alg_7',
-            annee: '4e',
-            titre: 'Somme et produit des racines',
-            definition: 'S = x₁+x₂ = -b/a ; P = x₁×x₂ = c/a',
-            exemple: 'Pour x²-5x+6=0 : S=5, P=6 → racines 2 et 3',
-            icone: '🔢',
-            categorie: 'Algèbre'
-        },
-
-        {
-            id: 'alg_8',
-            annee: '4e',
-            titre: 'Forme canonique',
-            definition: 'f(x) = a(x-h)² + k',
-            exemple: 'Sommet S(h,k)',
-            icone: '🔢',
-            categorie: 'Algèbre'
-        },
-
-        {
-            id: 'alg_9',
-            annee: '4e',
-            titre: 'Sommet d\'une parabole',
-            definition: 'x<sub>S</sub> = -b/(2a)',
-            exemple: 'Pour f(x)=2x²-8x+3, x<sub>S</sub>=2',
-            icone: '🔢',
-            categorie: 'Algèbre'
-        },
-
-        {
-            id: 'alg_10',
-            annee: '6e',
-            titre: 'Dérivée — Produit',
-            definition: "(uv)' = u'v + uv'",
-            exemple: "(x²·x)' = 3x²",
-            icone: '📐',
-            categorie: 'Analyse'
-        },
-
-        {
-            id: 'alg_11',
-            annee: '6e',
-            titre: 'Dérivée — Quotient',
-            definition: "(u/v)' = (u'v - uv')/v²",
-            exemple: 'Utile pour les fonctions rationnelles',
-            icone: '📐',
-            categorie: 'Analyse'
-        }
-
+        { id: 'alg_1', annee: '3e', titre: 'Carré somme', definition: '(a+b)² = a² + 2ab + b²', exemple: '(x+3)² = x² + 6x + 9', icone: '🔢', categorie: 'Algèbre' },
+        { id: 'alg_2', annee: '3e', titre: 'Carré différence', definition: '(a-b)² = a² - 2ab + b²', exemple: '(x-3)² = x² - 6x + 9', icone: '🔢', categorie: 'Algèbre' },
+        { id: 'alg_3', annee: '3e', titre: 'Différence de carrés', definition: 'a² - b² = (a-b)(a+b)', exemple: 'x² - 9 = (x-3)(x+3)', icone: '🔢', categorie: 'Algèbre' },
+        { id: 'alg_4', annee: '3e', titre: 'Produit nul', definition: 'AB = 0 ⇔ A = 0 ou B = 0', exemple: '(x-3)(x+3)=0 → x=3 ou x=-3', icone: '🔢', categorie: 'Algèbre' },
+        { id: 'alg_5', annee: '4e', titre: 'Discriminant', definition: 'Δ = b² - 4ac', exemple: 'Pour x² + 2x - 3, Δ = 16', icone: '🔢', categorie: 'Algèbre' },
+        { id: 'alg_6', annee: '4e', titre: 'Racines du 2nd degré', definition: 'x = (-b ± √Δ)/2a', exemple: 'x = (-2 ± 4)/2 → 1 ou -3', icone: '🔢', categorie: 'Algèbre' },
+        { id: 'alg_7', annee: '4e', titre: 'Somme et produit des racines', definition: 'S = x₁+x₂ = -b/a ; P = x₁×x₂ = c/a', exemple: 'x²-5x+6=0 : S=5, P=6', icone: '🔢', categorie: 'Algèbre' },
+        { id: 'alg_8', annee: '4e', titre: 'Forme canonique', definition: 'f(x) = a(x-h)² + k', exemple: 'Sommet S(h,k)', icone: '🔢', categorie: 'Algèbre' },
+        { id: 'alg_9', annee: '4e', titre: 'Sommet d\'une parabole', definition: 'x<sub>S</sub> = -b/(2a)', exemple: 'Pour f(x)=2x²-8x+3, x<sub>S</sub>=2', icone: '🔢', categorie: 'Algèbre' },
+        { id: 'alg_10', annee: '6e', titre: 'Dérivée — Produit', definition: "(uv)' = u'v + uv'", exemple: "(x²·x)' = 3x²", icone: '📐', categorie: 'Analyse' },
+        { id: 'alg_11', annee: '6e', titre: 'Dérivée — Quotient', definition: "(u/v)' = (u'v - uv')/v²", exemple: 'Utile pour les fonctions rationnelles', icone: '📐', categorie: 'Analyse' }
     ],
-
 
     geometrie: [
-
-        {
-            id: 'geo_1',
-            annee: '3e',
-            titre: 'Théorème de Pythagore',
-            definition: 'a² + b² = c² (triangle rectangle)',
-            exemple: '3² + 4² = 5²',
-            icone: '📐',
-            categorie: 'Géométrie'
-        },
-
-        {
-            id: 'geo_2',
-            annee: '3e',
-            titre: 'Diagonale d\'un carré',
-            definition: 'd = a√2',
-            exemple: 'Carré de côté 1 → diagonale √2',
-            icone: '📐',
-            categorie: 'Géométrie'
-        },
-
-        {
-            id: 'geo_3',
-            annee: '3e',
-            titre: 'Théorème de Thalès',
-            definition: 'AB/AC = AD/AE = BD/CE (si BD // CE)',
-            exemple: 'Calculer une longueur inconnue',
-            icone: '📐',
-            categorie: 'Géométrie'
-        },
-
-        {
-            id: 'geo_4',
-            annee: '3e',
-            titre: 'SOH — Sinus',
-            definition: 'sin(α) = opposé / hypoténuse',
-            exemple: 'sin(30°) = 0.5',
-            icone: '📐',
-            categorie: 'Trigonométrie'
-        },
-
-        {
-            id: 'geo_5',
-            annee: '3e',
-            titre: 'CAH — Cosinus',
-            definition: 'cos(α) = adjacent / hypoténuse',
-            exemple: 'cos(60°) = 0.5',
-            icone: '📐',
-            categorie: 'Trigonométrie'
-        },
-
-        {
-            id: 'geo_6',
-            annee: '3e',
-            titre: 'TOA — Tangente',
-            definition: 'tan(α) = opposé / adjacent',
-            exemple: 'tan(45°) = 1',
-            icone: '📐',
-            categorie: 'Trigonométrie'
-        },
-
-        {
-            id: 'geo_7',
-            annee: '4e',
-            titre: 'Relation fondamentale',
-            definition: 'sin²(α) + cos²(α) = 1',
-            exemple: 'Vraie pour tout angle α',
-            icone: '📐',
-            categorie: 'Trigonométrie'
-        },
-
-        {
-            id: 'geo_8',
-            annee: '4e',
-            titre: 'Théorème d\'Al-Kashi',
-            definition: 'a² = b² + c² - 2bc·cos(A)',
-            exemple: 'Généralise Pythagore à tout triangle',
-            icone: '📐',
-            categorie: 'Géométrie'
-        },
-
-        {
-            id: 'geo_9',
-            annee: '4e',
-            titre: 'Relation des sinus',
-            definition: 'a/sin(A) = b/sin(B) = c/sin(C)',
-            exemple: 'Utile pour un triangle sans angle droit',
-            icone: '📐',
-            categorie: 'Géométrie'
-        },
-
-        {
-            id: 'geo_10',
-            annee: '4e',
-            titre: 'Aire d\'un triangle quelconque',
-            definition: 'Aire = (1/2) × a × b × sin(C)',
-            exemple: 'a=5, b=6, C=90° → Aire = 15',
-            icone: '📐',
-            categorie: 'Géométrie'
-        },
-
-        {
-            id: 'geo_11',
-            annee: '5e',
-            titre: 'Distance entre deux points',
-            definition: 'd = √[(x₂-x₁)² + (y₂-y₁)²]',
-            exemple: 'A(0,0), B(3,4) → d = 5',
-            icone: '📐',
-            categorie: 'Géométrie'
-        },
-
-        {
-            id: 'geo_12',
-            annee: '5e',
-            titre: 'Équation du cercle',
-            definition: '(x-a)² + (y-b)² = r²',
-            exemple: 'Centre (0,0), rayon 3 → x²+y²=9',
-            icone: '📐',
-            categorie: 'Géométrie'
-        },
-
-        {
-            id: 'geo_13',
-            annee: '5e',
-            titre: 'Équation d\'une droite',
-            definition: 'y = mx + p, avec m = (y₂-y₁)/(x₂-x₁)',
-            exemple: 'A(0,1), B(2,5) → m=2, droite y=2x+1',
-            icone: '📐',
-            categorie: 'Géométrie'
-        },
-
-        {
-            id: 'geo_14',
-            annee: '5e',
-            titre: 'Radian ↔ degré',
-            definition: 'π rad = 180°',
-            exemple: 'π/2 rad = 90°',
-            icone: '📐',
-            categorie: 'Trigonométrie'
-        },
-
-        {
-            id: 'geo_15',
-            annee: '5e',
-            titre: 'Amplitude et période',
-            definition: 'Pour f(x)=A·sin(ωx) : amplitude=|A|, période=2π/ω',
-            exemple: 'f(x)=3·sin(2x) → amplitude 3, période π',
-            icone: '📐',
-            categorie: 'Trigonométrie'
-        },
-
-        {
-            id: 'geo_16',
-            annee: '6e',
-            titre: 'Distance dans l\'espace 3D',
-            definition: 'd = √[(x₂-x₁)² + (y₂-y₁)² + (z₂-z₁)²]',
-            exemple: 'Pythagore généralisé en 3 dimensions',
-            icone: '🧊',
-            categorie: 'Géométrie de l\'espace'
-        },
-
-        {
-            id: 'geo_17',
-            annee: '6e',
-            titre: 'Équation cartésienne d\'un plan',
-            definition: 'ax + by + cz + d = 0',
-            exemple: 'Un vecteur normal (a,b,c) est perpendiculaire au plan',
-            icone: '🧊',
-            categorie: 'Géométrie de l\'espace'
-        }
-
+        { id: 'geo_1', annee: '3e', titre: 'Théorème de Pythagore', definition: 'a² + b² = c² (triangle rectangle)', exemple: '3² + 4² = 5²', icone: '📐', categorie: 'Géométrie' },
+        { id: 'geo_2', annee: '3e', titre: 'Diagonale d\'un carré', definition: 'd = a√2', exemple: 'Carré de côté 1 → diagonale √2', icone: '📐', categorie: 'Géométrie' },
+        { id: 'geo_3', annee: '3e', titre: 'Théorème de Thalès', definition: 'AB/AC = AD/AE = BD/CE (si BD // CE)', exemple: 'Calculer une longueur inconnue', icone: '📐', categorie: 'Géométrie' },
+        { id: 'geo_4', annee: '3e', titre: 'SOH — Sinus', definition: 'sin(α) = opposé / hypoténuse', exemple: 'sin(30°) = 0.5', icone: '📐', categorie: 'Trigonométrie' },
+        { id: 'geo_5', annee: '3e', titre: 'CAH — Cosinus', definition: 'cos(α) = adjacent / hypoténuse', exemple: 'cos(60°) = 0.5', icone: '📐', categorie: 'Trigonométrie' },
+        { id: 'geo_6', annee: '3e', titre: 'TOA — Tangente', definition: 'tan(α) = opposé / adjacent', exemple: 'tan(45°) = 1', icone: '📐', categorie: 'Trigonométrie' },
+        { id: 'geo_7', annee: '4e', titre: 'Relation fondamentale', definition: 'sin²(α) + cos²(α) = 1', exemple: 'Vraie pour tout angle α', icone: '📐', categorie: 'Trigonométrie' },
+        { id: 'geo_8', annee: '4e', titre: 'Théorème d\'Al-Kashi', definition: 'a² = b² + c² - 2bc·cos(A)', exemple: 'Généralise Pythagore', icone: '📐', categorie: 'Géométrie' },
+        { id: 'geo_9', annee: '4e', titre: 'Relation des sinus', definition: 'a/sin(A) = b/sin(B) = c/sin(C)', exemple: 'Utile pour un triangle sans angle droit', icone: '📐', categorie: 'Géométrie' },
+        { id: 'geo_10', annee: '4e', titre: 'Aire d\'un triangle', definition: 'Aire = (1/2) × a × b × sin(C)', exemple: 'a=5, b=6, C=90° → Aire = 15', icone: '📐', categorie: 'Géométrie' },
+        { id: 'geo_11', annee: '5e', titre: 'Distance entre deux points', definition: 'd = √[(x₂-x₁)² + (y₂-y₁)²]', exemple: 'A(0,0), B(3,4) → d = 5', icone: '📐', categorie: 'Géométrie' },
+        { id: 'geo_12', annee: '5e', titre: 'Équation du cercle', definition: '(x-a)² + (y-b)² = r²', exemple: 'Centre (0,0), rayon 3 → x²+y²=9', icone: '📐', categorie: 'Géométrie' },
+        { id: 'geo_13', annee: '5e', titre: 'Équation d\'une droite', definition: 'y = mx + p, m = (y₂-y₁)/(x₂-x₁)', exemple: 'A(0,1), B(2,5) → m=2, y=2x+1', icone: '📐', categorie: 'Géométrie' },
+        { id: 'geo_14', annee: '5e', titre: 'Radian ↔ degré', definition: 'π rad = 180°', exemple: 'π/2 rad = 90°', icone: '📐', categorie: 'Trigonométrie' },
+        { id: 'geo_15', annee: '5e', titre: 'Amplitude et période', definition: 'f(x)=A·sin(ωx) : amplitude=|A|, période=2π/ω', exemple: 'f(x)=3·sin(2x) → amplitude 3, période π', icone: '📐', categorie: 'Trigonométrie' },
+        { id: 'geo_16', annee: '6e', titre: 'Distance dans l\'espace 3D', definition: 'd = √[(x₂-x₁)² + (y₂-y₁)² + (z₂-z₁)²]', exemple: 'Pythagore en 3D', icone: '🧊', categorie: 'Géométrie de l\'espace' },
+        { id: 'geo_17', annee: '6e', titre: 'Équation cartésienne d\'un plan', definition: 'ax + by + cz + d = 0', exemple: 'Vecteur normal n=(a,b,c)', icone: '🧊', categorie: 'Géométrie de l\'espace' }
     ],
-
 
     analyse: [
-
-        {
-            id: 'ana_1',
-            annee: '5e',
-            titre: 'Dérivée d\'une puissance',
-            definition: "(xⁿ)' = n·xⁿ⁻¹",
-            exemple: "(x³)' = 3x²",
-            icone: '📈',
-            categorie: 'Analyse'
-        },
-
-        {
-            id: 'ana_2',
-            annee: '5e',
-            titre: 'Nombre dérivé',
-            definition: "f'(a) = lim (f(a+h)-f(a))/h quand h→0",
-            exemple: 'C’est la pente de la tangente en x=a',
-            icone: '📈',
-            categorie: 'Analyse'
-        },
-
-        {
-            id: 'ana_3',
-            annee: '5e',
-            titre: 'Équation de la tangente',
-            definition: "y = f'(a)(x-a) + f(a)",
-            exemple: 'Tangente à la courbe au point d’abscisse a',
-            icone: '📈',
-            categorie: 'Analyse'
-        },
-
-        {
-            id: 'ana_4',
-            annee: '5e',
-            titre: 'Taux de variation moyen',
-            definition: "τ = [f(b)-f(a)]/(b-a)",
-            exemple: 'Pente de la sécante entre a et b',
-            icone: '📈',
-            categorie: 'Analyse'
-        },
-
-        {
-            id: 'ana_5',
-            annee: '6e',
-            titre: 'Primitive d\'une puissance',
-            definition: '∫xⁿ dx = xⁿ⁺¹/(n+1) + C',
-            exemple: '∫x dx = x²/2 + C',
-            icone: '📈',
-            categorie: 'Analyse'
-        },
-
-        {
-            id: 'ana_6',
-            annee: '6e',
-            titre: 'Intégrale définie',
-            definition: '∫ₐᵇ f(x)dx = F(b) - F(a)',
-            exemple: 'Aire sous la courbe entre a et b',
-            icone: '📈',
-            categorie: 'Analyse'
-        },
-
-        {
-            id: 'ana_7',
-            annee: '6e',
-            titre: 'Exponentielle — dérivée',
-            definition: "(e^x)' = e^x",
-            exemple: 'La dérivée de e^x est elle-même',
-            icone: '📈',
-            categorie: 'Analyse'
-        },
-
-        {
-            id: 'ana_8',
-            annee: '6e',
-            titre: 'Logarithme — dérivée',
-            definition: "(ln x)' = 1/x",
-            exemple: 'Pour x > 0',
-            icone: '📈',
-            categorie: 'Analyse'
-        }
-
+        { id: 'ana_1', annee: '5e', titre: 'Dérivée d\'une puissance', definition: "(xⁿ)' = n·xⁿ⁻¹", exemple: "(x³)' = 3x²", icone: '📈', categorie: 'Analyse' },
+        { id: 'ana_2', annee: '5e', titre: 'Nombre dérivé', definition: "f'(a) = lim (f(a+h)-f(a))/h", exemple: 'Pente de la tangente', icone: '📈', categorie: 'Analyse' },
+        { id: 'ana_3', annee: '5e', titre: 'Équation de la tangente', definition: "y = f'(a)(x-a) + f(a)", exemple: 'Tangente au point a', icone: '📈', categorie: 'Analyse' },
+        { id: 'ana_4', annee: '5e', titre: 'Taux de variation moyen', definition: "τ = [f(b)-f(a)]/(b-a)", exemple: 'Pente de la sécante', icone: '📈', categorie: 'Analyse' },
+        { id: 'ana_5', annee: '6e', titre: 'Primitive d\'une puissance', definition: '∫xⁿ dx = xⁿ⁺¹/(n+1) + C', exemple: '∫x dx = x²/2 + C', icone: '📈', categorie: 'Analyse' },
+        { id: 'ana_6', annee: '6e', titre: 'Intégrale définie', definition: '∫ₐᵇ f(x)dx = F(b) - F(a)', exemple: 'Aire sous la courbe', icone: '📈', categorie: 'Analyse' },
+        { id: 'ana_7', annee: '6e', titre: 'Exponentielle — dérivée', definition: "(e^x)' = e^x", exemple: 'Sa dérivée est elle-même', icone: '📈', categorie: 'Analyse' },
+        { id: 'ana_8', annee: '6e', titre: 'Logarithme — dérivée', definition: "(ln x)' = 1/x", exemple: 'Pour x > 0', icone: '📈', categorie: 'Analyse' }
     ],
-
 
     vecteurs: [
-
-        {
-            id: 'vec_1',
-            annee: '4e',
-            titre: 'Produit scalaire',
-            definition: 'u·v = ||u|| × ||v|| × cos(α)',
-            exemple: 'Si orthogonaux, u·v = 0',
-            icone: '➡️',
-            categorie: 'Vecteurs'
-        },
-
-        {
-            id: 'vec_2',
-            annee: '4e',
-            titre: 'Relation de Chasles',
-            definition: 'AB + BC = AC',
-            exemple: 'Décomposer un vecteur en passant par un point intermédiaire',
-            icone: '➡️',
-            categorie: 'Vecteurs'
-        },
-
-        {
-            id: 'vec_3',
-            annee: '4e',
-            titre: 'Norme d\'un vecteur',
-            definition: '||u|| = √(x² + y²)',
-            exemple: '||(3,4)|| = 5',
-            icone: '➡️',
-            categorie: 'Vecteurs'
-        }
-
+        { id: 'vec_1', annee: '4e', titre: 'Produit scalaire', definition: 'u·v = ||u|| × ||v|| × cos(α)', exemple: 'Orthogonaux → u·v = 0', icone: '➡️', categorie: 'Vecteurs' },
+        { id: 'vec_2', annee: '4e', titre: 'Relation de Chasles', definition: 'AB + BC = AC', exemple: 'Décomposer un vecteur', icone: '➡️', categorie: 'Vecteurs' },
+        { id: 'vec_3', annee: '4e', titre: 'Norme d\'un vecteur', definition: '||u|| = √(x² + y²)', exemple: '||(3,4)|| = 5', icone: '➡️', categorie: 'Vecteurs' }
     ],
-
 
     statistiques: [
-
-        {
-            id: 'stat_1',
-            annee: '4e',
-            titre: 'Moyenne',
-            definition: 'x̄ = Σxi / n',
-            exemple: '(4+6+8)/3 = 6',
-            icone: '📊',
-            categorie: 'Statistiques'
-        },
-
-        {
-            id: 'stat_2',
-            annee: '4e',
-            titre: 'Médiane',
-            definition: 'Valeur centrale après classement',
-            exemple: '3,5,7,9,11 → médiane 7',
-            icone: '📊',
-            categorie: 'Statistiques'
-        },
-
-        {
-            id: 'stat_3',
-            annee: '4e',
-            titre: 'Variance',
-            definition: 'V = Σ(xi - x̄)² / n',
-            exemple: 'Moyenne des carrés des écarts à la moyenne',
-            icone: '📊',
-            categorie: 'Statistiques'
-        },
-
-        {
-            id: 'stat_4',
-            annee: '4e',
-            titre: 'Écart-type',
-            definition: 'σ = √V',
-            exemple: 'Mesure la dispersion',
-            icone: '📊',
-            categorie: 'Statistiques'
-        }
-
+        { id: 'stat_1', annee: '4e', titre: 'Moyenne', definition: 'x̄ = Σxi / n', exemple: '(4+6+8)/3 = 6', icone: '📊', categorie: 'Statistiques' },
+        { id: 'stat_2', annee: '4e', titre: 'Médiane', definition: 'Valeur centrale après classement', exemple: '3,5,7,9,11 → médiane 7', icone: '📊', categorie: 'Statistiques' },
+        { id: 'stat_3', annee: '4e', titre: 'Variance', definition: 'V = Σ(xi - x̄)² / n', exemple: 'Moyenne des écarts au carré', icone: '📊', categorie: 'Statistiques' },
+        { id: 'stat_4', annee: '4e', titre: 'Écart-type', definition: 'σ = √V', exemple: 'Mesure la dispersion', icone: '📊', categorie: 'Statistiques' }
     ],
-
 
     stat2var: [
-
-        {
-            id: 's2v_1',
-            annee: '5e',
-            titre: 'Point moyen',
-            definition: 'G(x̄, ȳ) où x̄ et ȳ sont les moyennes de chaque série',
-            exemple: 'La droite d’ajustement passe toujours par G',
-            icone: '📊',
-            categorie: 'Statistique à 2 variables'
-        },
-
-        {
-            id: 's2v_2',
-            annee: '5e',
-            titre: 'Coefficient de corrélation',
-            definition: 'r compris entre -1 et 1',
-            exemple: '|r| proche de 1 = points bien alignés',
-            icone: '📊',
-            categorie: 'Statistique à 2 variables'
-        }
-
+        { id: 's2v_1', annee: '5e', titre: 'Point moyen', definition: 'G(x̄, ȳ)', exemple: 'La droite passe par G', icone: '📊', categorie: 'Statistique à 2 variables' },
+        { id: 's2v_2', annee: '5e', titre: 'Coefficient de corrélation', definition: 'r ∈ [-1,1]', exemple: '|r| proche de 1 = alignés', icone: '📊', categorie: 'Statistique à 2 variables' }
     ],
-
 
     probabilites: [
-
-        {
-            id: 'proba_1',
-            annee: '6e',
-            titre: 'Probabilité conditionnelle',
-            definition: 'P(A|B) = P(A∩B) / P(B)',
-            exemple: 'Probabilité de A sachant B',
-            icone: '🎲',
-            categorie: 'Probabilités'
-        },
-
-        {
-            id: 'proba_2',
-            annee: '6e',
-            titre: 'Événements indépendants',
-            definition: 'P(A∩B) = P(A) × P(B)',
-            exemple: 'Vrai seulement si A et B sont indépendants',
-            icone: '🎲',
-            categorie: 'Probabilités'
-        },
-
-        {
-            id: 'proba_3',
-            annee: '6e',
-            titre: 'Espérance mathématique',
-            definition: 'E(X) = Σ xi × P(X=xi)',
-            exemple: 'C’est la valeur moyenne théorique de X',
-            icone: '🎲',
-            categorie: 'Probabilités'
-        },
-
-        {
-            id: 'proba_4',
-            annee: '6e',
-            titre: 'Loi binomiale',
-            definition: 'P(X=k) = C(n,k) × pᵏ × (1-p)ⁿ⁻ᵏ',
-            exemple: 'Probabilité d’obtenir k succès sur n essais',
-            icone: '🎲',
-            categorie: 'Probabilités'
-        },
-
-        {
-            id: 'proba_5',
-            annee: '6e',
-            titre: 'Espérance binomiale',
-            definition: 'E(X) = n×p',
-            exemple: 'Valeur moyenne attendue pour la loi binomiale',
-            icone: '🎲',
-            categorie: 'Probabilités'
-        }
-
+        { id: 'proba_1', annee: '6e', titre: 'Probabilité conditionnelle', definition: 'P(A|B) = P(A∩B) / P(B)', exemple: 'Probabilité de A sachant B', icone: '🎲', categorie: 'Probabilités' },
+        { id: 'proba_2', annee: '6e', titre: 'Indépendance', definition: 'P(A∩B) = P(A) × P(B)', exemple: 'Indépendants', icone: '🎲', categorie: 'Probabilités' },
+        { id: 'proba_3', annee: '6e', titre: 'Espérance', definition: 'E(X) = Σ xi × P(X=xi)', exemple: 'Valeur moyenne théorique', icone: '🎲', categorie: 'Probabilités' },
+        { id: 'proba_4', annee: '6e', titre: 'Loi binomiale', definition: 'P(X=k) = C(n,k) × pᵏ × (1-p)ⁿ⁻ᵏ', exemple: 'k succès sur n essais', icone: '🎲', categorie: 'Probabilités' },
+        { id: 'proba_5', annee: '6e', titre: 'Espérance binomiale', definition: 'E(X) = n×p', exemple: 'Valeur moyenne attendue', icone: '🎲', categorie: 'Probabilités' }
     ],
-
 
     suites: [
-
-        {
-            id: 'suite_1',
-            annee: '6e',
-            titre: 'Terme général — arithmétique',
-            definition: 'uₙ = u₀ + n×r',
-            exemple: 'u₀=2, r=3 → u₅ = 17',
-            icone: '🔢',
-            categorie: 'Suites'
-        },
-
-        {
-            id: 'suite_2',
-            annee: '6e',
-            titre: 'Terme général — géométrique',
-            definition: 'uₙ = u₀ × qⁿ',
-            exemple: 'u₀=1, q=2 → u₅ = 32',
-            icone: '🔢',
-            categorie: 'Suites'
-        },
-
-        {
-            id: 'suite_3',
-            annee: '6e',
-            titre: 'Somme — suite arithmétique',
-            definition: 'Sₙ = n × (u₀+uₙ₋₁)/2',
-            exemple: 'Somme des n premiers termes',
-            icone: '🔢',
-            categorie: 'Suites'
-        },
-
-        {
-            id: 'suite_4',
-            annee: '6e',
-            titre: 'Somme — suite géométrique',
-            definition: 'Sₙ = u₀ × (1-qⁿ)/(1-q) (q≠1)',
-            exemple: 'Utile pour les intérêts composés',
-            icone: '🔢',
-            categorie: 'Suites'
-        }
-
+        { id: 'suite_1', annee: '6e', titre: 'Arithmétique — terme', definition: 'uₙ = u₀ + n×r', exemple: 'u₀=2, r=3 → u₅=17', icone: '🔢', categorie: 'Suites' },
+        { id: 'suite_2', annee: '6e', titre: 'Géométrique — terme', definition: 'uₙ = u₀ × qⁿ', exemple: 'u₀=1, q=2 → u₅=32', icone: '🔢', categorie: 'Suites' },
+        { id: 'suite_3', annee: '6e', titre: 'Somme arithmétique', definition: 'Sₙ = n × (u₀+uₙ₋₁)/2', exemple: 'Somme des n premiers termes', icone: '🔢', categorie: 'Suites' },
+        { id: 'suite_4', annee: '6e', titre: 'Somme géométrique', definition: 'Sₙ = u₀ × (1-qⁿ)/(1-q)', exemple: 'Pour q ≠ 1', icone: '🔢', categorie: 'Suites' }
     ],
-
 
     expoLog: [
-
-        {
-            id: 'explog_1',
-            annee: '6e',
-            titre: 'Propriété de l’exponentielle',
-            definition: 'eˣ⁺ʸ = eˣ × eʸ',
-            exemple: 'e³ × e² = e⁵',
-            icone: '📈',
-            categorie: 'Exponentielles / Logarithmes'
-        },
-
-        {
-            id: 'explog_2',
-            annee: '6e',
-            titre: 'Propriété du logarithme',
-            definition: 'ln(a×b) = ln(a) + ln(b)',
-            exemple: 'ln(6) = ln(2)+ln(3)',
-            icone: '📈',
-            categorie: 'Exponentielles / Logarithmes'
-        },
-
-        {
-            id: 'explog_3',
-            annee: '6e',
-            titre: 'Réciprocité exp/log',
-            definition: 'ln(eˣ) = x et e^(ln x) = x',
-            exemple: 'Sert à résoudre les équations exponentielles',
-            icone: '📈',
-            categorie: 'Exponentielles / Logarithmes'
-        },
-
-        {
-            id: 'explog_4',
-            annee: '6e',
-            titre: 'Exponentielle — propriété',
-            definition: 'e⁰ = 1',
-            exemple: 'Toute exponentielle vaut 1 en 0',
-            icone: '📈',
-            categorie: 'Exponentielles / Logarithmes'
-        },
-
-        {
-            id: 'explog_5',
-            annee: '6e',
-            titre: 'Logarithme — propriété',
-            definition: 'ln(1) = 0',
-            exemple: 'Le logarithme de 1 vaut 0',
-            icone: '📈',
-            categorie: 'Exponentielles / Logarithmes'
-        }
-
+        { id: 'explog_1', annee: '6e', titre: 'Exponentielle — produit', definition: 'eˣ⁺ʸ = eˣ × eʸ', exemple: 'e³ × e² = e⁵', icone: '📈', categorie: 'Exponentielles / Logarithmes' },
+        { id: 'explog_2', annee: '6e', titre: 'Logarithme — produit', definition: 'ln(a×b) = ln(a) + ln(b)', exemple: 'ln(6) = ln(2)+ln(3)', icone: '📈', categorie: 'Exponentielles / Logarithmes' },
+        { id: 'explog_3', annee: '6e', titre: 'Réciprocité exp/log', definition: 'ln(eˣ) = x et e^(ln x) = x', exemple: 'Résoudre les équations', icone: '📈', categorie: 'Exponentielles / Logarithmes' },
+        { id: 'explog_4', annee: '6e', titre: 'Exponentielle — zéro', definition: 'e⁰ = 1', exemple: 'Toute exponentielle vaut 1 en 0', icone: '📈', categorie: 'Exponentielles / Logarithmes' },
+        { id: 'explog_5', annee: '6e', titre: 'Logarithme — un', definition: 'ln(1) = 0', exemple: 'Le logarithme de 1 vaut 0', icone: '📈', categorie: 'Exponentielles / Logarithmes' }
     ],
 
-
     complexes: [
-
-        {
-            id: 'comp_1',
-            annee: '5e',
-            titre: 'Module d\'un complexe',
-            definition: '|z| = √(a² + b²)',
-            exemple: '|3+4i| = 5',
-            icone: 'ℂ',
-            categorie: 'Nombres complexes'
-        },
-
-        {
-            id: 'comp_2',
-            annee: '5e',
-            titre: 'Unité imaginaire',
-            definition: 'i² = -1',
-            exemple: 'Base des nombres complexes',
-            icone: 'ℂ',
-            categorie: 'Nombres complexes'
-        },
-
-        {
-            id: 'comp_3',
-            annee: '5e',
-            titre: 'Conjugué',
-            definition: '\\bar{z} = a - bi',
-            exemple: 'Pour z = 3+4i, \\bar{z} = 3-4i',
-            icone: 'ℂ',
-            categorie: 'Nombres complexes'
-        },
-
-        {
-            id: 'comp_4',
-            annee: '5e',
-            titre: 'Division de complexes',
-            definition: 'Multiplier par le conjugué du dénominateur',
-            exemple: '(1+i)/(2-i) → multiplie par (2+i)',
-            icone: 'ℂ',
-            categorie: 'Nombres complexes'
-        }
-
+        { id: 'comp_1', annee: '5e', titre: 'Module', definition: '|z| = √(a² + b²)', exemple: '|3+4i| = 5', icone: 'ℂ', categorie: 'Nombres complexes' },
+        { id: 'comp_2', annee: '5e', titre: 'Unité imaginaire', definition: 'i² = -1', exemple: 'Base des complexes', icone: 'ℂ', categorie: 'Nombres complexes' },
+        { id: 'comp_3', annee: '5e', titre: 'Conjugué', definition: '\\bar{z} = a - bi', exemple: '\\overline{3+4i} = 3-4i', icone: 'ℂ', categorie: 'Nombres complexes' },
+        { id: 'comp_4', annee: '5e', titre: 'Division', definition: 'Multiplier par le conjugué', exemple: '(1+i)/(2-i)', icone: 'ℂ', categorie: 'Nombres complexes' }
     ]
 
 };
