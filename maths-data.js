@@ -153,6 +153,49 @@ var CHAPITRES = {
             exercices:[
                 {question:'Dans f(x) = 3x + 2, que représente 3 ?', options:['La pente','L’ordonnée à l’origine','Le sommet','Le discriminant'], correct:0, correction:'Dans mx+p, m est la pente.'}
             ]
+        },
+        {
+            id:'4e_geo_espace', titre:'5. Géométrie dans l’espace',
+            desc:'UAA2 — Représenter et construire dans l’espace', niveau:'4e', icone:'📦', color:'#38a169',
+            cours:`<h4>Représenter l’espace sur une feuille</h4>
+                <p>Deux techniques principales : la <b>perspective cavalière</b> (les droites parallèles restent parallèles, pratique pour les solides simples) et la <b>perspective centrale</b> (les lignes convergent vers un point de fuite, plus réaliste).</p>
+                <h4>Positions relatives</h4>
+                <ul>
+                    <li><b>Deux droites</b> : sécantes, parallèles, ou <b>gauches</b> (ni sécantes ni parallèles — elles ne se croisent jamais mais ne sont pas dans un même plan).</li>
+                    <li><b>Une droite et un plan</b> : la droite est incluse dans le plan, sécante au plan, ou parallèle au plan.</li>
+                    <li><b>Deux plans</b> : sécants (leur intersection est une droite) ou parallèles.</li>
+                </ul>
+                <h4>Point de percée et section plane</h4>
+                <p>Le <b>point de percée</b> d’une droite dans un plan est le point où la droite traverse ce plan. Une <b>section plane</b> est la figure obtenue en coupant un solide par un plan (ex : couper un cube donne un carré, un rectangle ou un triangle selon l’angle de coupe).</p>`,
+            objectifs:['Représenter un objet de l’espace en perspective cavalière','Identifier les positions relatives de deux droites, de deux plans, d’une droite et d’un plan','Construire un point de percée ou une section plane simple'],
+            matieres:['Perspective cavalière et perspective centrale','Positions relatives (droites, plans)','Point de percée et section plane'],
+            exercices:[
+                {question:'Deux droites de l’espace qui ne sont ni sécantes ni parallèles sont dites…', options:['Gauches','Orthogonales','Confondues','Coplanaires'], correct:0, correction:'On les appelle des droites gauches : elles ne se croisent jamais et ne sont pas dans un même plan.'},
+                {question:'Que représente l’intersection de deux plans sécants ?', options:['Une droite','Un point','Un plan','Un segment'], correct:0, correction:'Deux plans sécants se coupent toujours suivant une droite.'},
+                {question:'Dans quelle perspective les droites parallèles restent-elles parallèles sur le dessin ?', options:['La perspective cavalière','La perspective centrale','Les deux','Aucune des deux'], correct:0, correction:'C’est la propriété caractéristique de la perspective cavalière.'}
+            ]
+        },
+        {
+            id:'4e_trigo_cercle', titre:'6. Trigonométrie',
+            desc:'UAA3 — Le cercle trigonométrique et ses relations', niveau:'4e', icone:'⭕', color:'#d69e2e',
+            cours:`<h4>Le cercle trigonométrique</h4>
+                <p>C’est un cercle de <b>rayon 1</b> centré à l’origine. Pour un angle α, le point correspondant sur le cercle a pour coordonnées <b>(cos α, sin α)</b>. Cela permet de définir sin, cos et tan pour n’importe quel angle, pas seulement dans un triangle rectangle.</p>
+                <h4>La relation fondamentale</h4>
+                <p style="text-align:center;font-size:19px;"><b>sin²(α) + cos²(α) = 1</b></p>
+                <p>Et aussi : <b>tan(α) = sin(α) / cos(α)</b>.</p>
+                <h4>Résoudre un triangle quelconque</h4>
+                <ul>
+                    <li><b>Aire d’un triangle</b> : Aire = (1/2) × a × b × sin(C), où C est l’angle entre les côtés a et b.</li>
+                    <li><b>Relation des sinus</b> : a/sin(A) = b/sin(B) = c/sin(C).</li>
+                    <li><b>Théorème d’Al-Kashi</b> (généralisation de Pythagore) : a² = b² + c² - 2bc·cos(A).</li>
+                </ul>`,
+            objectifs:['Placer un angle et ses nombres trigonométriques sur le cercle trigonométrique','Utiliser la relation fondamentale sin²+cos²=1','Calculer une aire, une longueur ou un angle dans un triangle quelconque'],
+            matieres:['Cercle trigonométrique','Relation fondamentale et tan = sin/cos','Aire d’un triangle, relation des sinus, Al-Kashi'],
+            exercices:[
+                {question:'Que vaut sin²(α) + cos²(α) pour tout angle α ?', options:['1','0','2','Cela dépend de α'], correct:0, correction:'C’est la relation fondamentale de la trigonométrie : elle est toujours vraie.'},
+                {question:'Si sin(α) = 0,6, que vaut cos²(α) ?', options:['0,64','0,36','0,4','1,36'], correct:0, correction:'cos²(α) = 1 - sin²(α) = 1 - 0,36 = 0,64'},
+                {question:'Le théorème d’Al-Kashi généralise…', options:['Le théorème de Pythagore','Le théorème de Thalès','La relation des sinus','Le cercle trigonométrique'], correct:0, correction:'Quand l’angle A vaut 90°, cos(A)=0 et on retrouve a² = b² + c² : c’est Pythagore.'}
+            ]
         }
     ],
 
@@ -218,6 +261,44 @@ var CHAPITRES = {
             matieres:['Équation de droite','Distance dans le plan','Équation du cercle'],
             exercices:[
                 {question:'Quelle est l’équation d’un cercle de centre (0,0) et de rayon 3 ?', options:['x² + y² = 9','x² + y² = 3','x + y = 9','(x-3)² + y² = 0'], correct:0, correction:'(x-a)²+(y-b)²=r² avec a=b=0 et r=3 donne x²+y²=9.'}
+            ]
+        },
+        {
+            id:'5e_stat_2var', titre:'5. Statistique à deux variables',
+            desc:'UAA — Nuage de points, ajustement et corrélation', niveau:'5e', icone:'📊', color:'#3182ce',
+            cours:`<h4>Étudier deux caractères à la fois</h4>
+                <p>Quand on mesure deux grandeurs sur les mêmes individus (ex : taille et poids), on obtient une <b>série statistique à deux variables</b>, représentée par un <b>nuage de points</b> dans un repère.</p>
+                <h4>Le point moyen et la droite de Mayer</h4>
+                <p>Le <b>point moyen</b> G a pour coordonnées (x̄, ȳ), les moyennes des deux séries. La <b>droite de Mayer</b> est une droite qui approche le nuage de points ; elle passe par le point moyen et sert à faire des prévisions (ajustement linéaire).</p>
+                <h4>Le coefficient de corrélation</h4>
+                <p>Il mesure à quel point les points sont alignés, entre <b>-1 et 1</b>. Plus il est proche de -1 ou 1, plus la liaison linéaire est forte. Proche de 0, il n’y a pas de lien linéaire.</p>
+                <h4>Attention : corrélation ≠ causalité !</h4>
+                <p>Deux séries peuvent être corrélées sans que l’une soit la cause de l’autre (ex : ventes de glaces et coups de soleil sont corrélées... à cause de la chaleur, pas d’un lien de cause à effet direct).</p>`,
+            objectifs:['Représenter un nuage de points et calculer le point moyen','Déterminer l’équation d’une droite d’ajustement (méthode de Mayer)','Interpréter un coefficient de corrélation et distinguer corrélation et causalité'],
+            matieres:['Nuage de points, point moyen','Ajustement linéaire (méthode de Mayer)','Coefficient de corrélation, causalité vs corrélation'],
+            exercices:[
+                {question:'Le point moyen d’un nuage de points a pour coordonnées…', options:['(x̄, ȳ), les moyennes des deux séries','Le point le plus fréquent','L’origine du repère','Le premier point du tableau'], correct:0, correction:'G(x̄, ȳ) est calculé à partir des moyennes de chaque variable.'},
+                {question:'Un coefficient de corrélation proche de 0 signifie…', options:['Pas de lien linéaire entre les deux variables','Une corrélation parfaite','Une relation de cause à effet certaine','Une erreur de calcul'], correct:0, correction:'Plus le coefficient est proche de 0, plus le nuage est dispersé sans tendance linéaire claire.'},
+                {question:'Deux variables corrélées sont-elles forcément liées par une cause à effet ?', options:['Non, corrélation n’implique pas causalité','Oui, toujours','Seulement si le coefficient est négatif','Seulement en statistique à une variable'], correct:0, correction:'C’est un piège classique : la corrélation ne prouve jamais la causalité.'}
+            ]
+        },
+        {
+            id:'5e_fonctions_trigo', titre:'6. Fonctions trigonométriques',
+            desc:'UAA5 — Sinus, cosinus et tangente comme fonctions', niveau:'5e', icone:'〜', color:'#805ad5',
+            cours:`<h4>Du triangle au réel</h4>
+                <p>En 4e, sin/cos/tan étaient définis pour des angles. En 5e, on les voit comme des <b>fonctions réelles</b> : x ↦ sin(x), définies pour tout réel x exprimé en <b>radians</b> (π rad = 180°).</p>
+                <h4>Les graphiques</h4>
+                <p>Les fonctions sin et cos sont <b>périodiques de période 2π</b> : leur graphique se répète tous les 2π. Elles oscillent entre -1 et 1. La fonction tan est périodique de période π et présente des asymptotes verticales.</p>
+                <h4>Amplitude, période, déphasage</h4>
+                <p>Pour une fonction du type <b>f(x) = a·sin(bx + c)</b> : <b>a</b> est l’amplitude (hauteur des oscillations), <b>2π/b</b> est la période, et <b>c</b> provoque un déphasage (décalage horizontal).</p>
+                <h4>Résoudre une équation trigonométrique</h4>
+                <p>Pour résoudre sin(x) = k, on utilise le cercle trigonométrique : il existe en général <b>plusieurs solutions</b>, à cause de la périodicité.</p>`,
+            objectifs:['Convertir des degrés en radians et réciproquement','Reconnaître amplitude, période et déphasage d’une fonction trigonométrique','Résoudre une équation trigonométrique simple à l’aide du cercle trigonométrique'],
+            matieres:['Radian, fonctions sin/cos/tan sur ℝ','Amplitude, période, déphasage','Équations trigonométriques'],
+            exercices:[
+                {question:'Combien de radians correspondent à 180° ?', options:['π','2π','π/2','360'], correct:0, correction:'Par définition, π radians équivalent à 180°.'},
+                {question:'Quelle est la période de la fonction sinus ?', options:['2π','π','π/2','1'], correct:0, correction:'sin(x) reprend les mêmes valeurs toutes les 2π unités.'},
+                {question:'Dans f(x) = 3·sin(2x), quelle est l’amplitude ?', options:['3','2','6','1'], correct:0, correction:'Dans a·sin(bx), a est l’amplitude : ici a = 3.'}
             ]
         }
     ],
@@ -288,6 +369,61 @@ var CHAPITRES = {
             exercices:[
                 {question:'Dans une suite arithmétique de raison r, on a...', options:['u_(n+1) = u_n + r','u_(n+1) = u_n × r','u_(n+1) = u_n - r²','u_(n+1) = r/u_n'], correct:0, correction:'On ajoute la raison r à chaque étape.'},
                 {question:'Une suite géométrique de raison q = 0.5 tend vers...', options:['0','+∞','1','-∞'], correct:0, correction:'|q| < 1 donc la suite tend vers 0.'}
+            ]
+        },
+        {
+            id:'6e_lois_proba', titre:'5. Lois de probabilités',
+            desc:'UAA2 — Lois binomiale et normale', niveau:'6e', icone:'🎲', color:'#e53e3e',
+            cours:`<h4>Variable aléatoire</h4>
+                <p>Une <b>variable aléatoire</b> associe un nombre à chaque résultat possible d’une expérience. On la caractérise par son <b>espérance mathématique</b> (moyenne théorique) et son <b>écart-type</b> (dispersion théorique).</p>
+                <h4>La loi binomiale</h4>
+                <p>Elle modélise le nombre de succès dans une répétition de <b>n épreuves de Bernoulli</b> indépendantes (deux issues possibles : succès/échec, avec une probabilité p de succès à chaque fois). C’est le modèle pour « combien de fois j’obtiens face en lançant une pièce 10 fois », par exemple.</p>
+                <h4>La loi normale</h4>
+                <p>C’est la fameuse <b>courbe en cloche</b>, symétrique autour de la moyenne. Elle modélise de nombreux phénomènes continus (tailles, notes, mesures...). On utilise une <b>table de la loi normale</b> ou un outil informatique pour calculer les probabilités associées.</p>
+                <h4>Outils de dénombrement</h4>
+                <p>Pour calculer des probabilités, on s’appuie souvent sur un <b>arbre</b>, un <b>diagramme de Venn</b>, un <b>tableau</b>, ou l’<b>analyse combinatoire</b> (arrangements, combinaisons, permutations) quand il faut compter des cas.</p>`,
+            objectifs:['Reconnaître une situation modélisée par une loi binomiale ou normale','Calculer une espérance mathématique et un écart-type','Utiliser une table ou un outil informatique pour une loi normale'],
+            matieres:['Variable aléatoire, espérance, écart-type','Loi binomiale (schéma de Bernoulli)','Loi normale et table de valeurs'],
+            exercices:[
+                {question:'La loi binomiale modélise…', options:['Le nombre de succès dans des épreuves indépendantes à deux issues','Une mesure continue quelconque','Le hasard pur sans probabilité','Uniquement les jeux de cartes'], correct:0, correction:'C’est le modèle du schéma de Bernoulli répété n fois.'},
+                {question:'La courbe de la loi normale est…', options:['Symétrique en forme de cloche','Toujours croissante','Une droite','Toujours nulle'], correct:0, correction:'La loi normale a une courbe en cloche symétrique autour de la moyenne.'},
+                {question:'L’espérance mathématique d’une variable aléatoire représente…', options:['Sa moyenne théorique','Sa valeur maximale','Sa probabilité totale','Son écart-type'], correct:0, correction:'L’espérance est la valeur moyenne attendue « en théorie ».'}
+            ]
+        },
+        {
+            id:'6e_exp_log', titre:'6. Fonctions exponentielles et logarithmes',
+            desc:'UAA4 — Croissance exponentielle et logarithmique', niveau:'6e', icone:'📈', color:'#d69e2e',
+            cours:`<h4>La fonction exponentielle</h4>
+                <p><b>f(x) = eˣ</b> (base e ≈ 2,718) est toujours positive, strictement croissante, et vérifie <b>eˣ⁺ʸ = eˣ × eʸ</b>. Elle croît beaucoup plus vite que n’importe quelle fonction puissance.</p>
+                <h4>La fonction logarithme</h4>
+                <p><b>ln(x)</b> est la fonction réciproque de l’exponentielle : <b>ln(eˣ) = x</b> et <b>e^(ln x) = x</b>. Elle n’est définie que pour x > 0, et vérifie <b>ln(a×b) = ln(a) + ln(b)</b>.</p>
+                <h4>Résoudre des équations</h4>
+                <p>Pour une <b>équation exponentielle</b> du type eˣ = k (k>0), on prend le logarithme des deux membres : x = ln(k). Pour une <b>équation logarithmique</b> ln(x) = k, on applique l’exponentielle : x = eᵏ.</p>
+                <h4>Comparer les croissances</h4>
+                <p>Pour x très grand, on a toujours : <b>ln(x) « xⁿ « eˣ</b> — le logarithme croît très lentement, l’exponentielle très vite, et les puissances sont entre les deux.</p>`,
+            objectifs:['Utiliser les propriétés des exponentielles et des logarithmes','Résoudre une équation exponentielle ou logarithmique simple','Comparer les croissances des fonctions exponentielle, puissance et logarithme'],
+            matieres:['Fonction exponentielle et fonction logarithme','Réciprocité eˣ / ln(x)','Équations exponentielles et logarithmiques'],
+            exercices:[
+                {question:'Que vaut ln(eˣ) ?', options:['x','eˣ','1','0'], correct:0, correction:'ln et exp sont des fonctions réciproques : ln(eˣ) = x.'},
+                {question:'Résoudre eˣ = 5', options:['x = ln(5)','x = 5','x = e⁵','x = 1/5'], correct:0, correction:'On applique le logarithme des deux côtés : x = ln(5).'},
+                {question:'Pour x très grand, quelle fonction croît le plus vite ?', options:['eˣ','ln(x)','x²','x'], correct:0, correction:'L’exponentielle domine toujours les puissances et le logarithme pour x grand.'}
+            ]
+        },
+        {
+            id:'6e_geo_analytique_espace', titre:'7. Géométrie analytique de l’espace',
+            desc:'UAA5 — Droites et plans dans un repère 3D', niveau:'6e', icone:'🧊', color:'#38a169',
+            cours:`<h4>Se repérer dans l’espace</h4>
+                <p>Un point de l’espace a <b>trois coordonnées (x, y, z)</b> dans un repère orthonormé. Un vecteur de l’espace a lui aussi trois composantes.</p>
+                <h4>Équations d’une droite et d’un plan</h4>
+                <p>Une <b>droite</b> de l’espace est définie par un point et un vecteur directeur (équations paramétriques). Un <b>plan</b> est défini par un point et deux vecteurs directeurs non colinéaires, ou par une équation cartésienne du type <b>ax + by + cz + d = 0</b>.</p>
+                <h4>Positions relatives et distances</h4>
+                <p>Deux droites de l’espace peuvent être sécantes, parallèles, ou <b>gauches</b>. On calcule la <b>distance entre deux points</b> avec la formule de Pythagore généralisée : d = √[(x_B-x_A)² + (y_B-y_A)² + (z_B-z_A)²].</p>`,
+            objectifs:['Déterminer les équations d’une droite ou d’un plan dans l’espace','Reconnaître les positions relatives de droites et de plans','Calculer une distance entre deux points de l’espace'],
+            matieres:['Repère et vecteurs de l’espace','Équations de droites et de plans','Positions relatives, distances'],
+            exercices:[
+                {question:'Combien de coordonnées a un point dans l’espace ?', options:['3','2','4','1'], correct:0, correction:'Dans l’espace, un point a trois coordonnées (x, y, z).'},
+                {question:'Une équation cartésienne de plan a la forme…', options:['ax + by + cz + d = 0','ax + b = 0','y = mx + p','x² + y² = r²'], correct:0, correction:'C’est la forme générale de l’équation cartésienne d’un plan.'},
+                {question:'Deux droites de l’espace ni sécantes ni parallèles sont dites…', options:['Gauches','Orthogonales','Confondues','Symétriques'], correct:0, correction:'Comme dans le plan… mais dans l’espace, ce cas existe aussi entre deux droites : elles sont gauches.'}
             ]
         }
     ]
