@@ -1,3 +1,8 @@
+/* =========================================================
+   STYLE - CARNET CESS
+   VERSION COMPLÈTE AVEC STYLES PÉDAGOGIQUES
+   ========================================================= */
+
 :root{
 --bg:#f5f7fb;
 --bg-soft:#eef2f8;
@@ -1768,6 +1773,107 @@ font-size:11px
 .footer-actions{
 display:flex;
 gap:8px
+}
+
+
+/* =========================================================
+   STYLES PÉDAGOGIQUES - ASTUCES, PIÈGES, CHECK-LISTS, FORMULES
+   ========================================================= */
+
+.astuce {
+    background: #fff8e1;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border-left: 5px solid #ffc107;
+    margin: 14px 0;
+    font-size: 14px;
+    color: #5d4a00;
+}
+
+body.dark .astuce {
+    background: #3d2d1c;
+    border-left-color: #ffc107;
+    color: #ffe0a0;
+}
+
+.piege {
+    background: #fce4ec;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border-left: 5px solid #d32f2f;
+    margin: 14px 0;
+}
+
+body.dark .piege {
+    background: #3e2226;
+    border-left-color: #e85d5d;
+}
+
+.piege ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.piege ul li {
+    padding: 4px 0;
+    font-size: 13px;
+    color: #b71c1c;
+}
+
+body.dark .piege ul li {
+    color: #ff8a8a;
+}
+
+.checklist {
+    background: #e8f5e9;
+    padding: 15px 20px;
+    border-radius: 10px;
+    border-left: 5px solid #2e7d32;
+    margin: 14px 0;
+}
+
+body.dark .checklist {
+    background: #17382f;
+    border-left-color: #4caf50;
+}
+
+.checklist ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.checklist ul li {
+    padding: 4px 0;
+    font-size: 13px;
+    color: #1b5e20;
+}
+
+body.dark .checklist ul li {
+    color: #81c784;
+}
+
+.formule {
+    background: #eef5ff;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    border-left: 5px solid #2a5f8f;
+    margin: 10px 0;
+    color: #1a3a5c;
+}
+
+body.dark .formule {
+    background: #1e2c55;
+    border-left-color: #4a8ac4;
+    color: #b0d0ff;
+}
+
+.formule p {
+    margin: 4px 0;
+    color: inherit;
 }
 
 
