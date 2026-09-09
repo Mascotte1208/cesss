@@ -915,6 +915,11 @@ function renderGamePanel() {
                 <strong>Défi Géo</strong>
                 <small>Questions de géographie</small>
             </button>
+            <button class="game-card" onclick="startQuiz('bio')">
+                <span>🧬</span>
+                <strong>Défi Biologie</strong>
+                <small>Questions sur le vivant</small>
+            </button>
         </div>
     `;
 }
