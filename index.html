@@ -1,582 +1,1089 @@
 <!doctype html>
 <html lang="fr">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="utf-8">
 
-<meta name="theme-color" content="#0f172a">
-<meta name="description" content="Carnet CESS — plateforme de révision">
+    <meta
+        name="viewport"
+        content="width=device-width,initial-scale=1">
 
-<title>Carnet CESS — Révision</title>
+    <meta
+        name="theme-color"
+        content="#101a2d">
 
-<link rel="icon" href="data:,">
-<link rel="stylesheet" href="style.css?v=20260909">
+    <meta
+        name="description"
+        content="Carnet CESS — plateforme de révision">
 
+    <title>Carnet CESS — Révision</title>
+
+    <link
+        rel="icon"
+        href="data:,">
+
+    <link
+        rel="stylesheet"
+        href="style.css?v=20260910">
 </head>
+
 
 <body>
 
-<header class="topbar">
+<div class="app-shell">
 
-    <button type="button" class="brand" onclick="showView('home')">
-        <span>🎓</span>
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
 
-        <div>
-            <b>Carnet CESS</b>
-            <small>Réviser · comprendre · réussir</small>
+    <aside class="sidebar">
+
+        <button
+            type="button"
+            class="brand"
+            onclick="showView('home')">
+
+            <span class="brand-icon">🎓</span>
+
+            <span class="brand-text">
+                <strong>Carnet CESS</strong>
+                <small>Réviser · comprendre · réussir</small>
+            </span>
+
+        </button>
+
+
+        <nav class="main-nav">
+
+            <button
+                type="button"
+                class="nav-item active"
+                data-view="home"
+                onclick="showView('home')">
+
+                <span>⌂</span>
+                <span>Accueil</span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="nav-item"
+                data-view="maths"
+                onclick="showView('maths')">
+
+                <span>📐</span>
+                <span>Mathématiques</span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="nav-item"
+                data-view="geo"
+                onclick="showView('geo')">
+
+                <span>🌍</span>
+                <span>Géographie</span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="nav-item"
+                data-view="memo"
+                onclick="showView('memo')">
+
+                <span>📚</span>
+                <span>Mémo</span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="nav-item"
+                data-view="games"
+                onclick="showView('games')">
+
+                <span>🎮</span>
+                <span>Jeux & quiz</span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="nav-item"
+                data-view="exam"
+                onclick="showView('exam')">
+
+                <span>📝</span>
+                <span>Examens</span>
+
+            </button>
+
+
+            <button
+                type="button"
+                class="nav-item"
+                data-view="progress"
+                onclick="showView('progress')">
+
+                <span>📊</span>
+                <span>Progression</span>
+
+            </button>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-tip">
+
+                <span>💡</span>
+
+                <div>
+                    <strong>Conseil</strong>
+
+                    <small>
+                        Révise un peu chaque jour plutôt
+                        que tout à la dernière minute.
+                    </small>
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="theme-button"
+                onclick="toggleTheme()">
+
+                <span id="themeIcon">🌙</span>
+
+                <span id="themeText">
+                    Mode sombre
+                </span>
+
+            </button>
+
         </div>
-    </button>
 
-    <nav>
+    </aside>
 
-        <button type="button" onclick="showView('home')">
-            Accueil
+
+    <!-- =====================================================
+         CONTENU PRINCIPAL
+         ===================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- =================================================
+             ACCUEIL
+             ================================================= -->
+
+        <section
+            id="home"
+            class="view active">
+
+            <div class="welcome">
+
+                <div class="welcome-main">
+
+                    <span class="eyebrow">
+                        CESS · RÉVISION
+                    </span>
+
+                    <h1>
+                        Ton espace de révision,
+                        <br>
+                        <em>simple et organisé.</em>
+                    </h1>
+
+                    <p>
+                        Maths, géographie, cours,
+                        vocabulaire, formules,
+                        exercices, jeux et examens blancs
+                        réunis au même endroit.
+                    </p>
+
+
+                    <div class="welcome-actions">
+
+                        <button
+                            type="button"
+                            class="button primary"
+                            onclick="showView('maths')">
+
+                            📐 Commencer les maths
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="button secondary"
+                            onclick="showView('geo')">
+
+                            🌍 Ouvrir la géographie
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="daily-card">
+
+                    <div class="daily-icon">
+                        ⚡
+                    </div>
+
+                    <span class="eyebrow">
+                        Révision express
+                    </span>
+
+                    <h3 id="dailyTitle">
+                        10 minutes pour progresser
+                    </h3>
+
+                    <p id="dailyText">
+                        Lance un quiz rapide
+                        et entraîne-toi sur plusieurs thèmes.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="text-button"
+                        onclick="quickRevision()">
+
+                        Lancer la révision →
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- STATISTIQUES -->
+
+            <div
+                id="homeStats"
+                class="home-stats">
+            </div>
+
+
+            <!-- MATIERES -->
+
+            <section class="home-section">
+
+                <div class="section-heading">
+
+                    <span class="eyebrow">
+                        Matières
+                    </span>
+
+                    <h2>
+                        Continuer mes révisions
+                    </h2>
+
+                </div>
+
+
+                <div class="subject-cards">
+
+                    <article class="subject-card maths-card">
+
+                        <div class="subject-card-top">
+
+                            <span class="subject-icon">
+                                📐
+                            </span>
+
+                            <span class="subject-arrow">
+                                →
+                            </span>
+
+                        </div>
+
+                        <h3>
+                            Mathématiques
+                        </h3>
+
+                        <p>
+                            Fonctions, algèbre,
+                            géométrie, trigonométrie
+                            et statistiques.
+                        </p>
+
+                        <div class="progress-line">
+                            <span id="homeMathProgress"></span>
+                        </div>
+
+                        <div class="subject-card-footer">
+
+                            <span id="homeMathLabel">
+                                0% maîtrisé
+                            </span>
+
+                            <button
+                                type="button"
+                                onclick="showView('maths')">
+
+                                Ouvrir →
+
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="subject-card geo-card">
+
+                        <div class="subject-card-top">
+
+                            <span class="subject-icon">
+                                🌍
+                            </span>
+
+                            <span class="subject-arrow">
+                                →
+                            </span>
+
+                        </div>
+
+                        <h3>
+                            Géographie
+                        </h3>
+
+                        <p>
+                            Risques, climats,
+                            populations, ressources,
+                            mobilités et territoires.
+                        </p>
+
+                        <div class="progress-line">
+                            <span id="homeGeoProgress"></span>
+                        </div>
+
+                        <div class="subject-card-footer">
+
+                            <span id="homeGeoLabel">
+                                0% maîtrisé
+                            </span>
+
+                            <button
+                                type="button"
+                                onclick="showView('geo')">
+
+                                Ouvrir →
+
+                            </button>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- BAS DE PAGE -->
+
+            <div class="home-grid">
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <span class="eyebrow">
+                            Tableau de bord
+                        </span>
+
+                        <h2>
+                            Progression
+                        </h2>
+
+                    </div>
+
+                    <div id="subjectProgress"></div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <span class="eyebrow">
+                            Priorités
+                        </span>
+
+                        <h2>
+                            À revoir
+                        </h2>
+
+                    </div>
+
+                    <div id="priorities"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             MATHS
+             ================================================= -->
+
+        <section
+            id="maths"
+            class="view">
+
+            <div class="page-header">
+
+                <div class="page-header-main">
+
+                    <span class="eyebrow">
+                        Matière
+                    </span>
+
+                    <h1>
+                        📐 Mathématiques
+                    </h1>
+
+                    <p>
+                        Parcours les chapitres par année,
+                        ouvre un cours et entraîne-toi
+                        avec les exercices.
+                    </p>
+
+                </div>
+
+                <div
+                    id="mathsTotal"
+                    class="page-counter">
+                </div>
+
+            </div>
+
+
+            <div
+                id="mathYears"
+                class="year-selector">
+            </div>
+
+
+            <div id="mathContent"></div>
+
+        </section>
+
+
+        <!-- =================================================
+             GEOGRAPHIE
+             ================================================= -->
+
+        <section
+            id="geo"
+            class="view">
+
+            <div class="page-header">
+
+                <div class="page-header-main">
+
+                    <span class="eyebrow">
+                        Matière
+                    </span>
+
+                    <h1>
+                        🌍 Géographie
+                    </h1>
+
+                    <p>
+                        Révise les notions du programme,
+                        le vocabulaire et entraîne-toi
+                        avec les exercices.
+                    </p>
+
+                </div>
+
+                <div
+                    id="geoTotal"
+                    class="page-counter">
+                </div>
+
+            </div>
+
+
+            <div
+                id="geoYears"
+                class="year-selector">
+            </div>
+
+
+            <div id="geoContent"></div>
+
+        </section>
+
+
+        <!-- =================================================
+             MEMO
+             ================================================= -->
+
+        <section
+            id="memo"
+            class="view">
+
+            <div class="page-header">
+
+                <div class="page-header-main">
+
+                    <span class="eyebrow">
+                        Mémo CESS
+                    </span>
+
+                    <h1>
+                        📚 Formules & vocabulaire
+                    </h1>
+
+                    <p>
+                        Retrouve rapidement
+                        une formule ou une définition.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="memo-tabs">
+
+                <button
+                    type="button"
+                    class="memo-tab active"
+                    onclick="memoTab('formules', this)">
+
+                    📐 Formules
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="memo-tab"
+                    onclick="memoTab('vocab', this)">
+
+                    🌍 Vocabulaire
+
+                </button>
+
+            </div>
+
+
+            <div class="search-box">
+
+                <span>
+                    🔎
+                </span>
+
+                <input
+                    id="memoSearch"
+                    type="search"
+                    placeholder="Rechercher une formule ou un mot..."
+                    oninput="renderMemo()">
+
+            </div>
+
+
+            <select
+                id="memoYear"
+                class="year-button"
+                onchange="renderMemo()">
+
+                <option value="all">
+                    Toutes les années
+                </option>
+
+                <option value="3e">
+                    3e
+                </option>
+
+                <option value="4e">
+                    4e
+                </option>
+
+                <option value="5e">
+                    5e
+                </option>
+
+                <option value="6e">
+                    6e
+                </option>
+
+            </select>
+
+
+            <div
+                id="memoContent"
+                class="memo-grid">
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             JEUX
+             ================================================= -->
+
+        <section
+            id="games"
+            class="view">
+
+            <div class="page-header">
+
+                <div class="page-header-main">
+
+                    <span class="eyebrow">
+                        Entraînement
+                    </span>
+
+                    <h1>
+                        🎮 Jeux & quiz
+                    </h1>
+
+                    <p>
+                        Entraîne-toi rapidement
+                        avant ton examen.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h2>
+                        Choisir un entraînement
+                    </h2>
+
+                </div>
+
+
+                <div class="exam-list">
+
+                    <article class="exam-card">
+
+                        <div class="exam-icon">
+                            🔀
+                        </div>
+
+                        <h3>
+                            Quiz mixte
+                        </h3>
+
+                        <p>
+                            Maths + géographie.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="button primary"
+                            onclick="startQuiz('mixed')">
+
+                            Commencer
+
+                        </button>
+
+                    </article>
+
+
+                    <article class="exam-card">
+
+                        <div class="exam-icon">
+                            📐
+                        </div>
+
+                        <h3>
+                            Quiz Maths
+                        </h3>
+
+                        <p>
+                            Questions de mathématiques.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="button primary"
+                            onclick="startQuiz('maths')">
+
+                            Commencer
+
+                        </button>
+
+                    </article>
+
+
+                    <article class="exam-card">
+
+                        <div class="exam-icon">
+                            🌍
+                        </div>
+
+                        <h3>
+                            Quiz Géographie
+                        </h3>
+
+                        <p>
+                            Questions de géographie.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="button primary"
+                            onclick="startQuiz('geo')">
+
+                            Commencer
+
+                        </button>
+
+                    </article>
+
+
+                    <article class="exam-card">
+
+                        <div class="exam-icon">
+                            ✅
+                        </div>
+
+                        <h3>
+                            Vrai / Faux
+                        </h3>
+
+                        <p>
+                            Teste tes réflexes.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="button primary"
+                            onclick="startQuiz('truefalse')">
+
+                            Commencer
+
+                        </button>
+
+                    </article>
+
+
+                    <article class="exam-card">
+
+                        <div class="exam-icon">
+                            🔁
+                        </div>
+
+                        <h3>
+                            Mes erreurs
+                        </h3>
+
+                        <p>
+                            Refaire les questions ratées.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="button primary"
+                            onclick="startQuiz('mistakes')">
+
+                            Revoir
+
+                        </button>
+
+                    </article>
+
+
+                    <article class="exam-card">
+
+                        <div class="exam-icon">
+                            🌍
+                        </div>
+
+                        <h3>
+                            Capitales
+                        </h3>
+
+                        <p>
+                            Teste tes connaissances
+                            géographiques.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="button primary"
+                            onclick="startCapitals()">
+
+                            Jouer
+
+                        </button>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="gamePanel"
+                class="quiz-start">
+
+                <div class="quiz-start-icon">
+                    🎯
+                </div>
+
+                <h2>
+                    Choisis un quiz
+                </h2>
+
+                <p>
+                    Les questions apparaîtront ici.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             EXAMENS
+             ================================================= -->
+
+        <section
+            id="exam"
+            class="view">
+
+            <div class="page-header">
+
+                <div class="page-header-main">
+
+                    <span class="eyebrow">
+                        Examen blanc
+                    </span>
+
+                    <h1>
+                        📝 Simule ton examen
+                    </h1>
+
+                    <p>
+                        Une série de questions
+                        pour tester tes connaissances.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="exam-list">
+
+                <article class="exam-card">
+
+                    <div class="exam-icon">
+                        📐
+                    </div>
+
+                    <h3>
+                        Examen Maths
+                    </h3>
+
+                    <p>
+                        Série de questions
+                        de mathématiques.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="button primary"
+                        onclick="startExam('maths')">
+
+                        Commencer
+
+                    </button>
+
+                </article>
+
+
+                <article class="exam-card">
+
+                    <div class="exam-icon">
+                        🌍
+                    </div>
+
+                    <h3>
+                        Examen Géographie
+                    </h3>
+
+                    <p>
+                        Série de questions
+                        de géographie.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="button primary"
+                        onclick="startExam('geo')">
+
+                        Commencer
+
+                    </button>
+
+                </article>
+
+            </div>
+
+
+            <div
+                id="examPanel"
+                class="quiz-start">
+
+                <div class="quiz-start-icon">
+                    📝
+                </div>
+
+                <h2>
+                    Prêt pour l'examen ?
+                </h2>
+
+                <p>
+                    Choisis un examen ci-dessus
+                    pour commencer.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PROGRESSION
+             ================================================= -->
+
+        <section
+            id="progress"
+            class="view">
+
+            <div class="page-header">
+
+                <div class="page-header-main">
+
+                    <span class="eyebrow">
+                        Suivi
+                    </span>
+
+                    <h1>
+                        📊 Ma progression
+                    </h1>
+
+                    <p>
+                        Suis les chapitres que
+                        tu maîtrises.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="progressContent">
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         NAVIGATION MOBILE
+         ===================================================== -->
+
+    <nav class="mobile-nav">
+
+        <button
+            type="button"
+            onclick="showView('home')">
+
+            <span>⌂</span>
+            <small>Accueil</small>
+
         </button>
 
-        <button type="button" onclick="showView('maths')">
-            📐 Maths
+
+        <button
+            type="button"
+            onclick="showView('maths')">
+
+            <span>📐</span>
+            <small>Maths</small>
+
         </button>
 
-        <button type="button" onclick="showView('geo')">
-            🌍 Géo
+
+        <button
+            type="button"
+            onclick="showView('geo')">
+
+            <span>🌍</span>
+            <small>Géo</small>
+
         </button>
 
-        <button type="button" onclick="showView('memo')">
-            📚 Mémo
+
+        <button
+            type="button"
+            onclick="showView('games')">
+
+            <span>🎮</span>
+            <small>Quiz</small>
+
         </button>
 
-        <button type="button" onclick="showView('games')">
-            🎮 Jeux
-        </button>
 
-        <button type="button" onclick="showView('exam')">
-            📝 Examens
-        </button>
+        <button
+            type="button"
+            onclick="showView('progress')">
 
-        <button type="button" onclick="showView('progress')">
-            📊 Suivi
+            <span>📊</span>
+            <small>Suivi</small>
+
         </button>
 
     </nav>
 
-    <button
-        type="button"
-        class="theme"
-        aria-label="Changer de thème"
-        onclick="toggleTheme()">
-        🌙
-    </button>
-
-</header>
-
-
-<main>
-
-<!-- =========================================================
-     ACCUEIL
-     ========================================================= -->
-
-<section id="home" class="view active">
-
-    <div class="hero">
-
-        <div>
-
-            <span class="eyebrow">
-                CESS · RÉVISION
-            </span>
-
-            <h1>
-                Ton espace de révision,
-                <br>
-                <em>simple et organisé.</em>
-            </h1>
-
-            <p>
-                Maths, géographie, cours, vocabulaire,
-                formules, exercices, jeux et examens blancs
-                réunis au même endroit.
-            </p>
-
-            <div class="hero-actions">
-
-                <button
-                    type="button"
-                    class="primary"
-                    onclick="showView('maths')">
-                    📐 Commencer les maths
-                </button>
-
-                <button
-                    type="button"
-                    class="secondary"
-                    onclick="showView('geo')">
-                    🌍 Ouvrir la géographie
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="hero-card">
-
-            <span>⚡</span>
-
-            <b id="dailyTitle">
-                Révision express
-            </b>
-
-            <p id="dailyText">
-                10 minutes pour revoir l'essentiel.
-            </p>
-
-            <button
-                type="button"
-                onclick="quickRevision()">
-                Lancer →
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <div
-        class="stats"
-        id="homeStats">
-    </div>
-
-
-    <div class="grid2">
-
-        <div class="panel">
-
-            <div class="panel-head">
-
-                <div>
-
-                    <span class="eyebrow">
-                        Tableau de bord
-                    </span>
-
-                    <h2>
-                        Ma progression
-                    </h2>
-
-                </div>
-
-            </div>
-
-            <div id="subjectProgress"></div>
-
-        </div>
-
-
-        <div class="panel">
-
-            <div class="panel-head">
-
-                <div>
-
-                    <span class="eyebrow">
-                        Priorités
-                    </span>
-
-                    <h2>
-                        À revoir
-                    </h2>
-
-                </div>
-
-            </div>
-
-            <div id="priorities"></div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     MATHS
-     ========================================================= -->
-
-<section id="maths" class="view">
-
-    <div class="section-head">
-
-        <div>
-
-            <span class="eyebrow">
-                Matière
-            </span>
-
-            <h1>
-                📐 Mathématiques
-            </h1>
-
-            <p>
-                Classe les cours par année,
-                ouvre un chapitre, révise et entraîne-toi.
-            </p>
-
-        </div>
-
-        <div
-            class="pill"
-            id="mathsTotal">
-        </div>
-
-    </div>
-
-
-    <div
-        class="year-tabs"
-        id="mathYears">
-    </div>
-
-
-    <div id="mathContent"></div>
-
-</section>
-
-
-<!-- =========================================================
-     GEOGRAPHIE
-     ========================================================= -->
-
-<section id="geo" class="view">
-
-    <div class="section-head">
-
-        <div>
-
-            <span class="eyebrow">
-                Matière
-            </span>
-
-            <h1>
-                🌍 Géographie
-            </h1>
-
-            <p>
-                Programme organisé par année,
-                vocabulaire, cours et entraînement.
-            </p>
-
-        </div>
-
-        <div
-            class="pill"
-            id="geoTotal">
-        </div>
-
-    </div>
-
-
-    <div
-        class="year-tabs"
-        id="geoYears">
-    </div>
-
-
-    <div id="geoContent"></div>
-
-</section>
-
-
-<!-- =========================================================
-     MEMO
-     ========================================================= -->
-
-<section id="memo" class="view">
-
-    <div class="section-head">
-
-        <div>
-
-            <span class="eyebrow">
-                Mémo CESS
-            </span>
-
-            <h1>
-                📚 Formules & vocabulaire
-            </h1>
-
-            <p>
-                Retrouve rapidement une formule
-                ou une définition.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="memo-tabs">
-
-        <button
-            type="button"
-            class="active"
-            onclick="memoTab('formules', this)">
-            📐 Formules
-        </button>
-
-        <button
-            type="button"
-            onclick="memoTab('vocab', this)">
-            🌍 Vocabulaire
-        </button>
-
-    </div>
-
-
-    <div class="filters">
-
-        <input
-            id="memoSearch"
-            type="search"
-            placeholder="Rechercher..."
-            oninput="renderMemo()">
-
-        <select
-            id="memoYear"
-            onchange="renderMemo()">
-
-            <option value="all">
-                Toutes les années
-            </option>
-
-            <option value="3e">
-                3e
-            </option>
-
-            <option value="4e">
-                4e
-            </option>
-
-            <option value="5e">
-                5e
-            </option>
-
-            <option value="6e">
-                6e
-            </option>
-
-        </select>
-
-    </div>
-
-
-    <div id="memoContent"></div>
-
-</section>
-
-
-<!-- =========================================================
-     JEUX
-     ========================================================= -->
-
-<section id="games" class="view">
-
-    <div class="section-head">
-
-        <div>
-
-            <span class="eyebrow">
-                Entraînement
-            </span>
-
-            <h1>
-                🎮 Jeux & quiz
-            </h1>
-
-            <p>
-                Entraîne-toi rapidement avant ton examen.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="grid2">
-
-        <div class="panel">
-
-            <h2>
-                🎯 Quiz
-            </h2>
-
-            <p>
-                Choisis ton mode d'entraînement.
-            </p>
-
-            <div class="button-grid">
-
-                <button
-                    type="button"
-                    onclick="startQuiz('mixed')">
-                    🔀 Quiz mixte
-                </button>
-
-                <button
-                    type="button"
-                    onclick="startQuiz('maths')">
-                    📐 Quiz Maths
-                </button>
-
-                <button
-                    type="button"
-                    onclick="startQuiz('geo')">
-                    🌍 Quiz Géo
-                </button>
-
-                <button
-                    type="button"
-                    onclick="startQuiz('truefalse')">
-                    ✅ Vrai / Faux
-                </button>
-
-                <button
-                    type="button"
-                    onclick="startQuiz('mistakes')">
-                    🔁 Mes erreurs
-                </button>
-
-                <button
-                    type="button"
-                    onclick="startCapitals()">
-                    🌍 Capitales
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div
-            id="gamePanel"
-            class="panel">
-
-            <div class="empty">
-                Choisis un jeu pour commencer.
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     EXAMEN
-     ========================================================= -->
-
-<section id="exam" class="view">
-
-    <div class="section-head">
-
-        <div>
-
-            <span class="eyebrow">
-                Examen blanc
-            </span>
-
-            <h1>
-                📝 Simule ton examen
-            </h1>
-
-            <p>
-                Une série de questions pour tester
-                tes connaissances.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="panel">
-
-        <div class="button-grid">
-
-            <button
-                type="button"
-                onclick="startExam('maths')">
-                📐 Examen Maths
-            </button>
-
-            <button
-                type="button"
-                onclick="startExam('geo')">
-                🌍 Examen Géo
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <div
-        id="examPanel"
-        class="panel"
-        style="margin-top:20px">
-
-        <div class="empty">
-            Choisis un examen pour commencer.
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================================================
-     PROGRESSION
-     ========================================================= -->
-
-<section id="progress" class="view">
-
-    <div class="section-head">
-
-        <div>
-
-            <span class="eyebrow">
-                Suivi
-            </span>
-
-            <h1>
-                📊 Ma progression
-            </h1>
-
-            <p>
-                Suis les chapitres que tu maîtrises.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div id="progressContent"></div>
-
-</section>
-
-</main>
+</div>
 
 
 <!-- =========================================================
      DONNEES
      ========================================================= -->
 
-<script src="maths-data.js?v=20260909"></script>
-<script src="geo-data.js?v=20260909"></script>
-<script src="geo-vocab.js?v=20260909"></script>
+<script src="maths-data.js?v=20260910"></script>
+<script src="geo-data.js?v=20260910"></script>
+<script src="geo-vocab.js?v=20260910"></script>
 
 <!-- =========================================================
      APPLICATION
