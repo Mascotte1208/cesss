@@ -323,16 +323,7 @@ function openChapter(id) {
                 class="chapter-tab active"
                 onclick="switchChapterTab('course', this)">
 
-                📖 Cours
-
-            </button>
-
-            <button
-                type="button"
-                class="chapter-tab"
-                onclick="switchChapterTab('remember', this)">
-
-                🧠 Objectifs
+                📖 Cours & objectifs
 
             </button>
 
@@ -356,32 +347,53 @@ function openChapter(id) {
                     class="chapter-tab-content"
                     data-tab="course">
 
-                    ${
-                        matieres.length
-                            ? `
-                                <div class="content-card">
+                    <div class="chapter-overview-grid">
 
-                                    <h3>📚 À savoir</h3>
+                        ${
+                            matieres.length
+                                ? `
+                                    <section class="chapter-overview-card">
+                                        <span class="chapter-overview-icon">📚</span>
+                                        <div>
+                                            <h3>À savoir</h3>
+                                            <ul>
+                                                ${matieres.map(function (item) {
+                                                    return `
+                                                        <li>
+                                                            ${escapeHtml(item)}
+                                                        </li>
+                                                    `;
+                                                }).join('')}
+                                            </ul>
+                                        </div>
+                                    </section>
+                                `
+                                : ''
+                        }
 
-                                    <ul>
-                                        ${matieres.map(
-                                            function (item) {
-                                                return `
-                                                    <li>
-                                                        ${escapeHtml(
-                                                            item
-                                                        )}
-                                                    </li>
-                                                `;
-                                            }
-                                        ).join('')}
-                                    </ul>
+                        ${
+                            objectives.length
+                                ? `
+                                    <section class="chapter-overview-card">
+                                        <span class="chapter-overview-icon">🎯</span>
+                                        <div>
+                                            <h3>Objectifs</h3>
+                                            <ul>
+                                                ${objectives.map(function (item) {
+                                                    return `
+                                                        <li>
+                                                            ${escapeHtml(item)}
+                                                        </li>
+                                                    `;
+                                                }).join('')}
+                                            </ul>
+                                        </div>
+                                    </section>
+                                `
+                                : ''
+                        }
 
-                                </div>
-                            `
-                            : ''
-                    }
-
+                    </div>
 
                     <div class="content-card course-content">
 
@@ -432,45 +444,6 @@ function openChapter(id) {
                                 📄 Télécharger ce chapitre en PDF
                             </button>
                         </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    class="chapter-tab-content"
-                    data-tab="remember"
-                    style="display:none">
-
-                    <div class="content-card">
-
-                        <h3>🎯 Objectifs du chapitre</h3>
-
-                        ${
-                            objectives.length
-                                ? `
-                                    <ul>
-                                        ${objectives.map(
-                                            function (item) {
-                                                return `
-                                                    <li>
-                                                        ${escapeHtml(
-                                                            item
-                                                        )}
-                                                    </li>
-                                                `;
-                                            }
-                                        ).join('')}
-                                    </ul>
-                                `
-                                : `
-                                    <p>
-                                        Aucun objectif
-                                        renseigné.
-                                    </p>
-                                `
-                        }
 
                     </div>
 
