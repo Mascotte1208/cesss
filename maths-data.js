@@ -1,1222 +1,369 @@
-// ============================================================
-// CESS — MATHS
-// Carnet de révision — 3e + 4e
-// Basé sur les cours fournis
-// ============================================================
-
-const MATHS_CHAPITRES = {
-
-    "3e": [
-
-        // =====================================================
-        // 3E — GÉOMÉTRIE
-        // =====================================================
-
+// =========================================================
+// DONNÉES MATHÉMATIQUES - CESS
+// =========================================================
+var CHAPITRES = {
+    '3e': [
         {
-            id: "3e_isometrie",
-            titre: "Triangles isométriques",
-            short: "Isométrie",
-            desc: "Reconnaître, justifier et exploiter des triangles isométriques.",
-            niveau: "3e",
-            icone: "📐",
-            categorie: "Géométrie",
-
-            aSavoir: [
-                "Deux figures sont isométriques lorsqu'elles sont superposables.",
-                "Les côtés qui se superposent sont les côtés homologues.",
-                "Les angles qui se superposent sont les angles homologues.",
-                "Les sommets qui se superposent sont les sommets homologues.",
-                "Deux triangles isométriques ont leurs côtés homologues de même longueur et leurs angles homologues de même amplitude."
-            ],
-
-            formules: [
-                {
-                    titre: "CCC",
-                    formule: "Côté – Côté – Côté",
-                    explication: "Si les trois côtés homologues de deux triangles ont la même longueur, les triangles sont isométriques."
-                },
-                {
-                    titre: "CAC",
-                    formule: "Côté – Angle – Côté",
-                    explication: "Deux côtés homologues de même longueur et l'angle compris de même amplitude suffisent."
-                },
-                {
-                    titre: "ACA",
-                    formule: "Angle – Côté – Angle",
-                    explication: "Un côté de même longueur, adjacent à deux angles homologues de même amplitude, suffit."
-                },
-                {
-                    titre: "HA",
-                    formule: "Hypoténuse – Angle aigu",
-                    explication: "Pour deux triangles rectangles : même hypoténuse et même angle aigu."
-                },
-                {
-                    titre: "HC",
-                    formule: "Hypoténuse – Côté",
-                    explication: "Pour deux triangles rectangles : même hypoténuse et même côté de l'angle droit."
-                }
-            ],
-
-            methodes: [
-                {
-                    titre: "Prouver que deux triangles sont isométriques",
-                    etapes: [
-                        "Repérer les deux triangles concernés.",
-                        "Lister les données connues.",
-                        "Identifier un critère : CCC, CAC, ACA, HA ou HC.",
-                        "Écrire clairement les égalités utilisées.",
-                        "Conclure que les deux triangles sont isométriques.",
-                        "En déduire l'égalité de côtés ou d'angles homologues."
-                    ]
-                }
-            ],
-
-            exemple: {
-                question: "Deux triangles ont trois côtés homologues respectivement égaux. Que peut-on conclure ?",
-                solution: "Ils sont isométriques par le critère CCC. On peut alors déduire que leurs angles homologues ont la même amplitude."
-            },
-
-            exercices: [
-                {
-                    question: "Quel critère utilise trois côtés homologues de même longueur ?",
-                    options: ["CCC", "CAC", "ACA", "HA"],
-                    correct: 0,
-                    correction: "CCC signifie Côté-Côté-Côté."
-                },
-                {
-                    question: "Dans le critère CAC, où doit se trouver l'angle ?",
-                    options: [
-                        "N'importe où",
-                        "Entre les deux côtés considérés",
-                        "Sur un troisième côté",
-                        "Uniquement à 90°"
-                    ],
-                    correct: 1,
-                    correction: "L'angle doit être compris entre les deux côtés homologues."
-                },
-                {
-                    question: "Deux triangles rectangles ont même hypoténuse et même côté de l'angle droit. Quel critère ?",
-                    options: ["CCC", "CAC", "HA", "HC"],
-                    correct: 3,
-                    correction: "C'est le critère HC : Hypoténuse-Côté."
-                }
+            id:'3e_fonctions', titre:"1. Approche graphique d'une fonction",
+            desc:'UAA3 — Comprendre les machines, les graphiques et les tableaux', niveau:'3e', icone:'📈', color:'#3182ce',
+            cours:`<h4>C'est quoi une fonction ?</h4>
+                <p>Une fonction est comme une <b>machine à transformer les nombres</b>. On introduit un nombre (x), la machine applique une règle, et un nombre sort (y ou f(x)).</p>
+                <h4>Vocabulaire essentiel</h4>
+                <ul>
+                    <li><b>Antécédent (x)</b> : le nombre qui entre dans la machine.</li>
+                    <li><b>Image (y ou f(x))</b> : le nombre qui sort.</li>
+                    <li><b>Domaine (dom f)</b> : tous les x qu'on peut mettre dans la machine.</li>
+                    <li><b>Ensemble image (Im f)</b> : tous les résultats possibles.</li>
+                </ul>
+                <h4>Lire un graphique</h4>
+                <p><b>Zéro d'une fonction</b> : là où la courbe coupe l'axe des x (f(x) = 0). <b>Ordonnée à l'origine</b> : là où elle coupe l'axe des y (x = 0). Une courbe qui monte de gauche à droite est croissante, qui descend est décroissante.</p>`,
+            objectifs:['Comprendre la notion de machine et de fonction','Lire une image et un antécédent sur un graphique','Distinguer une fonction d’une simple relation','Déterminer le domaine et l’ensemble image'],
+            matieres:['Vocabulaire : antécédents, images','Lecture graphique (axe x, axe y)','Tableaux de valeurs et de variations','Fonction ou relation ?'],
+            exercices:[
+                {question:"Qu'est-ce qu'une fonction ?", options:['Une relation qui donne au plus une image par antécédent','Une relation qui donne plusieurs images','Une machine qui additionne','Un tableau de valeurs'], correct:0, correction:'Une fonction associe à chaque x au plus un seul y.'},
+                {question:'Que signifie f(2) = 3 ?', options:["L'image de 2 est 3","L'antécédent de 2 est 3",'La fonction est croissante','Le domaine est [2,3]'], correct:0, correction:"f(2)=3 se lit : l'image de 2 par f est 3."},
+                {question:"Comment trouve-t-on le zéro d'une fonction graphiquement ?", options:['Intersection avec l’axe des abscisses','Intersection avec l’axe des ordonnées','Le sommet de la courbe','Le point le plus bas'], correct:0, correction:'Le zéro est l’abscisse du point d’intersection avec l’axe des x.'}
             ]
         },
-
         {
-            id: "3e_semblables",
-            titre: "Triangles semblables",
-            short: "Similitude",
-            desc: "Reconnaître des triangles semblables et utiliser les rapports de longueurs.",
-            niveau: "3e",
-            icone: "🔺",
-            categorie: "Géométrie",
-
-            aSavoir: [
-                "Deux triangles semblables ont leurs angles homologues de même amplitude.",
-                "Les côtés homologues sont proportionnels.",
-                "Il faut toujours identifier correctement les côtés homologues.",
-                "La similitude permet de calculer une longueur inconnue grâce à une proportion."
-            ],
-
-            formules: [
-                {
-                    titre: "Rapports de similitude",
-                    formule: "AB/A'B' = AC/A'C' = BC/B'C'",
-                    explication: "Les rapports des longueurs homologues sont égaux."
-                },
-                {
-                    titre: "Coefficient de similitude",
-                    formule: "k = longueur image / longueur originale",
-                    explication: "Le même coefficient relie toutes les longueurs homologues."
-                }
-            ],
-
-            methodes: [
-                {
-                    titre: "Calculer une longueur avec des triangles semblables",
-                    etapes: [
-                        "Identifier les deux triangles.",
-                        "Identifier les côtés homologues.",
-                        "Écrire un rapport de longueurs correspondant.",
-                        "Construire une proportion.",
-                        "Résoudre la proportion.",
-                        "Vérifier que les unités sont cohérentes."
-                    ]
-                },
-                {
-                    titre: "Justifier que deux triangles sont semblables",
-                    etapes: [
-                        "Comparer les angles connus.",
-                        "Utiliser les critères de similitude vus au cours.",
-                        "Identifier les correspondances entre sommets.",
-                        "En déduire les rapports de côtés homologues."
-                    ]
-                }
-            ],
-
-            exemple: {
-                question: "Deux triangles semblables ont un coefficient de similitude 2. Un côté du premier mesure 4 cm. Combien mesure le côté homologue ?",
-                solution: "4 × 2 = 8 cm."
-            },
-
-            exercices: [
-                {
-                    question: "Dans des triangles semblables, que peut-on dire des côtés homologues ?",
-                    options: [
-                        "Ils sont toujours égaux",
-                        "Ils sont proportionnels",
-                        "Ils sont perpendiculaires",
-                        "Ils n'ont aucun rapport"
-                    ],
-                    correct: 1,
-                    correction: "Les côtés homologues sont proportionnels."
-                },
-                {
-                    question: "Si le coefficient de similitude vaut 3 et qu'un côté mesure 5 cm, le côté homologue mesure...",
-                    options: ["8 cm", "15 cm", "2 cm", "25 cm"],
-                    correct: 1,
-                    correction: "5 × 3 = 15 cm."
-                }
+            id:'3e_algebre_polynomes', titre:'2. Polynômes & Factorisation',
+            desc:'UAA5 — Calculs, identités remarquables et méthodes de factorisation', niveau:'3e', icone:'🔢', color:'#e53e3e',
+            cours:`<h4>C'est quoi un polynôme ?</h4>
+                <p>Un polynôme est une somme de termes (ex : <b>2x² - 5x + 3</b>). Chaque terme est un produit d'un coefficient et d'une partie littérale.</p>
+                <h4>Les produits remarquables</h4>
+                <ul>
+                    <li><b>(a + b)²</b> = a² + 2ab + b²</li>
+                    <li><b>(a - b)²</b> = a² - 2ab + b²</li>
+                    <li><b>a² - b²</b> = (a - b)(a + b)</li>
+                </ul>
+                <h4>Factoriser = transformer une somme en produit</h4>
+                <p><b>Exemple :</b> 3x + 6 = 3(x + 2) — facteur commun 3.</p>
+                <p><b>Méthode des rectangles :</b> pour x² + 5x + 6, on cherche deux nombres qui multipliés donnent 6 et additionnés donnent 5 : 2 et 3. Donc x² + 5x + 6 = (x + 2)(x + 3).</p>`,
+            objectifs:['Maîtriser les produits remarquables','Factoriser une expression algébrique','Résoudre des équations grâce au produit nul'],
+            matieres:['Identités remarquables','Mise en évidence','Méthode des rectangles','Règle du produit nul'],
+            exercices:[
+                {question:'Factoriser : x² - 9', options:['(x-3)(x+3)','(x-3)²','(x+3)²','x²-9'], correct:0, correction:'a² - b² = (a-b)(a+b)'},
+                {question:'Factoriser : x² + 5x + 6', options:['(x+2)(x+3)','(x+1)(x+6)','(x-2)(x-3)','Impossible'], correct:0, correction:'2×3=6 et 2+3=5'}
             ]
         },
-
         {
-            id: "3e_thales",
-            titre: "Théorème de Thalès",
-            short: "Thalès",
-            desc: "Utiliser les configurations de parallélisme et les rapports de longueurs.",
-            niveau: "3e",
-            icone: "📏",
-            categorie: "Géométrie",
-
-            aSavoir: [
-                "Le théorème de Thalès s'utilise dans une configuration avec des droites parallèles.",
-                "Il permet de mettre en relation des longueurs homologues.",
-                "La rédaction doit préciser la configuration et le parallélisme utilisé."
-            ],
-
-            formules: [
-                {
-                    titre: "Rapport de Thalès",
-                    formule: "AB/AC = AD/AE = BD/CE",
-                    explication: "Dans la configuration correspondante, les rapports de longueurs homologues sont égaux."
-                }
-            ],
-
-            methodes: [
-                {
-                    titre: "Calculer une longueur avec Thalès",
-                    etapes: [
-                        "Identifier les deux triangles concernés.",
-                        "Repérer les droites parallèles.",
-                        "Écrire les rapports de longueurs homologues.",
-                        "Remplacer par les valeurs connues.",
-                        "Résoudre la proportion.",
-                        "Conclure avec l'unité."
-                    ]
-                }
-            ],
-
-            exemple: {
-                question: "Une configuration de Thalès donne AB/AC = AD/AE. Si trois longueurs sont connues, comment trouver la quatrième ?",
-                solution: "On remplace les longueurs connues dans la proportion puis on effectue un produit en croix."
-            },
-
-            exercices: [
-                {
-                    question: "Quelle information géométrique est essentielle pour appliquer Thalès ?",
-                    options: [
-                        "Des droites parallèles",
-                        "Deux angles droits obligatoires",
-                        "Un cercle",
-                        "Deux côtés égaux"
-                    ],
-                    correct: 0,
-                    correction: "Le parallélisme est l'élément clé de la configuration de Thalès."
-                }
+            id:'3e_pythagore', titre:'3. Théorème de Pythagore',
+            desc:'UAA2 — Le triangle rectangle et ses propriétés', niveau:'3e', icone:'📐', color:'#805ad5',
+            cours:`<h4>Le théorème</h4>
+                <p>Dans un triangle <b>rectangle</b>, le carré de l'hypoténuse (côté le plus long) est égal à la somme des carrés des deux autres côtés.</p>
+                <p style="text-align:center;font-size:19px;"><b>a² + b² = c²</b></p>
+                <h4>À quoi ça sert ?</h4>
+                <p>À calculer une longueur inconnue. <b>Exemple :</b> côtés 3 et 4 → 3² + 4² = 25 → hypoténuse = √25 = 5.</p>
+                <h4>Attention</h4>
+                <p>La réciproque prouve qu'un triangle est rectangle : si a² + b² = c², le triangle est rectangle.</p>`,
+            objectifs:['Utiliser le théorème pour calculer une longueur','Utiliser la réciproque pour prouver qu’un triangle est rectangle'],
+            matieres:['Triangle rectangle, hypoténuse','Diagonale d’un carré','Nombres irrationnels (√2)'],
+            exercices:[
+                {question:'Quel est le théorème de Pythagore ?', options:['a² + b² = c²','a + b = c','a × b = c','a² = b² + c²'], correct:0, correction:'Dans un triangle rectangle, a² + b² = c²'},
+                {question:"Quelle est la diagonale d'un carré de côté 1 ?", options:['√2','2','√3','1'], correct:0, correction:'d² = 1² + 1² = 2 → d = √2'}
             ]
         },
-
         {
-            id: "3e_angles",
-            titre: "Angles et cercle",
-            short: "Angles",
-            desc: "Relations entre angles inscrits, angles au centre et angles associés.",
-            niveau: "3e",
-            icone: "⭕",
-            categorie: "Géométrie",
-
-            aSavoir: [
-                "Des angles inscrits peuvent intercepter le même arc.",
-                "Les angles au centre et les angles inscrits sont reliés par des propriétés spécifiques.",
-                "Des relations entre angles permettent de calculer des amplitudes inconnues.",
-                "Les angles à côtés perpendiculaires peuvent également être exploités."
-            ],
-
-            formules: [
-                {
-                    titre: "Angle inscrit",
-                    formule: "Relations entre angles inscrits interceptant le même arc",
-                    explication: "Deux angles inscrits interceptant le même arc ont la même amplitude."
-                },
-                {
-                    titre: "Angle au centre / inscrit",
-                    formule: "angle au centre = 2 × angle inscrit",
-                    explication: "Lorsqu'ils interceptent le même arc."
-                }
-            ],
-
-            methodes: [
-                {
-                    titre: "Calculer un angle dans un cercle",
-                    etapes: [
-                        "Repérer les angles concernés.",
-                        "Identifier l'arc intercepté.",
-                        "Déterminer s'il s'agit d'un angle inscrit ou au centre.",
-                        "Appliquer la relation adaptée.",
-                        "Conclure avec l'amplitude en degrés."
-                    ]
-                }
-            ],
-
-            exercices: [
-                {
-                    question: "Deux angles inscrits interceptent le même arc. Que peut-on dire ?",
-                    options: [
-                        "Ils sont supplémentaires",
-                        "Ils ont la même amplitude",
-                        "Ils sont toujours droits",
-                        "Ils sont opposés"
-                    ],
-                    correct: 1,
-                    correction: "Deux angles inscrits qui interceptent le même arc ont la même amplitude."
-                }
+            id:'3e_thales', titre:'4. Théorème de Thalès',
+            desc:'UAA1 — Les projections parallèles et les proportions', niveau:'3e', icone:'📐', color:'#319795',
+            cours:`<h4>Le théorème</h4>
+                <p>Quand deux droites parallèles coupent deux droites sécantes, elles déterminent des segments de longueurs <b>proportionnelles</b>.</p>
+                <p style="text-align:center;font-size:18px;"><b>AB / AC = AD / AE = BD / CE</b></p>
+                <h4>À quoi ça sert ?</h4>
+                <p>À calculer une longueur inconnue, ou une distance inaccessible (hauteur d'une pyramide grâce à son ombre).</p>
+                <h4>La réciproque</h4>
+                <p>Si AB/AC = AD/AE, alors les droites BD et CE sont parallèles.</p>`,
+            objectifs:['Reconnaître une configuration de Thalès','Calculer une longueur grâce aux rapports','Partager un segment en parties égales'],
+            matieres:['Projections parallèles','Proportions','Théorème des milieux'],
+            exercices:[
+                {question:'Dans une configuration de Thalès, si AB/AC = AD/AE, que peut-on en déduire ?', options:['BD // CE','AB // CD','AC // DE','AB // DE'], correct:0, correction:'D’après Thalès, BD // CE'}
             ]
         },
-
         {
-            id: "3e_trigo",
-            titre: "Trigonométrie",
-            short: "Trigonométrie",
-            desc: "Calculer des longueurs et des angles dans un triangle rectangle.",
-            niveau: "3e",
-            icone: "📐",
-            categorie: "Trigonométrie",
-
-            aSavoir: [
-                "La trigonométrie relie les angles et les longueurs dans un triangle rectangle.",
-                "Il faut identifier le côté opposé, le côté adjacent et l'hypoténuse par rapport à l'angle étudié.",
-                "Le choix entre sinus, cosinus et tangente dépend des côtés connus et recherchés."
-            ],
-
-            formules: [
-                {
-                    titre: "Sinus",
-                    formule: "sin(α) = opposé / hypoténuse",
-                    explication: "À utiliser lorsque l'on travaille avec le côté opposé et l'hypoténuse."
-                },
-                {
-                    titre: "Cosinus",
-                    formule: "cos(α) = adjacent / hypoténuse",
-                    explication: "À utiliser avec le côté adjacent et l'hypoténuse."
-                },
-                {
-                    titre: "Tangente",
-                    formule: "tan(α) = opposé / adjacent",
-                    explication: "À utiliser avec les deux côtés de l'angle droit."
-                }
-            ],
-
-            methodes: [
-                {
-                    titre: "Choisir la bonne relation",
-                    etapes: [
-                        "Repérer l'angle connu ou recherché.",
-                        "Identifier les côtés opposé, adjacent et hypoténuse.",
-                        "Regarder les deux longueurs disponibles.",
-                        "Choisir sinus, cosinus ou tangente.",
-                        "Écrire la relation.",
-                        "Isoler l'inconnue.",
-                        "Utiliser la calculatrice en mode degrés si nécessaire."
-                    ]
-                }
-            ],
-
-            exemple: {
-                question: "Dans un triangle rectangle, on connaît l'hypoténuse et le côté opposé à α. Quelle relation utiliser ?",
-                solution: "Le sinus : sin(α) = opposé / hypoténuse."
-            },
-
-            exercices: [
-                {
-                    question: "sin(α) correspond à...",
-                    options: [
-                        "adjacent / hypoténuse",
-                        "opposé / hypoténuse",
-                        "opposé / adjacent",
-                        "hypoténuse / opposé"
-                    ],
-                    correct: 1,
-                    correction: "sin(α) = côté opposé / hypoténuse."
-                },
-                {
-                    question: "cos(α) correspond à...",
-                    options: [
-                        "adjacent / hypoténuse",
-                        "opposé / hypoténuse",
-                        "opposé / adjacent",
-                        "hypoténuse / adjacent"
-                    ],
-                    correct: 0,
-                    correction: "cos(α) = côté adjacent / hypoténuse."
-                },
-                {
-                    question: "tan(α) correspond à...",
-                    options: [
-                        "opposé / hypoténuse",
-                        "adjacent / hypoténuse",
-                        "opposé / adjacent",
-                        "hypoténuse / adjacent"
-                    ],
-                    correct: 2,
-                    correction: "tan(α) = côté opposé / côté adjacent."
-                }
-            ]
-        },
-
-        // =====================================================
-        // 3E — ALGÈBRE
-        // =====================================================
-
-        {
-            id: "3e_racines",
-            titre: "Racines carrées et racines cubiques",
-            short: "Racines",
-            desc: "Manipuler, simplifier et calculer avec les radicaux.",
-            niveau: "3e",
-            icone: "√",
-            categorie: "Algèbre",
-
-            aSavoir: [
-                "La racine carrée d'un nombre positif est le nombre positif dont le carré donne ce nombre.",
-                "Pour simplifier une racine, on recherche un carré parfait dans le radicande.",
-                "Les propriétés des radicaux permettent de transformer certaines expressions.",
-                "La racine cubique de a est le nombre dont le cube vaut a."
-            ],
-
-            formules: [
-                {
-                    titre: "Racine carrée",
-                    formule: "√(a²) = |a|",
-                    explication: "La racine carrée est toujours positive ou nulle."
-                },
-                {
-                    titre: "Produit",
-                    formule: "√(ab) = √a × √b",
-                    explication: "Pour des nombres auxquels cette propriété s'applique."
-                },
-                {
-                    titre: "Racine cubique",
-                    formule: "∛a × ∛a × ∛a = a",
-                    explication: "Définition de la racine cubique."
-                },
-                {
-                    titre: "Produit — racines cubiques",
-                    formule: "∛(ab) = ∛a × ∛b",
-                    explication: "Propriété présentée dans le cours."
-                }
-            ],
-
-            methodes: [
-                {
-                    titre: "Simplifier une racine carrée",
-                    etapes: [
-                        "Décomposer le nombre sous la racine.",
-                        "Chercher le plus grand carré parfait possible.",
-                        "Séparer la racine.",
-                        "Extraire la racine du carré parfait.",
-                        "Laisser le reste sous le radical."
-                    ]
-                }
-            ],
-
-            exemple: {
-                question: "Simplifier √75.",
-                solution: "75 = 25 × 3, donc √75 = √25 × √3 = 5√3."
-            },
-
-            exercices: [
-                {
-                    question: "Quel carré parfait peut-on extraire de √75 ?",
-                    options: ["3", "5", "25", "75"],
-                    correct: 2,
-                    correction: "75 = 25 × 3 et 25 est un carré parfait."
-                },
-                {
-                    question: "Que signifie ∛27 ?",
-                    options: ["3", "9", "27²", "1/3"],
-                    correct: 0,
-                    correction: "3³ = 27, donc ∛27 = 3."
-                }
-            ]
-        },
-
-        {
-            id: "3e_polynomes",
-            titre: "Polynômes et factorisation",
-            short: "Polynômes",
-            desc: "Développer, factoriser et reconnaître les identités remarquables.",
-            niveau: "3e",
-            icone: "🔢",
-            categorie: "Algèbre",
-
-            aSavoir: [
-                "Factoriser consiste à transformer une somme ou différence en produit.",
-                "Il faut rechercher un facteur commun avant d'utiliser une identité remarquable.",
-                "Les identités remarquables sont des outils de développement et de factorisation.",
-                "La règle du produit nul permet ensuite de résoudre certaines équations."
-            ],
-
-            formules: [
-                {
-                    titre: "Carré d'une somme",
-                    formule: "(a+b)² = a² + 2ab + b²",
-                    explication: "Première identité remarquable."
-                },
-                {
-                    titre: "Carré d'une différence",
-                    formule: "(a-b)² = a² - 2ab + b²",
-                    explication: "Deuxième identité remarquable."
-                },
-                {
-                    titre: "Différence de carrés",
-                    formule: "a²-b² = (a-b)(a+b)",
-                    explication: "Troisième identité remarquable."
-                },
-                {
-                    titre: "Produit nul",
-                    formule: "A × B = 0 ⇔ A = 0 ou B = 0",
-                    explication: "Permet de résoudre une équation factorisée."
-                }
-            ],
-
-            methodes: [
-                {
-                    titre: "Factoriser par facteur commun",
-                    etapes: [
-                        "Chercher ce qui est commun aux termes.",
-                        "Mettre le facteur commun devant une parenthèse.",
-                        "Écrire ce qui reste dans la parenthèse.",
-                        "Vérifier en développant."
-                    ]
-                },
-                {
-                    titre: "Factoriser avec une identité remarquable",
-                    etapes: [
-                        "Reconnaître la forme de l'expression.",
-                        "Identifier a et b.",
-                        "Choisir l'identité remarquable.",
-                        "Écrire la forme factorisée."
-                    ]
-                }
-            ],
-
-            exemple: {
-                question: "Factoriser x² - 9.",
-                solution: "x² - 9 = x² - 3² = (x-3)(x+3)."
-            },
-
-            exercices: [
-                {
-                    question: "Quelle identité correspond à a²-b² ?",
-                    options: [
-                        "(a-b)²",
-                        "(a+b)²",
-                        "(a-b)(a+b)",
-                        "a²+2ab+b²"
-                    ],
-                    correct: 2,
-                    correction: "a²-b² = (a-b)(a+b)."
-                },
-                {
-                    question: "Si A × B = 0, alors...",
-                    options: [
-                        "A = B",
-                        "A = 0 ou B = 0",
-                        "A+B = 0",
-                        "A et B sont positifs"
-                    ],
-                    correct: 1,
-                    correction: "C'est la règle du produit nul."
-                }
-            ]
-        },
-
-        // =====================================================
-        // 3E — FONCTIONS
-        // =====================================================
-
-        {
-            id: "3e_fonctions",
-            titre: "Approche graphique d'une fonction",
-            short: "Fonctions",
-            desc: "Lire, interpréter et exploiter une fonction à partir d'un graphique, tableau ou formule.",
-            niveau: "3e",
-            icone: "📈",
-            categorie: "Analyse",
-
-            aSavoir: [
-                "Une fonction associe à un antécédent une image.",
-                "f(2)=3 signifie que l'image de 2 est 3.",
-                "Le domaine est l'ensemble des valeurs de x pour lesquelles la fonction est définie.",
-                "L'ensemble image rassemble les valeurs obtenues par la fonction.",
-                "Un zéro est une valeur de x telle que f(x)=0.",
-                "L'ordonnée à l'origine correspond à f(0).",
-                "Une fonction peut être croissante, décroissante ou constante sur un intervalle."
-            ],
-
-            formules: [
-                {
-                    titre: "Image",
-                    formule: "y = f(x)",
-                    explication: "y est l'image de l'antécédent x."
-                },
-                {
-                    titre: "Zéro",
-                    formule: "f(x) = 0",
-                    explication: "Les zéros correspondent graphiquement aux intersections avec l'axe des abscisses."
-                },
-                {
-                    titre: "Ordonnée à l'origine",
-                    formule: "f(0)",
-                    explication: "C'est la valeur lue sur l'axe des ordonnées lorsque x=0."
-                }
-            ],
-
-            methodes: [
-                {
-                    titre: "Lire une image sur un graphique",
-                    etapes: [
-                        "Partir de l'antécédent sur l'axe des x.",
-                        "Monter ou descendre jusqu'au graphique.",
-                        "Rejoindre l'axe des y.",
-                        "Lire l'image."
-                    ]
-                },
-                {
-                    titre: "Trouver un zéro",
-                    etapes: [
-                        "Repérer les intersections de la courbe avec l'axe des abscisses.",
-                        "Lire les abscisses de ces points.",
-                        "Ces abscisses sont les zéros."
-                    ]
-                },
-                {
-                    titre: "Déterminer le signe",
-                    etapes: [
-                        "Repérer les zéros.",
-                        "Observer les portions de courbe au-dessus de l'axe des x.",
-                        "Observer les portions sous l'axe des x.",
-                        "Écrire les intervalles où f(x)>0, f(x)<0 ou f(x)=0."
-                    ]
-                }
-            ],
-
-            exemple: {
-                question: "Que signifie f(2)=3 ?",
-                solution: "L'image de 2 par la fonction f est 3."
-            },
-
-            exercices: [
-                {
-                    question: "Que signifie f(2)=3 ?",
-                    options: [
-                        "L'image de 2 est 3",
-                        "L'antécédent de 3 est 2 uniquement",
-                        "Le domaine est 3",
-                        "La fonction vaut toujours 3"
-                    ],
-                    correct: 0,
-                    correction: "f(2)=3 signifie que l'image de 2 est 3."
-                },
-                {
-                    question: "Graphiquement, un zéro est...",
-                    options: [
-                        "Une intersection avec l'axe des ordonnées",
-                        "Une intersection avec l'axe des abscisses",
-                        "Le sommet",
-                        "Le point le plus haut"
-                    ],
-                    correct: 1,
-                    correction: "Un zéro correspond à f(x)=0, donc à l'axe des abscisses."
-                }
-            ]
-        },
-
-        {
-            id: "3e_premier_degre",
-            titre: "Fonction du premier degré",
-            short: "Premier degré",
-            desc: "Comprendre y = mx + p, pente, ordonnée à l'origine, signe et variations.",
-            niveau: "3e",
-            icone: "📊",
-            categorie: "Analyse",
-
-            aSavoir: [
-                "Une fonction du premier degré s'écrit f(x)=mx+p.",
-                "m est le taux d'accroissement, aussi appelé pente de la droite.",
-                "p est l'ordonnée à l'origine.",
-                "Si m>0, la fonction est croissante.",
-                "Si m<0, la fonction est décroissante.",
-                "Si m=0, la fonction est constante.",
-                "Si p=0, f(x)=mx est une fonction linéaire.",
-                "Si p≠0, on parle de fonction affine."
-            ],
-
-            formules: [
-                {
-                    titre: "Forme générale",
-                    formule: "f(x)=mx+p",
-                    explication: "m est le taux d'accroissement et p l'ordonnée à l'origine."
-                },
-                {
-                    titre: "Zéro",
-                    formule: "x₀ = -p/m",
-                    explication: "Pour une fonction du premier degré avec m≠0."
-                },
-                {
-                    titre: "Ordonnée à l'origine",
-                    formule: "f(0)=p",
-                    explication: "Le point d'intersection avec l'axe des ordonnées est (0,p)."
-                },
-                {
-                    titre: "Taux d'accroissement",
-                    formule: "m = (yB-yA)/(xB-xA)",
-                    explication: "Calcul à partir de deux points de la droite."
-                }
-            ],
-
-            methodes: [
-                {
-                    titre: "Déterminer m avec deux points",
-                    etapes: [
-                        "Choisir deux points A(xA,yA) et B(xB,yB).",
-                        "Calculer Δy = yB-yA.",
-                        "Calculer Δx = xB-xA.",
-                        "Calculer m = Δy/Δx.",
-                        "Utiliser ensuite un point pour trouver p."
-                    ]
-                },
-                {
-                    titre: "Trouver le zéro",
-                    etapes: [
-                        "Poser f(x)=0.",
-                        "Écrire mx+p=0.",
-                        "Isoler mx.",
-                        "Obtenir x=-p/m."
-                    ]
-                }
-            ],
-
-            exemple: {
-                question: "Pour f(x)=3x-2, déterminer l'ordonnée à l'origine et le zéro.",
-                solution: "p=-2. Le zéro vérifie 3x-2=0, donc x=2/3."
-            },
-
-            exercices: [
-                {
-                    question: "Dans f(x)=3x-2, quelle est la valeur de m ?",
-                    options: ["-2", "2", "3", "5"],
-                    correct: 2,
-                    correction: "Dans mx+p, m est le coefficient de x : m=3."
-                },
-                {
-                    question: "Une fonction du premier degré est croissante si...",
-                    options: ["m<0", "m>0", "p<0", "p>0"],
-                    correct: 1,
-                    correction: "Elle est croissante lorsque m>0."
-                },
-                {
-                    question: "L'ordonnée à l'origine de f(x)=mx+p vaut...",
-                    options: ["m", "p", "-p/m", "0"],
-                    correct: 1,
-                    correction: "f(0)=p."
-                }
-            ]
-        },
-
-        {
-            id: "3e_systemes",
-            titre: "Systèmes de deux équations",
-            short: "Systèmes",
-            desc: "Résoudre et interpréter graphiquement des systèmes à deux inconnues.",
-            niveau: "3e",
-            icone: "🧩",
-            categorie: "Algèbre",
-
-            aSavoir: [
-                "Un système associe deux équations à deux inconnues.",
-                "Une solution doit vérifier les deux équations.",
-                "Graphiquement, la solution correspond au point d'intersection des deux droites lorsqu'il existe.",
-                "Les systèmes peuvent modéliser des situations concrètes."
-            ],
-
-            formules: [
-                {
-                    titre: "Interprétation graphique",
-                    formule: "f(x)=g(x)",
-                    explication: "Résoudre f(x)=g(x), c'est chercher les abscisses des points communs aux deux graphiques."
-                }
-            ],
-
-            methodes: [
-                {
-                    titre: "Résoudre un système",
-                    etapes: [
-                        "Identifier les deux équations.",
-                        "Choisir une méthode adaptée.",
-                        "Trouver x et y.",
-                        "Vérifier les deux valeurs dans les deux équations.",
-                        "Présenter la solution sous forme de couple."
-                    ]
-                },
-                {
-                    titre: "Résolution graphique",
-                    etapes: [
-                        "Tracer les deux fonctions.",
-                        "Repérer leur point d'intersection.",
-                        "Lire ses coordonnées.",
-                        "Vérifier si une précision supplémentaire est nécessaire."
-                    ]
-                }
-            ],
-
-            exercices: [
-                {
-                    question: "Graphiquement, une solution de deux fonctions correspond à...",
-                    options: [
-                        "Un point de l'axe x",
-                        "Un point d'intersection des deux graphiques",
-                        "L'ordonnée à l'origine",
-                        "Un zéro uniquement"
-                    ],
-                    correct: 1,
-                    correction: "La solution correspond au point commun aux deux représentations."
-                }
+            id:'3e_trigo_rect', titre:'5. Trigonométrie du triangle rectangle',
+            desc:'UAA2 — Sinus, cosinus, tangente pour calculer des distances', niveau:'3e', icone:'📐', color:'#e88a00',
+            cours:`<h4>Les 3 formules (SOH CAH TOA)</h4>
+                <p>Pour un angle aigu α dans un triangle rectangle :</p>
+                <ul>
+                    <li><b>sin α</b> = opposé / hypoténuse</li>
+                    <li><b>cos α</b> = adjacent / hypoténuse</li>
+                    <li><b>tan α</b> = opposé / adjacent</li>
+                </ul>
+                <h4>Exemple concret</h4>
+                <p>Pour la hauteur d'un arbre : Hauteur = Distance × tan(angle).</p>`,
+            objectifs:['Identifier opposé, adjacent, hypoténuse','Choisir la bonne formule (sin, cos, tan)','Calculer un côté ou un angle'],
+            matieres:['SOH CAH TOA','Distances inaccessibles','Pente et inclinaison'],
+            exercices:[
+                {question:'Que vaut sin(30°) ?', options:['0.5','0.707','1','0.866'], correct:0, correction:'sin(30°) = 1/2 = 0.5'}
             ]
         }
     ],
 
-    // =========================================================
-    // 4E
-    // =========================================================
-
-    "4e": [
-
+    '4e': [
         {
-            id: "4e_fonctions_reference",
-            titre: "Fonctions de référence",
-            short: "Fonctions de référence",
-            desc: "Reconnaître les fonctions usuelles, leurs graphiques et leurs transformations.",
-            niveau: "4e",
-            icone: "📈",
-            categorie: "Analyse",
-
-            aSavoir: [
-                "Une fonction de référence sert de modèle pour étudier une famille de fonctions.",
-                "Le cours étudie notamment x, x², √x, x³, ∛x, 1/x et |x|.",
-                "Certaines fonctions sont réciproques : x² et √x dans le cadre étudié, ainsi que x³ et ∛x.",
-                "Les transformations permettent de déplacer ou modifier les graphiques.",
-                "On peut interpréter croissance, décroissance, extremum et parité graphiquement."
-            ],
-
-            fonctions: [
-                "f(x)=x",
-                "f(x)=x²",
-                "f(x)=√x",
-                "f(x)=x³",
-                "f(x)=∛x",
-                "f(x)=1/x",
-                "f(x)=|x|"
-            ],
-
-            formules: [
-                {
-                    titre: "Fonction identité",
-                    formule: "f(x)=x",
-                    explication: "Chaque nombre est envoyé sur lui-même."
-                },
-                {
-                    titre: "Fonction carré",
-                    formule: "f(x)=x²",
-                    explication: "La courbe est une parabole."
-                },
-                {
-                    titre: "Fonction racine",
-                    formule: "f(x)=√x",
-                    explication: "Elle est définie pour x≥0 dans les réels."
-                },
-                {
-                    titre: "Fonction cube",
-                    formule: "f(x)=x³",
-                    explication: "Elle est liée à la racine cubique."
-                },
-                {
-                    titre: "Fonction inverse",
-                    formule: "f(x)=1/x",
-                    explication: "Elle n'est pas définie en x=0."
-                },
-                {
-                    titre: "Valeur absolue",
-                    formule: "f(x)=|x|",
-                    explication: "Elle mesure la distance de x à 0."
-                }
-            ],
-
-            transformations: [
-                {
-                    titre: "Translation horizontale",
-                    exemple: "g(x)=f(x+k)",
-                    idee: "Modification horizontale du graphique."
-                },
-                {
-                    titre: "Translation verticale",
-                    exemple: "g(x)=f(x)+k",
-                    idee: "Modification verticale du graphique."
-                }
-            ],
-
-            methodes: [
-                {
-                    titre: "Identifier une fonction de référence",
-                    etapes: [
-                        "Observer la forme du graphique.",
-                        "Comparer avec les graphiques connus.",
-                        "Vérifier le domaine.",
-                        "Vérifier les propriétés caractéristiques.",
-                        "Associer le graphique à l'expression."
-                    ]
-                },
-                {
-                    titre: "Étudier une transformation",
-                    etapes: [
-                        "Partir de la fonction de référence.",
-                        "Identifier la modification dans l'expression.",
-                        "Déterminer le déplacement ou la transformation.",
-                        "Tracer le nouveau graphique."
-                    ]
-                }
-            ],
-
-            exercices: [
-                {
-                    question: "Quelle fonction a pour expression 1/x ?",
-                    options: [
-                        "Fonction carré",
-                        "Fonction inverse",
-                        "Fonction identité",
-                        "Fonction cube"
-                    ],
-                    correct: 1,
-                    correction: "f(x)=1/x est la fonction inverse."
-                },
-                {
-                    question: "Quelle fonction est définie par f(x)=x² ?",
-                    options: [
-                        "Fonction carré",
-                        "Fonction cube",
-                        "Fonction inverse",
-                        "Valeur absolue"
-                    ],
-                    correct: 0,
-                    correction: "x² est la fonction carré."
-                }
+            id:'4e_polynomes_2deg', titre:'1. Équations du 2e degré',
+            desc:'UAA5 — Discriminant, racines et paraboles', niveau:'4e', icone:'🔢', color:'#e53e3e',
+            cours:`<h4>La forme générale</h4><p><b>ax² + bx + c = 0</b></p>
+                <h4>Le discriminant Δ</h4><p><b>Δ = b² - 4ac</b></p>
+                <ul><li>Δ > 0 : 2 solutions</li><li>Δ = 0 : 1 solution</li><li>Δ < 0 : aucune solution réelle</li></ul>
+                <h4>Les solutions</h4><p>Si Δ ≥ 0 : <b>x = (-b ± √Δ) / 2a</b></p>`,
+            objectifs:['Calculer le discriminant','Résoudre une équation du second degré','Étudier le signe d’un trinôme'],
+            matieres:['Discriminant','Formule de résolution','Racines et sommet de la parabole'],
+            exercices:[
+                {question:'Quelle est la formule du discriminant Δ ?', options:['b² - 4ac','b² + 4ac','a² - 4bc','c² - 4ab'], correct:0, correction:'Δ = b² - 4ac'},
+                {question:'Résoudre x² - 4 = 0', options:['x = 2 ou x = -2','x = 2','x = -2','x = 4'], correct:0, correction:'x² = 4 → x = ±2'}
             ]
         },
-
         {
-            id: "4e_trigonometrie",
-            titre: "Trigonométrie",
-            short: "Trigonométrie",
-            desc: "Approfondir les relations trigonométriques et leurs applications.",
-            niveau: "4e",
-            icone: "📐",
-            categorie: "Trigonométrie",
-
-            aSavoir: [
-                "La trigonométrie établit un lien entre angles et longueurs.",
-                "Elle peut être reliée aux triangles semblables.",
-                "Les relations sinus, cosinus et tangente permettent de calculer des longueurs ou des angles.",
-                "Ces outils permettent notamment de traiter des distances difficiles à mesurer directement."
-            ],
-
-            formules: [
-                {
-                    titre: "Sinus",
-                    formule: "sin(α)=opposé/hypoténuse",
-                    explication: "Relation trigonométrique."
-                },
-                {
-                    titre: "Cosinus",
-                    formule: "cos(α)=adjacent/hypoténuse",
-                    explication: "Relation trigonométrique."
-                },
-                {
-                    titre: "Tangente",
-                    formule: "tan(α)=opposé/adjacent",
-                    explication: "Relation trigonométrique."
-                }
-            ],
-
-            methodes: [
-                {
-                    titre: "Calculer une longueur",
-                    etapes: [
-                        "Faire un schéma.",
-                        "Identifier l'angle.",
-                        "Identifier les côtés connus.",
-                        "Choisir la relation trigonométrique.",
-                        "Remplacer par les valeurs.",
-                        "Isoler l'inconnue."
-                    ]
-                },
-                {
-                    titre: "Calculer un angle",
-                    etapes: [
-                        "Écrire la relation trigonométrique.",
-                        "Calculer le rapport de longueurs.",
-                        "Utiliser la fonction réciproque correspondante sur la calculatrice.",
-                        "Donner l'angle dans l'unité demandée."
-                    ]
-                }
-            ],
-
-            exercices: [
-                {
-                    question: "La tangente utilise quels deux côtés ?",
-                    options: [
-                        "Opposé et hypoténuse",
-                        "Adjacent et hypoténuse",
-                        "Opposé et adjacent",
-                        "Deux hypoténuses"
-                    ],
-                    correct: 2,
-                    correction: "tan(α)=opposé/adjacent."
-                }
+            id:'4e_vecteurs', titre:'2. Calcul vectoriel',
+            desc:'UAA3 — Vecteurs et produit scalaire', niveau:'4e', icone:'➡️', color:'#805ad5',
+            cours:`<h4>Le produit scalaire</h4>
+                <p>Le produit scalaire de deux vecteurs est un <b>nombre</b> : <b>u·v = ||u|| × ||v|| × cos(α)</b>.</p>
+                <p>Si les vecteurs sont orthogonaux, leur produit scalaire vaut <b>0</b>.</p>`,
+            objectifs:['Calculer un produit scalaire','Déterminer si deux vecteurs sont orthogonaux','Utiliser la relation de Chasles'],
+            matieres:['Relation de Chasles','Produit scalaire géométrique','Applications physiques (travail, force)'],
+            exercices:[
+                {question:'Que représente le produit scalaire de deux vecteurs ?', options:['Un nombre réel','Un vecteur','Une distance','Un angle'], correct:0, correction:'Le produit scalaire est un nombre réel'},
+                {question:'Que vaut le produit scalaire de deux vecteurs orthogonaux ?', options:['0','1','Le produit de leurs normes','-1'], correct:0, correction:'Il est nul.'}
             ]
         },
-
         {
-            id: "4e_stats",
-            titre: "Statistique descriptive à une variable",
-            short: "Statistiques",
-            desc: "Décrire, représenter et interpréter une série statistique.",
-            niveau: "4e",
-            icone: "📊",
-            categorie: "Statistiques",
+            id:'4e_statistiques', titre:'3. Statistiques',
+            desc:'UAA1 — Moyenne, médiane, variance et graphiques', niveau:'4e', icone:'📊', color:'#d69e2e',
+            cours:`<h4>Paramètres de position</h4>
+                <ul><li><b>Moyenne</b> : somme divisée par le nombre total.</li><li><b>Médiane</b> : valeur du milieu une fois rangées.</li><li><b>Mode</b> : valeur la plus fréquente.</li></ul>
+                <h4>Paramètres de dispersion</h4>
+                <ul><li><b>Variance (V)</b> : moyenne des carrés des écarts à la moyenne.</li><li><b>Écart-type (σ)</b> : racine carrée de la variance.</li></ul>
+                <h4>Boîte à moustaches</h4><p>Elle visualise Q1, la médiane (Q2), Q3, ainsi que le min et le max.</p>`,
+            objectifs:['Calculer moyenne, médiane, mode','Calculer variance et écart-type','Interpréter une boîte à moustaches'],
+            matieres:['Tableaux de fréquences','Diagrammes, histogrammes','Quartiles et écart-type'],
+            exercices:[
+                {question:'Quelle est la médiane de 3, 5, 7, 9, 11 ?', options:['7','6','8','5'], correct:0, correction:'La valeur centrale est 7.'},
+                {question:'Quelle est la moyenne de 4, 6, 8, 10, 12 ?', options:['8','7','9','6'], correct:0, correction:'(4+6+8+10+12)/5 = 8'}
+            ]
+        },
+        {
+            id:'4e_fonctions_ref', titre:'4. Fonctions de référence',
+            desc:'UAA4 — Fonction affine, quadratique et leurs paramètres', niveau:'4e', icone:'📈', color:'#3182ce',
+            cours:`<h4>La fonction affine</h4><p><b>f(x) = mx + p</b> : m est la pente (croissante si m>0), p est l’ordonnée à l’origine.</p>
+                <h4>La fonction quadratique</h4><p><b>f(x) = a(x-k)² + h</b> : parabole de sommet (k, h). Si a>0, elle ouvre vers le haut.</p>
+                <h4>Effet des paramètres</h4><p>Changer a, k ou h déplace ou déforme le graphique sans changer sa nature.</p>`,
+            objectifs:['Reconnaître une fonction affine ou quadratique','Identifier pente et ordonnée à l’origine','Trouver le sommet d’une parabole'],
+            matieres:['Fonction affine','Fonction quadratique','Forme canonique'],
+            exercices:[
+                {question:'Dans f(x) = 3x + 2, que représente 3 ?', options:['La pente','L’ordonnée à l’origine','Le sommet','Le discriminant'], correct:0, correction:'Dans mx+p, m est la pente.'}
+            ]
+        }
+    ],
 
-            aSavoir: [
-                "La statistique descriptive sert à synthétiser, décrire, présenter et interpréter des données.",
-                "On distingue différents types de caractères statistiques.",
-                "Les indicateurs de position permettent de situer le centre d'une série.",
-                "Les indicateurs de dispersion permettent d'étudier l'étalement des données.",
-                "Les graphiques permettent de représenter et d'extraire des informations.",
-                "L'inégalité de Tchebychev peut être utilisée pour encadrer une proportion de données."
-            ],
+    '5e': [
+        {
+            id:'5e_limites', titre:'1. Limites de fonctions',
+            desc:"UAA1 — Comportement d'une fonction aux bornes de son domaine", niveau:'5e', icone:'📈', color:'#3182ce',
+            cours:`<h4>L'idée intuitive</h4>
+                <p>La limite décrit ce que devient f(x) quand x se rapproche d'une valeur (ou de l'infini), sans forcément l'atteindre.</p>
+                <h4>Les formes indéterminées</h4>
+                <p>Ce sont les cas où on ne peut pas conclure directement : <b>0/0</b>, <b>∞/∞</b>, <b>∞ - ∞</b>, <b>0 × ∞</b>. Il faut alors transformer l'expression (factoriser, simplifier) avant de conclure.</p>
+                <h4>Asymptotes</h4>
+                <p>Si lim f(x) = L quand x → ∞, la droite y = L est une <b>asymptote horizontale</b>. Si lim f(x) = ±∞ quand x → a, la droite x = a est une <b>asymptote verticale</b>.</p>`,
+            objectifs:['Calculer une limite en un point ou en l’infini','Lever une forme indéterminée','Déterminer les asymptotes d’une fonction'],
+            matieres:['Limites finies et infinies','Formes indéterminées','Asymptotes horizontales et verticales'],
+            exercices:[
+                {question:"Quelle est la limite de f(x) = 1/x quand x → +∞ ?", options:['0','+∞','1','Elle n’existe pas'], correct:0, correction:'1/x devient de plus en plus petit : la limite est 0.'},
+                {question:'0/0 est une forme...', options:['Indéterminée','Toujours nulle','Toujours infinie','Impossible à rencontrer'], correct:0, correction:'0/0 ne permet pas de conclure directement : il faut transformer l’expression.'}
+            ]
+        },
+        {
+            id:'5e_derivees_intro', titre:'2. Introduction à la dérivée',
+            desc:"UAA1 — Nombre dérivé, tangente et taux de variation", niveau:'5e', icone:'📐', color:'#e53e3e',
+            cours:`<h4>Le taux de variation</h4>
+                <p>Le taux de variation moyen entre a et b mesure la pente moyenne de la courbe : <b>(f(b) - f(a)) / (b - a)</b>.</p>
+                <h4>Le nombre dérivé</h4>
+                <p>La dérivée f'(a) est la limite de ce taux quand b se rapproche de a : elle donne la <b>pente de la tangente</b> à la courbe au point a.</p>
+                <h4>Fonctions dérivées usuelles</h4>
+                <ul><li>(k)' = 0</li><li>(x)' = 1</li><li>(x²)' = 2x</li><li>(xⁿ)' = n·xⁿ⁻¹</li></ul>`,
+            objectifs:['Calculer un taux de variation moyen','Comprendre le lien entre dérivée et tangente','Dériver une fonction polynomiale simple'],
+            matieres:['Taux de variation','Nombre dérivé','Règles de dérivation de base'],
+            exercices:[
+                {question:'Le nombre dérivé f’(a) représente géométriquement...', options:['La pente de la tangente en a','La valeur de f en a','L’aire sous la courbe','Le zéro de la fonction'], correct:0, correction:'f’(a) est la pente de la tangente au point a.'},
+                {question:'Quelle est la dérivée de x³ ?', options:['3x²','x²','3x','x³'], correct:0, correction:'(xⁿ)’ = n·xⁿ⁻¹, donc (x³)’ = 3x²'}
+            ]
+        },
+        {
+            id:'5e_complexes', titre:'3. Nombres complexes',
+            desc:'UAA3 — Forme algébrique, module et opérations', niveau:'5e', icone:'ℂ', color:'#805ad5',
+            cours:`<h4>Pourquoi les complexes ?</h4>
+                <p>Pour donner un sens à √(-1). On pose <b>i² = -1</b>, et tout nombre complexe s'écrit <b>z = a + bi</b> (forme algébrique), avec a la partie réelle et b la partie imaginaire.</p>
+                <h4>Le module</h4>
+                <p><b>|z| = √(a² + b²)</b> : c'est la distance entre le point z et l'origine dans le plan complexe.</p>
+                <h4>Opérations</h4>
+                <p>On additionne et multiplie les complexes comme des polynômes, en remplaçant i² par -1 quand il apparaît.</p>`,
+            objectifs:['Écrire un nombre complexe sous forme algébrique','Calculer le module d’un complexe','Additionner et multiplier des complexes'],
+            matieres:['Forme algébrique a + bi','Module et plan complexe','Opérations sur les complexes'],
+            exercices:[
+                {question:'Que vaut i² ?', options:['-1','1','0','i'], correct:0, correction:'Par définition, i² = -1.'},
+                {question:'Quel est le module de z = 3 + 4i ?', options:['5','7','25','12'], correct:0, correction:'|z| = √(3² + 4²) = √25 = 5'}
+            ]
+        },
+        {
+            id:'5e_geo_analytique', titre:'4. Géométrie analytique',
+            desc:'UAA4 — Droites et cercles dans un repère', niveau:'5e', icone:'📐', color:'#0e7c86',
+            cours:`<h4>L'équation d'une droite</h4>
+                <p><b>y = mx + p</b>, où m est la pente : <b>m = (y_B - y_A) / (x_B - x_A)</b>.</p>
+                <h4>Distance entre deux points</h4>
+                <p><b>d(A,B) = √[(x_B - x_A)² + (y_B - y_A)²]</b> — c'est Pythagore appliqué dans le repère.</p>
+                <h4>L'équation d'un cercle</h4>
+                <p>Un cercle de centre (a, b) et de rayon r a pour équation : <b>(x - a)² + (y - b)² = r²</b>.</p>`,
+            objectifs:['Calculer la pente d’une droite','Calculer la distance entre deux points','Écrire l’équation d’un cercle'],
+            matieres:['Équation de droite','Distance dans le plan','Équation du cercle'],
+            exercices:[
+                {question:'Quelle est l’équation d’un cercle de centre (0,0) et de rayon 3 ?', options:['x² + y² = 9','x² + y² = 3','x + y = 9','(x-3)² + y² = 0'], correct:0, correction:'(x-a)²+(y-b)²=r² avec a=b=0 et r=3 donne x²+y²=9.'}
+            ]
+        }
+    ],
 
-            vocabulaire: [
-                "Population",
-                "Individu",
-                "Caractère statistique",
-                "Modalité",
-                "Effectif",
-                "Fréquence",
-                "Série statistique"
-            ],
-
-            indicateurs: [
-                "Moyenne",
-                "Médiane",
-                "Quartiles",
-                "Indicateurs de dispersion",
-                "Écart-type"
-            ],
-
-            formules: [
-                {
-                    titre: "Moyenne simple",
-                    formule: "x̄=(x₁+x₂+...+xₙ)/n",
-                    explication: "Somme des valeurs divisée par le nombre de valeurs."
-                },
-                {
-                    titre: "Moyenne pondérée",
-                    formule: "x̄=Σ(nᵢxᵢ)/Σnᵢ",
-                    explication: "Chaque valeur est pondérée par son effectif."
-                },
-                {
-                    titre: "Étendue",
-                    formule: "Étendue = maximum - minimum",
-                    explication: "Mesure simple de dispersion."
-                },
-                {
-                    titre: "Variance",
-                    formule: "V = moyenne des carrés des écarts à la moyenne",
-                    explication: "Mesure de dispersion autour de la moyenne."
-                },
-                {
-                    titre: "Écart-type",
-                    formule: "σ = √V",
-                    explication: "Racine carrée de la variance."
-                }
-            ],
-
-            methodes: [
-                {
-                    titre: "Calculer une moyenne pondérée",
-                    etapes: [
-                        "Multiplier chaque valeur par son effectif.",
-                        "Additionner les produits.",
-                        "Additionner les effectifs.",
-                        "Diviser la première somme par la seconde."
-                    ]
-                },
-                {
-                    titre: "Interpréter un indicateur",
-                    etapes: [
-                        "Identifier l'indicateur utilisé.",
-                        "Regarder son unité.",
-                        "Comparer les valeurs si nécessaire.",
-                        "Relier le résultat au contexte."
-                    ]
-                },
-                {
-                    titre: "Choisir un graphique",
-                    etapes: [
-                        "Identifier le type de caractère.",
-                        "Choisir une représentation adaptée.",
-                        "Construire correctement les axes et les unités.",
-                        "Ajouter les informations nécessaires à la lecture."
-                    ]
-                }
-            ],
-
-            exercices: [
-                {
-                    question: "La statistique descriptive sert notamment à...",
-                    options: [
-                        "Synthétiser et interpréter des données",
-                        "Résoudre uniquement des équations",
-                        "Construire uniquement des triangles",
-                        "Calculer uniquement des angles"
-                    ],
-                    correct: 0,
-                    correction: "Elle sert à synthétiser, décrire, présenter et interpréter des données."
-                },
-                {
-                    question: "L'étendue d'une série vaut...",
-                    options: [
-                        "maximum + minimum",
-                        "maximum - minimum",
-                        "moyenne - médiane",
-                        "quartile 3 - moyenne"
-                    ],
-                    correct: 1,
-                    correction: "Étendue = maximum - minimum."
-                },
-                {
-                    question: "L'écart-type est lié à...",
-                    options: [
-                        "La dispersion",
-                        "Uniquement à la médiane",
-                        "Uniquement au maximum",
-                        "La géométrie"
-                    ],
-                    correct: 0,
-                    correction: "L'écart-type est un indicateur de dispersion."
-                }
+    '6e': [
+        {
+            id:'6e_derivees', titre:'1. Dérivées et étude de fonctions',
+            desc:'UAA1 — Règles de dérivation, croissance et extrema', niveau:'6e', icone:'📐', color:'#e53e3e',
+            cours:`<h4>Règles de dérivation</h4>
+                <ul>
+                    <li><b>(u + v)' = u' + v'</b></li>
+                    <li><b>(u × v)' = u'v + uv'</b></li>
+                    <li><b>(u / v)' = (u'v - uv') / v²</b></li>
+                </ul>
+                <h4>Signe de la dérivée</h4>
+                <p>Si <b>f'(x) > 0</b>, f est croissante. Si <b>f'(x) < 0</b>, f est décroissante. Là où f'(x) = 0 et change de signe, f admet un <b>extremum</b> (maximum ou minimum).</p>
+                <h4>Tableau de variation</h4>
+                <p>Il résume le signe de f' et le sens de variation de f sur tout le domaine — c'est l'outil central pour étudier une fonction.</p>`,
+            objectifs:['Appliquer les règles de dérivation','Étudier le signe d’une dérivée','Construire un tableau de variation et trouver les extrema'],
+            matieres:['Dérivée d’un produit, d’un quotient','Tableau de variation','Extrema locaux'],
+            exercices:[
+                {question:'Si f’(x) > 0 sur un intervalle, alors f est...', options:['Croissante','Décroissante','Constante','Négative'], correct:0, correction:'Une dérivée positive signale une fonction croissante.'},
+                {question:'Quelle est la dérivée de u×v ?', options:["u'v + uv'","u'v'","u'v - uv'","(u'v)/(uv')"], correct:0, correction:"Règle du produit : (uv)' = u'v + uv'"}
+            ]
+        },
+        {
+            id:'6e_integrales', titre:'2. Intégrales',
+            desc:"UAA2 — Primitives, calcul d'aires et intégrale définie", niveau:'6e', icone:'∫', color:'#805ad5',
+            cours:`<h4>La primitive</h4>
+                <p>F est une primitive de f si <b>F' = f</b>. C'est l'opération inverse de la dérivation.</p>
+                <h4>L'intégrale définie</h4>
+                <p><b>∫ₐᵇ f(x) dx = F(b) - F(a)</b> représente l'aire (algébrique) entre la courbe de f et l'axe des x, entre a et b.</p>
+                <h4>Primitives usuelles</h4>
+                <ul><li>∫ xⁿ dx = xⁿ⁺¹/(n+1) + C</li><li>∫ k dx = kx + C</li></ul>`,
+            objectifs:['Calculer une primitive simple','Calculer une intégrale définie','Interpréter l’intégrale comme une aire'],
+            matieres:['Primitives usuelles','Intégrale définie','Calcul d’aires'],
+            exercices:[
+                {question:'Quelle est une primitive de f(x) = x ?', options:['x²/2','x²','2x','1'], correct:0, correction:"∫x dx = x²/2 + C"},
+                {question:'∫ₐᵇ f(x) dx représente géométriquement...', options:["L'aire entre la courbe et l'axe des x",'La pente de la tangente','Le zéro de f','La moyenne de f'], correct:0, correction:"C'est l'aire algébrique sous la courbe entre a et b."}
+            ]
+        },
+        {
+            id:'6e_probabilites', titre:'3. Probabilités',
+            desc:'UAA3 — Probabilités conditionnelles et lois de probabilité', niveau:'6e', icone:'🎲', color:'#d69e2e',
+            cours:`<h4>Probabilité conditionnelle</h4>
+                <p><b>P(A|B) = P(A ∩ B) / P(B)</b> : la probabilité de A sachant que B est déjà réalisé.</p>
+                <h4>Événements indépendants</h4>
+                <p>A et B sont indépendants si <b>P(A ∩ B) = P(A) × P(B)</b>.</p>
+                <h4>Loi binomiale</h4>
+                <p>Elle modélise le nombre de succès sur n répétitions indépendantes d'une expérience à deux issues (succès/échec) de probabilité p.</p>`,
+            objectifs:['Calculer une probabilité conditionnelle','Vérifier l’indépendance de deux événements','Reconnaître une situation binomiale'],
+            matieres:['Probabilité conditionnelle','Indépendance','Loi binomiale'],
+            exercices:[
+                {question:'Deux événements A et B sont indépendants si...', options:['P(A ∩ B) = P(A) × P(B)','P(A ∩ B) = P(A) + P(B)','P(A|B) = 1','P(A) = P(B)'], correct:0, correction:"C'est la définition de l'indépendance."}
+            ]
+        },
+        {
+            id:'6e_suites', titre:'4. Suites numériques',
+            desc:'UAA4 — Suites arithmétiques et géométriques', niveau:'6e', icone:'🔢', color:'#0e7c86',
+            cours:`<h4>Suite arithmétique</h4>
+                <p>On passe d'un terme à l'autre en <b>ajoutant</b> une raison r constante : <b>u_(n+1) = u_n + r</b>, et <b>u_n = u_0 + n·r</b>.</p>
+                <h4>Suite géométrique</h4>
+                <p>On passe d'un terme à l'autre en <b>multipliant</b> par une raison q constante : <b>u_(n+1) = u_n × q</b>, et <b>u_n = u_0 × qⁿ</b>.</p>
+                <h4>Limite d'une suite géométrique</h4>
+                <p>Si |q| < 1, alors u_n tend vers 0. Si q > 1, u_n tend vers +∞.</p>`,
+            objectifs:['Reconnaître une suite arithmétique ou géométrique','Calculer le terme général','Étudier la limite d’une suite géométrique'],
+            matieres:['Suite arithmétique','Suite géométrique','Limites de suites'],
+            exercices:[
+                {question:'Dans une suite arithmétique de raison r, on a...', options:['u_(n+1) = u_n + r','u_(n+1) = u_n × r','u_(n+1) = u_n - r²','u_(n+1) = r/u_n'], correct:0, correction:'On ajoute la raison r à chaque étape.'},
+                {question:'Une suite géométrique de raison q = 0.5 tend vers...', options:['0','+∞','1','-∞'], correct:0, correction:'|q| < 1 donc la suite tend vers 0.'}
             ]
         }
     ]
 };
 
-
-// ============================================================
-// COMPATIBILITÉ AVEC L'ANCIEN SITE
-// ============================================================
-
-const CHAPITRES = MATHS_CHAPITRES;
-
-
-// ============================================================
-// FORMULES — générées automatiquement depuis les chapitres
-// ============================================================
-
-const FORMULES_DATA = {};
-
-MATHS_CHAPITRES["3e"].concat(MATHS_CHAPITRES["4e"]).forEach(chapitre => {
-
-    if (!chapitre.formules) return;
-
-    chapitre.formules.forEach((f, index) => {
-
-        const categorie = chapitre.categorie || "Autres";
-
-        if (!FORMULES_DATA[categorie]) {
-            FORMULES_DATA[categorie] = [];
-        }
-
-        FORMULES_DATA[categorie].push({
-            id: `${chapitre.id}_formule_${index}`,
-            titre: f.titre,
-            definition: f.formule,
-            formule: f.formule,
-            explication: f.explication || "",
-            exemple: chapitre.exemple ? chapitre.exemple.solution : "",
-            chapitreId: chapitre.id,
-            chapitre: chapitre.titre,
-            niveau: chapitre.niveau,
-            icone: chapitre.icone || "📘",
-            categorie
-        });
-    });
-});
-
-
-// ============================================================
-// COULEURS / INFOS
-// ============================================================
-
-const MATHS_CATEGORIES = {
-    "Algèbre": "🔢",
-    "Géométrie": "📐",
-    "Trigonométrie": "📐",
-    "Analyse": "📈",
-    "Statistiques": "📊"
+// ---- Formules ----
+var FORMULES_DATA = {
+    algebre: [
+        {id:'alg_1', titre:'Identité remarquable', definition:'(a+b)² = a² + 2ab + b²', exemple:'(x+3)² = x² + 6x + 9', icone:'🔢', categorie:'Algèbre'},
+        {id:'alg_2', titre:'Différence de carrés', definition:'a² - b² = (a-b)(a+b)', exemple:'x² - 9 = (x-3)(x+3)', icone:'🔢', categorie:'Algèbre'},
+        {id:'alg_3', titre:'Discriminant', definition:'Δ = b² - 4ac', exemple:'Pour x² + 2x - 3, Δ = 16', icone:'🔢', categorie:'Algèbre'},
+        {id:'alg_4', titre:'Racines du 2nd degré', definition:'x = (-b ± √Δ)/2a', exemple:'x = (-2 ± 4)/2 → 1 ou -3', icone:'🔢', categorie:'Algèbre'}
+    ],
+    geometrie: [
+        {id:'geo_1', titre:'Théorème de Pythagore', definition:'a² + b² = c² (triangle rectangle)', exemple:'3² + 4² = 5²', icone:'📐', categorie:'Géométrie'},
+        {id:'geo_2', titre:'Théorème de Thalès', definition:'AB/AC = AD/AE (si BD // CE)', exemple:'Calculer une longueur inconnue', icone:'📐', categorie:'Géométrie'},
+        {id:'geo_3', titre:'Distance entre deux points', definition:'d = √[(xB-xA)² + (yB-yA)²]', exemple:'A(0,0), B(3,4) → d = 5', icone:'📐', categorie:'Géométrie'},
+        {id:'geo_4', titre:'Équation du cercle', definition:'(x-a)² + (y-b)² = r²', exemple:'Centre (0,0), rayon 3 → x²+y²=9', icone:'📐', categorie:'Géométrie'}
+    ],
+    trigonometrie: [
+        {id:'trigo_1', titre:'Sinus', definition:'sin(α) = opposé / hypoténuse', exemple:'sin(30°) = 0.5', icone:'📐', categorie:'Trigonométrie'},
+        {id:'trigo_2', titre:'Cosinus', definition:'cos(α) = adjacent / hypoténuse', exemple:'cos(60°) = 0.5', icone:'📐', categorie:'Trigonométrie'},
+        {id:'trigo_3', titre:'Tangente', definition:'tan(α) = opposé / adjacent', exemple:'tan(45°) = 1', icone:'📐', categorie:'Trigonométrie'},
+        {id:'trigo_4', titre:'Relation fondamentale', definition:'sin²α + cos²α = 1', exemple:'Formule à connaître par cœur', icone:'📐', categorie:'Trigonométrie'}
+    ],
+    analyse: [
+        {id:'ana_1', titre:'Dérivée d’une puissance', definition:"(xⁿ)' = n·xⁿ⁻¹", exemple:"(x³)' = 3x²", icone:'📈', categorie:'Analyse'},
+        {id:'ana_2', titre:'Dérivée d’un produit', definition:"(uv)' = u'v + uv'", exemple:"(x²·x)' → règle du produit", icone:'📈', categorie:'Analyse'},
+        {id:'ana_3', titre:'Dérivée d’un quotient', definition:"(u/v)' = (u'v - uv')/v²", exemple:'Utile pour les fonctions rationnelles', icone:'📈', categorie:'Analyse'},
+        {id:'ana_4', titre:'Primitive d’une puissance', definition:'∫xⁿ dx = xⁿ⁺¹/(n+1) + C', exemple:'∫x dx = x²/2 + C', icone:'📈', categorie:'Analyse'},
+        {id:'ana_5', titre:'Intégrale définie', definition:'∫ₐᵇ f(x)dx = F(b) - F(a)', exemple:'Aire sous la courbe entre a et b', icone:'📈', categorie:'Analyse'}
+    ],
+    vecteurs: [
+        {id:'vec_1', titre:'Produit scalaire', definition:'u·v = ||u|| × ||v|| × cos(α)', exemple:'Si orthogonaux, u·v = 0', icone:'➡️', categorie:'Vecteurs'}
+    ],
+    statistiques: [
+        {id:'stat_1', titre:'Moyenne', definition:'x̄ = Σxi / n', exemple:'(4+6+8)/3 = 6', icone:'📊', categorie:'Statistiques'},
+        {id:'stat_2', titre:'Écart-type', definition:'σ = √Variance', exemple:'Mesure la dispersion', icone:'📊', categorie:'Statistiques'},
+        {id:'stat_3', titre:'Probabilité conditionnelle', definition:'P(A|B) = P(A∩B) / P(B)', exemple:'Probabilité de A sachant B', icone:'📊', categorie:'Statistiques'}
+    ],
+    complexes: [
+        {id:'comp_1', titre:'Module', definition:'|z| = √(a² + b²)', exemple:'|3+4i| = 5', icone:'ℂ', categorie:'Nombres complexes'},
+        {id:'comp_2', titre:'Unité imaginaire', definition:'i² = -1', exemple:'Base des nombres complexes', icone:'ℂ', categorie:'Nombres complexes'}
+    ]
 };
 
-const CAT_COLOR = {
-    "Algèbre": "#e53e3e",
-    "Géométrie": "#805ad5",
-    "Trigonométrie": "#dd6b20",
-    "Analyse": "#3182ce",
-    "Statistiques": "#38a169"
+var CAT_COLOR = {
+    algebre:'--rouge',
+    geometrie:'--bleu',
+    trigonometrie:'--ambre',
+    analyse:'--violet',
+    vecteurs:'--teal',
+    statistiques:'--ambre',
+    complexes:'--vert'
 };
 
-const CAT_COLOR_LIGHT = {
-    "Algèbre": "#fff5f5",
-    "Géométrie": "#faf5ff",
-    "Trigonométrie": "#fffaf0",
-    "Analyse": "#ebf8ff",
-    "Statistiques": "#f0fff4"
+var CAT_COLOR_LIGHT = {
+    algebre:'--rouge-clair',
+    geometrie:'--bleu-clair',
+    trigonometrie:'--ambre-clair',
+    analyse:'--violet-clair',
+    vecteurs:'--teal-clair',
+    statistiques:'--ambre-clair',
+    complexes:'--vert-clair'
 };
 
-const ANNEE_COLOR = {
-    "3e": "#3182ce",
-    "4e": "#805ad5"
+var ANNEE_COLOR = {
+    '3e':{c:'#1c5fa8', l:'#e8f0fe'},
+    '4e':{c:'#6b46c1', l:'#f1ebfb'},
+    '5e':{c:'#0e7c86', l:'#e4f5f6'},
+    '6e':{c:'#c81e2c', l:'#fdecea'}
 };
 
-const ANNEE_DESC = {
-    "3e": "Géométrie, trigonométrie, algèbre et fonctions",
-    "4e": "Fonctions de référence, trigonométrie et statistiques"
+var ANNEE_DESC = {
+    '3e':'Fonctions, Algèbre, Géométrie, Trigonométrie…',
+    '4e':'Fonctions de référence, 2nd degré, Vecteurs…',
+    '5e':'Analyse, Complexes, Géométrie analytique…',
+    '6e':'Dérivées, Intégrales, Probabilités, Suites…'
 };
