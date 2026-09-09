@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <meta name="theme-color" content="#0f172a">
 
@@ -15,7 +15,7 @@
 
 <header class="topbar">
 
-  <button class="brand" onclick="showView('home')">
+  <button class="brand" type="button" onclick="showView('home')">
     <span>🎓</span>
     <div>
       <b>Carnet CESS</b>
@@ -25,37 +25,37 @@
 
   <nav>
 
-    <button onclick="showView('home')">
+    <button type="button" onclick="showView('home')">
       Accueil
     </button>
 
-    <button onclick="showView('maths')">
+    <button type="button" onclick="showView('maths')">
       📐 Maths
     </button>
 
-    <button onclick="showView('geo')">
+    <button type="button" onclick="showView('geo')">
       🌍 Géo
     </button>
 
-    <button onclick="showView('memo')">
+    <button type="button" onclick="showView('memo')">
       📚 Mémo
     </button>
 
-    <button onclick="showView('games')">
+    <button type="button" onclick="showView('games')">
       🎮 Jeux
     </button>
 
-    <button onclick="showView('exam')">
+    <button type="button" onclick="showView('exam')">
       📝 Examens
     </button>
 
-    <button onclick="showView('progress')">
+    <button type="button" onclick="showView('progress')">
       📊 Suivi
     </button>
 
   </nav>
 
-  <button class="theme" onclick="toggleTheme()">
+  <button class="theme" type="button" onclick="toggleTheme()" aria-label="Changer le thème">
     🌙
   </button>
 
@@ -94,12 +94,14 @@
 
         <button
           class="primary"
+          type="button"
           onclick="showView('maths')">
           📐 Commencer les maths
         </button>
 
         <button
           class="secondary"
+          type="button"
           onclick="showView('geo')">
           🌍 Ouvrir la géographie
         </button>
@@ -121,7 +123,7 @@
         10 minutes pour revoir l'essentiel.
       </p>
 
-      <button onclick="quickRevision()">
+      <button type="button" onclick="quickRevision()">
         Lancer →
       </button>
 
@@ -130,10 +132,7 @@
   </div>
 
 
-  <div
-    class="stats"
-    id="homeStats">
-  </div>
+  <div class="stats" id="homeStats"></div>
 
 
   <div class="grid2">
@@ -213,23 +212,14 @@
 
     </div>
 
-    <div
-      class="pill"
-      id="mathsTotal">
-    </div>
+    <div class="pill" id="mathsTotal"></div>
 
   </div>
 
 
-  <div
-    class="year-tabs"
-    id="mathYears">
-  </div>
+  <div class="year-tabs" id="mathYears"></div>
 
-
-  <div
-    id="mathContent">
-  </div>
+  <div id="mathContent"></div>
 
 </section>
 
@@ -259,23 +249,14 @@
 
     </div>
 
-    <div
-      class="pill"
-      id="geoTotal">
-    </div>
+    <div class="pill" id="geoTotal"></div>
 
   </div>
 
 
-  <div
-    class="year-tabs"
-    id="geoYears">
-  </div>
+  <div class="year-tabs" id="geoYears"></div>
 
-
-  <div
-    id="geoContent">
-  </div>
+  <div id="geoContent"></div>
 
 </section>
 
@@ -312,12 +293,14 @@
 
     <button
       class="active"
-      onclick="memoTab('formules',this)">
+      type="button"
+      onclick="memoTab('formules', this)">
       📐 Formules Maths
     </button>
 
     <button
-      onclick="memoTab('vocab',this)">
+      type="button"
+      onclick="memoTab('vocab', this)">
       🌍 Vocabulaire Géo
     </button>
 
@@ -328,6 +311,7 @@
 
     <input
       id="memoSearch"
+      type="search"
       oninput="renderMemo()"
       placeholder="🔎 Rechercher une formule, un mot ou une notion…"
     >
@@ -340,21 +324,10 @@
         Toutes les années
       </option>
 
-      <option value="3e">
-        3e
-      </option>
-
-      <option value="4e">
-        4e
-      </option>
-
-      <option value="5e">
-        5e
-      </option>
-
-      <option value="6e">
-        6e
-      </option>
+      <option value="3e">3e</option>
+      <option value="4e">4e</option>
+      <option value="5e">5e</option>
+      <option value="6e">6e</option>
 
     </select>
 
@@ -398,13 +371,12 @@
 
     <button
       class="game-card"
+      type="button"
       onclick="startQuiz('mixed')">
 
       <span>🎯</span>
 
-      <b>
-        Quiz express
-      </b>
+      <b>Quiz express</b>
 
       <small>
         10 questions mélangées
@@ -415,13 +387,12 @@
 
     <button
       class="game-card"
+      type="button"
       onclick="startQuiz('truefalse')">
 
       <span>⚡</span>
 
-      <b>
-        Vrai / Faux
-      </b>
+      <b>Vrai / Faux</b>
 
       <small>
         Répondre très vite
@@ -432,13 +403,12 @@
 
     <button
       class="game-card"
+      type="button"
       onclick="startCapitals()">
 
       <span>🌍</span>
 
-      <b>
-        Jeu des capitales
-      </b>
+      <b>Jeu des capitales</b>
 
       <small>
         Teste tes connaissances
@@ -449,13 +419,12 @@
 
     <button
       class="game-card"
+      type="button"
       onclick="startQuiz('mistakes')">
 
       <span>🧠</span>
 
-      <b>
-        Mes erreurs
-      </b>
+      <b>Mes erreurs</b>
 
       <small>
         Rejouer les questions ratées
@@ -466,13 +435,12 @@
 
     <button
       class="game-card"
+      type="button"
       onclick="startQuiz('maths')">
 
       <span>📐</span>
 
-      <b>
-        Défi Maths
-      </b>
+      <b>Défi Maths</b>
 
       <small>
         Questions de mathématiques
@@ -483,13 +451,12 @@
 
     <button
       class="game-card"
+      type="button"
       onclick="startQuiz('geo')">
 
       <span>🌍</span>
 
-      <b>
-        Défi Géo
-      </b>
+      <b>Défi Géo</b>
 
       <small>
         Questions de géographie
@@ -500,9 +467,7 @@
   </div>
 
 
-  <div
-    class="panel quiz-panel"
-    id="gamePanel">
+  <div class="panel quiz-panel" id="gamePanel">
 
     <div class="empty">
       Choisis un jeu pour commencer.
@@ -544,6 +509,7 @@
   <div class="exam-grid">
 
     <button
+      type="button"
       onclick="startExam('geo')"
       class="exam-card">
 
@@ -561,6 +527,7 @@
 
 
     <button
+      type="button"
       onclick="startExam('maths')"
       class="exam-card">
 
@@ -579,9 +546,7 @@
   </div>
 
 
-  <div
-    class="panel quiz-panel"
-    id="examPanel">
+  <div class="panel quiz-panel" id="examPanel">
 
     <div class="empty">
       Choisis un examen.
@@ -641,7 +606,7 @@
 
 
 <!-- ===================================================== -->
-<!-- ORDRE IMPORTANT DES FICHIERS -->
+<!-- CHARGEMENT DES DONNÉES ET DE L'APPLICATION -->
 <!-- ===================================================== -->
 
 <script src="maths-data.js"></script>
