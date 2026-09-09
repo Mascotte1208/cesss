@@ -60,7 +60,7 @@ function renderHome() {
     // Matières sur l'accueil
     var subjects = document.getElementById('homeSubjects');
     if (subjects) {
-        subjects.innerHTML = ['maths', 'geo'].map(function(subject) {
+        subjects.innerHTML = ['maths', 'geo', 'bio'].map(function(subject) {
             var pct = pctSubject(subject);
             var totalChaps = allChaps(subject).length;
             var done = 0;
@@ -68,9 +68,9 @@ function renderHome() {
             for (var i = 0; i < chaps.length; i++) {
                 if (getChapterProgress(chaps[i].id) >= 100) done++;
             }
-            var cardClass = subject === 'maths' ? 'maths-card' : 'geo-card';
-            var icon = subject === 'maths' ? '📐' : '🌍';
-            var label = subject === 'maths' ? 'Mathématiques' : 'Géographie';
+            var cardClass = subject === 'maths' ? 'maths-card' : (subject === 'geo' ? 'geo-card' : 'bio-card');
+            var icon = subject === 'maths' ? '📐' : (subject === 'geo' ? '🌍' : '🧬');
+            var label = subject === 'maths' ? 'Mathématiques' : (subject === 'geo' ? 'Géographie' : 'Biologie');
 
             return `
                 <div class="subject-card ${cardClass}">
@@ -101,6 +101,7 @@ function renderHome() {
         var chapters =
             allChaps('maths')
                 .concat(allChaps('geo'))
+                .concat(allChaps('bio'))
                 .filter(function (chapter) {
                     return getChapterProgress(
                         chapter.id
