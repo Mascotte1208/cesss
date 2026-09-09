@@ -887,12 +887,12 @@ function renderGamePanel() {
             <button class="game-card" onclick="startQuiz('mixed')">
                 <span>🎯</span>
                 <strong>Quiz express</strong>
-                <small>10 questions mélangées</small>
+                <small>15 questions variées</small>
             </button>
             <button class="game-card" onclick="startQuiz('truefalse')">
                 <span>⚡</span>
                 <strong>Vrai / Faux</strong>
-                <small>Répondre très vite</small>
+                <small>12 affirmations variées</small>
             </button>
             <button class="game-card" onclick="startCapitals()">
                 <span>🌍</span>
