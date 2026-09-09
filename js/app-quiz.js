@@ -71,6 +71,10 @@ function startQuiz(mode) {
         filter = 'geo';
     }
 
+    if (mode === 'bio') {
+        filter = 'bio';
+    }
+
     if (mode === 'mistakes') {
         filter = 'mistakes';
     }
@@ -335,7 +339,9 @@ function renderQuizQuestion() {
                 <div class="eyebrow">
                     ${q.matiere === 'geo'
                         ? '🌍 Géographie'
-                        : '📐 Mathématiques'}
+                        : (q.matiere === 'bio'
+                            ? '🧬 Biologie'
+                            : '📐 Mathématiques')}
                 </div>
 
                 <h2>
