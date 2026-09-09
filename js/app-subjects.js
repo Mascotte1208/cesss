@@ -957,7 +957,8 @@ function flattenQuestions(filter) {
 
     var chapters =
         allChaps('maths')
-            .concat(allChaps('geo'));
+            .concat(allChaps('geo'))
+            .concat(allChaps('bio'));
 
     var questions = [];
 
