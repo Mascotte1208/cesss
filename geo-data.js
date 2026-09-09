@@ -48,7 +48,7 @@ var GEO_CHAPITRES = {
                     correction: "L'aléa est le phénomène, le risque est la rencontre avec des enjeux humains."
                 },
                 {
-                    question: 'La vulnérabilité d’un territoire dépend...',
+                    question: 'La vulnérabilité d\'un territoire dépend...',
                     options: [
                         'De sa densité de population et de ses infrastructures',
                         'De son climat uniquement',
@@ -56,7 +56,7 @@ var GEO_CHAPITRES = {
                         'De son PIB'
                     ],
                     correct: 0,
-                    correction: "La vulnérabilité est liée aux enjeux humains."
+                    correction: 'La vulnérabilité est liée aux enjeux humains.'
                 }
             ]
         },
@@ -98,8 +98,8 @@ var GEO_CHAPITRES = {
                     question: 'À quoi est liée la répartition des séismes et volcans ?',
                     options: [
                         'Aux frontières des plaques',
-                        "À la proximité de l'équateur",
-                        "À l'altitude",
+                        'À la proximité de l\'équateur',
+                        'À l\'altitude',
                         'Aux grands fleuves'
                     ],
                     correct: 0,
@@ -171,13 +171,13 @@ var GEO_CHAPITRES = {
                 {
                     question: 'Le Gulf Stream a pour effet de...',
                     options: [
-                        "Réchauffer l'Europe de l'Ouest",
-                        "Refroidir l'Arctique",
+                        'Réchauffer l\'Europe de l\'Ouest',
+                        'Refroidir l\'Arctique',
                         'Assécher le Sahara',
                         'Créer des moussons'
                     ],
                     correct: 0,
-                    correction: "Le Gulf Stream apporte de la chaleur à l'Europe occidentale."
+                    correction: 'Le Gulf Stream apporte de la chaleur à l\'Europe occidentale.'
                 }
             ]
         },
@@ -200,7 +200,7 @@ var GEO_CHAPITRES = {
                 <p>La croissance des villes en périphérie crée des <b>migrations pendulaires</b> (domicile-travail) et allonge les <b>distances-temps</b>.</p>
             `,
             objectifs: [
-                "Identifier les fonctions d'un territoire",
+                'Identifier les fonctions d\'un territoire',
                 'Analyser les facteurs de localisation',
                 'Comprendre le rôle des infrastructures de transport'
             ],
@@ -241,122 +241,128 @@ var GEO_CHAPITRES = {
                 <p>Le bassin versant d'un fleuve est l'ensemble des terres qui alimentent ce fleuve. Les pays en amont (source) et en aval (embouchure) dépendent du même cours d'eau, ce qui crée des tensions.</p>
                 <br>
                 <h4>🔹 L'exemple de Mexico</h4>
-                <p>Mexico pompe excessivement les nappes phréatiques, ce qui provoque un affaissement progressif du sol et des problèmes d'approvisionnement.</p>
+                <p>Mexico pompe excessivement ses nappes phréatiques, ce qui provoque l'affaissement du sol, des fuites et une contamination de l'eau.</p>
             `,
             objectifs: [
-                "Comprendre l'inégale répartition de l'eau",
-                'Identifier les situations de stress hydrique',
-                "Analyser les conflits liés à l'eau"
+                'Décrire la répartition de la ressource en eau',
+                'Expliquer le concept de stress hydrique',
+                'Analyser les conflits d\'usage de l\'eau'
             ],
             matieres: [
-                "Ressource en eau",
+                'Bassins hydrographiques et nappes aquifères',
                 'Stress hydrique',
-                'Bassins hydrographiques',
-                'Conflits liés à l’eau'
+                'Gestion de l\'eau et aménagements'
             ],
             exercices: [
                 {
-                    question: 'Le stress hydrique apparaît lorsque...',
+                    question: 'Une nappe aquifère est...',
                     options: [
-                        "La demande en eau dépasse les ressources disponibles",
-                        "Il pleut trop",
-                        "Un fleuve déborde",
-                        "La température diminue"
+                        'Une nappe d\'eau souterraine',
+                        'Un fleuve',
+                        'Un lac de barrage',
+                        'Une usine de dessalement'
                     ],
                     correct: 0,
-                    correction: "Le stress hydrique correspond à une situation où les besoins en eau sont supérieurs aux ressources disponibles."
+                    correction: 'Une nappe aquifère est une réserve d\'eau souterraine.'
+                },
+                {
+                    question: 'Pourquoi Mexico s\'enfonce-t-elle ?',
+                    options: [
+                        'Car elle puise trop d\'eau dans le sous-sol',
+                        'Parce qu\'elle est sur une faille',
+                        'Car elle est trop peuplée',
+                        'Car il pleut trop'
+                    ],
+                    correct: 0,
+                    correction: 'Le pompage excessif des nappes provoque l\'affaissement du sol.'
                 }
             ]
         },
 
         {
-            id: 'geo4_agriculture',
-            titre: "2. Agriculture & alimentation",
-            desc: "UAA1 - Systèmes agricoles, rendements et sécurité alimentaire.",
+            id: 'geo4_nourriture',
+            titre: "2. L'accès à la nourriture",
+            desc: "UAA1 - Les systèmes agricoles et la sécurité alimentaire.",
             niveau: '4e',
             icone: '🌾',
-            color: '#65a30d',
+            color: '#d69e2e',
             cours: `
-                <h4>🔹 Les systèmes agricoles</h4>
-                <p>L'agriculture varie selon le milieu, les techniques utilisées, les investissements et les besoins des populations.</p>
+                <h4>🔹 Les types d'agriculture</h4>
+                <ul>
+                    <li><b>Vivrière :</b> Nourrit la famille, souvent en Afrique/Asie.</li>
+                    <li><b>Commerciale ou intensive :</b> Rendements élevés, usage d'engrais et pesticides, destinée à la vente (exportation).</li>
+                    <li><b>Extensive :</b> Grands espaces, faibles rendements (élevage, céréales).</li>
+                </ul>
                 <br>
-                <h4>🔹 Agriculture vivrière</h4>
-                <p>Elle vise principalement à nourrir la population locale. Les productions sont souvent destinées à l'autoconsommation.</p>
+                <h4>🔹 La sécurité alimentaire</h4>
+                <p>Elle est assurée quand chaque personne a accès à une nourriture suffisante, saine et nutritive. Elle dépend de la production, des revenus, des transports et des conflits.</p>
                 <br>
-                <h4>🔹 Agriculture commerciale</h4>
-                <p>Elle produit pour vendre sur les marchés nationaux ou internationaux. Elle peut être spécialisée dans certaines cultures d'exportation.</p>
-                <br>
-                <h4>🔹 Sécurité alimentaire</h4>
-                <p>Un territoire connaît la sécurité alimentaire lorsque sa population dispose d'un accès suffisant à une alimentation sûre et nutritive.</p>
+                <h4>🔹 Les contraintes</h4>
+                <p>Pauvreté, changement climatique (sécheresses), spéculation, gaspillage alimentaire.</p>
             `,
             objectifs: [
-                'Distinguer agriculture vivrière et commerciale',
-                'Comparer différents systèmes agricoles',
-                'Comprendre les enjeux de la sécurité alimentaire'
+                'Différencier les systèmes agricoles',
+                'Comprendre les enjeux de la sécurité alimentaire',
+                'Mettre en évidence des contraintes'
             ],
             matieres: [
-                'Agriculture vivrière',
-                'Agriculture commerciale',
-                'Rendements',
+                'Agriculture vivrière et commerciale',
+                'Agriculture intensive et extensive',
                 'Sécurité alimentaire'
             ],
             exercices: [
                 {
-                    question: 'Une agriculture vivrière sert principalement à...',
+                    question: 'L\'agriculture vivrière...',
                     options: [
-                        'Nourrir la population locale',
-                        'Exporter toute la production',
-                        'Produire uniquement pour l’industrie',
-                        'Produire de l’énergie'
+                        'Nourrit principalement la famille',
+                        'Est destinée à l\'exportation',
+                        'Utilise beaucoup d\'engrais',
+                        'Nécessite de grands espaces'
                     ],
                     correct: 0,
-                    correction: "L'agriculture vivrière vise principalement l'alimentation de la population locale."
+                    correction: 'L\'agriculture vivrière est destinée à l\'auto-consommation.'
                 }
             ]
         },
 
         {
-            id: 'geo4_population',
-            titre: "3. Population & migrations",
-            desc: "UAA2 - Répartition de la population, croissance et mobilités.",
+            id: 'geo4_amenagement',
+            titre: "3. Aménagement du territoire",
+            desc: "UAA3 - Les fonctions d'un territoire et leur gestion.",
             niveau: '4e',
-            icone: '👥',
-            color: '#9333ea',
+            icone: '🏗️',
+            color: '#0e7c86',
             cours: `
-                <h4>🔹 La répartition de la population</h4>
-                <p>La population mondiale est très inégalement répartie. Les fortes densités se concentrent notamment dans les plaines, les littoraux et les régions urbanisées.</p>
+                <h4>🔹 Les fonctions d'un territoire</h4>
+                <p>Un territoire remplit des fonctions : <b>habiter, travailler, se soigner, se déplacer, se divertir</b>. L'aménagement du territoire organise ces fonctions.</p>
                 <br>
-                <h4>🔹 La croissance démographique</h4>
-                <p>La croissance d'une population dépend du solde naturel et du solde migratoire.</p>
+                <h4>🔹 L'accessibilité</h4>
+                <p>Elle se mesure par le <b>distance-temps</b> (le temps nécessaire pour se rendre à un service). Les réseaux de transport sont essentiels.</p>
                 <br>
-                <h4>🔹 Les migrations</h4>
-                <p>Une migration est un déplacement durable d'une personne. Elle peut être volontaire ou forcée, nationale ou internationale.</p>
-                <br>
-                <h4>🔹 Facteurs de départ et d'attraction</h4>
-                <p>Les populations peuvent quitter un territoire à cause de conflits, de difficultés économiques ou de catastrophes. Elles peuvent être attirées par l'emploi, la sécurité ou de meilleures conditions de vie.</p>
+                <h4>🔹 L'exemple des aéroports wallons</h4>
+                <p>L'aéroport de Charleroi (CRL) et celui de Liège (LGG) ont des spécialisations différentes (low-cost vs fret). Leur site présente des <b>atouts</b> (autoroutes, main-d'œuvre) et des <b>contraintes</b> (nuisances sonores, capacité des pistes).</p>
             `,
             objectifs: [
-                'Analyser la répartition de la population',
-                'Comprendre les facteurs des migrations',
-                'Distinguer solde naturel et solde migratoire'
+                'Identifier les fonctions d\'un territoire',
+                'Analyser l\'accessibilité et les réseaux',
+                'Comparer des aménagements (atouts/contraintes)'
             ],
             matieres: [
-                'Densité de population',
-                'Croissance démographique',
-                'Migrations',
-                'Facteurs de départ et d’attraction'
+                'Fonctions du territoire',
+                'Réseaux de transport',
+                'Aménagement du territoire'
             ],
             exercices: [
                 {
-                    question: 'Une migration est...',
+                    question: 'Le distance-temps est...',
                     options: [
-                        'Un déplacement durable de population',
-                        'Un déplacement touristique d'une journée',
-                        'Une variation de température',
-                        'Une croissance économique'
+                        'Le temps nécessaire pour se rendre à un service',
+                        'La distance en kilomètres',
+                        'Le coût du trajet',
+                        'La vitesse maximale'
                     ],
                     correct: 0,
-                    correction: 'Une migration correspond à un déplacement durable d’une personne ou d’une population.'
+                    correction: 'Le distance-temps est un indicateur d\'accessibilité.'
                 }
             ]
         }
@@ -364,136 +370,136 @@ var GEO_CHAPITRES = {
 
     '5e': [
         {
-            id: 'geo5_urbanisation',
-            titre: "1. Urbanisation & métropolisation",
-            desc: "UAA2 - Croissance urbaine, métropoles et organisation des espaces.",
+            id: 'geo5_energie',
+            titre: "1. Les ressources énergétiques",
+            desc: "UAA1 - Énergies fossiles, renouvelables et flux mondiaux.",
             niveau: '5e',
-            icone: '🌆',
-            color: '#7c3aed',
+            icone: '⚡',
+            color: '#d69e2e',
             cours: `
-                <h4>🔹 L'urbanisation</h4>
-                <p>L'urbanisation correspond à l'augmentation de la population vivant dans les villes et à l'extension des espaces urbains.</p>
+                <h4>🔹 Énergies fossiles vs renouvelables</h4>
+                <ul>
+                    <li><b>Fossiles :</b> Pétrole, gaz, charbon. Non renouvelables, émetteurs de CO₂.</li>
+                    <li><b>Renouvelables :</b> Solaire, éolien, hydraulique, biomasse, géothermie.</li>
+                </ul>
                 <br>
-                <h4>🔹 La métropolisation</h4>
-                <p>La métropolisation désigne la concentration des populations, des activités de commandement et des richesses dans les grandes villes.</p>
+                <h4>🔹 Flux et mondialisation</h4>
+                <p>La production d'énergie est inégalement répartie (Moyen-Orient, Russie, USA). Les <b>flux</b> de pétrole et de gaz (oléoducs, méthaniers, navires) relient les zones de production aux zones de consommation.</p>
                 <br>
-                <h4>🔹 Les métropoles</h4>
-                <p>Une métropole exerce une influence importante sur un territoire grâce à ses fonctions économiques, politiques, culturelles et de transport.</p>
-                <br>
-                <h4>🔹 Étalement urbain</h4>
-                <p>L'étalement urbain correspond à l'extension de la ville vers les espaces périphériques. Il augmente souvent les déplacements domicile-travail.</p>
+                <h4>🔹 L'exemple du Laos</h4>
+                <p>Le Laos produit de l'hydroélectricité (barrage sur le Mékong) et exporte 90% de son électricité vers la Thaïlande. Ceci apporte des devises mais crée un risque (rupture de barrage) et des impacts environnementaux.</p>
             `,
             objectifs: [
-                "Définir urbanisation et métropolisation",
-                'Identifier les fonctions métropolitaines',
-                "Analyser l'organisation d'une métropole"
+                'Distinguer énergies fossiles et renouvelables',
+                'Caractériser des flux énergétiques',
+                'Comprendre les enjeux de la transition énergétique'
             ],
             matieres: [
-                'Urbanisation',
-                'Métropolisation',
-                'Fonctions de commandement',
-                'Étalement urbain'
+                'Énergies fossiles et renouvelables',
+                'Flux et mondialisation',
+                'Transition énergétique'
             ],
             exercices: [
                 {
-                    question: 'La métropolisation correspond à...',
+                    question: 'Quelle énergie n\'est pas renouvelable ?',
                     options: [
-                        'La concentration des fonctions importantes dans les grandes villes',
-                        'La disparition des villes',
-                        'La diminution des transports',
-                        'La baisse de la population urbaine'
+                        'Le charbon',
+                        'Le solaire',
+                        'L\'éolien',
+                        'L\'hydraulique'
                     ],
                     correct: 0,
-                    correction: 'La métropolisation renforce le poids des grandes villes et leurs fonctions de commandement.'
+                    correction: 'Le charbon est une énergie fossile épuisable.'
                 }
             ]
         },
 
         {
-            id: 'geo5_industrie',
-            titre: "2. Espaces industriels",
-            desc: "UAA3 - Localisation, mondialisation et transformations industrielles.",
+            id: 'geo5_mondialisation',
+            titre: "2. La mondialisation",
+            desc: "UAA1 - Les flux et les acteurs de la mondialisation.",
             niveau: '5e',
-            icone: '🏭',
-            color: '#475569',
+            icone: '🌐',
+            color: '#3182ce',
             cours: `
-                <h4>🔹 Les facteurs de localisation industrielle</h4>
-                <p>Les industries recherchent différents atouts : main-d'œuvre, matières premières, énergie, transports, proximité des marchés ou infrastructures.</p>
+                <h4>🔹 Qu'est-ce que la mondialisation ?</h4>
+                <p>Interdépendance croissante entre les territoires via des flux de marchandises, capitaux, informations et personnes.</p>
                 <br>
-                <h4>🔹 La mondialisation</h4>
-                <p>La production industrielle est organisée à l'échelle mondiale. Une entreprise peut concevoir un produit dans un pays, produire ses composants dans plusieurs autres et vendre sur différents marchés.</p>
+                <h4>🔹 Les acteurs</h4>
+                <ul>
+                    <li>Firmes transnationales (FTN)</li>
+                    <li>Organisations internationales (OMC, FMI, ONU)</li>
+                    <li>États et régions</li>
+                    <li>ONG (Organisations non gouvernementales)</li>
+                </ul>
                 <br>
-                <h4>🔹 Les délocalisations</h4>
-                <p>Une délocalisation consiste à déplacer une activité productive vers un autre territoire, notamment pour réduire certains coûts ou se rapprocher d'un marché.</p>
+                <h4>🔹 Les conséquences</h4>
+                <p>Délocalisations, interdépendances, uniformisation culturelle, mais aussi inégalités et tensions géopolitiques.</p>
             `,
             objectifs: [
-                'Identifier les facteurs de localisation industrielle',
-                'Comprendre les chaînes de production mondialisées',
-                'Analyser les effets des délocalisations'
+                'Définir la mondialisation',
+                'Identifier les acteurs et les flux',
+                'Évaluer les conséquences positives et négatives'
             ],
             matieres: [
-                'Localisation industrielle',
-                'Mondialisation',
-                'Délocalisation',
-                'Chaînes de production'
+                'Flux mondiaux',
+                'Firmes transnationales',
+                'Délocalisations'
             ],
             exercices: [
                 {
-                    question: 'Une entreprise choisit une localisation industrielle notamment selon...',
+                    question: 'Une firme transnationale est...',
                     options: [
-                        'Les transports et la proximité des marchés',
-                        'La couleur des bâtiments',
-                        'La latitude uniquement',
-                        'La superficie du pays uniquement'
+                        'Une entreprise implantée dans plusieurs pays',
+                        'Une entreprise locale',
+                        'Une ONG',
+                        'Un État'
                     ],
                     correct: 0,
-                    correction: 'Les transports, les marchés, la main-d’œuvre et les infrastructures font partie des facteurs de localisation.'
+                    correction: 'Une FTN a des activités dans plusieurs pays.'
                 }
             ]
         },
 
         {
-            id: 'geo5_transports',
-            titre: "3. Transports & mobilités",
-            desc: "UAA3 - Réseaux, flux et accessibilité des territoires.",
+            id: 'geo5_migrations',
+            titre: "3. Les migrations",
+            desc: "UAA1 - Les flux de population et leurs causes.",
             niveau: '5e',
-            icone: '🚆',
-            color: '#0284c7',
+            icone: '🧳',
+            color: '#805ad5',
             cours: `
-                <h4>🔹 Les réseaux</h4>
-                <p>Un réseau de transport relie différents lieux grâce à des infrastructures et des axes de circulation.</p>
+                <h4>🔹 Types de migrations</h4>
+                <ul>
+                    <li><b>Économique :</b> Recherche d'un emploi ou de meilleures conditions de vie.</li>
+                    <li><b>Contrainte :</b> Guerres, persécutions, catastrophes naturelles.</li>
+                </ul>
                 <br>
-                <h4>🔹 Les flux</h4>
-                <p>Les flux correspondent aux déplacements de personnes, de marchandises, de capitaux ou d'informations entre différents territoires.</p>
-                <br>
-                <h4>🔹 L'accessibilité</h4>
-                <p>L'accessibilité mesure la facilité avec laquelle un lieu peut être atteint depuis d'autres territoires.</p>
-                <br>
-                <h4>🔹 Les pôles</h4>
-                <p>Les grands ports, aéroports, gares et plateformes logistiques jouent un rôle majeur dans l'organisation des échanges.</p>
+                <h4>🔹 Facteurs "push" et "pull"</h4>
+                <p><b>Push :</b> pauvreté, conflits, chômage, catastrophes (repousse).<br>
+                <b>Pull :</b> emplois, sécurité, études, liberté (attire).</p>
             `,
             objectifs: [
-                'Lire et analyser un réseau de transport',
-                'Identifier les principaux flux',
-                "Comprendre l'importance de l'accessibilité"
+                'Différencier les types de migrations',
+                'Analyser les facteurs push/pull',
+                'Comprendre les enjeux migratoires'
             ],
             matieres: [
-                'Réseaux',
-                'Flux',
-                'Accessibilité',
-                'Pôles de transport'
+                'Migrations économiques et contraintes',
+                'Facteurs push/pull',
+                'Intégration et politiques migratoires'
             ],
             exercices: [
                 {
-                    question: 'Un flux géographique est...',
+                    question: 'Un facteur "push" est...',
                     options: [
-                        'Un déplacement entre deux lieux',
-                        'Une frontière politique',
-                        'Une montagne',
-                        'Une zone climatique'
+                        'Un élément qui pousse à quitter son pays',
+                        'Un élément qui attire vers un pays',
+                        'Un visa',
+                        'Une association'
                     ],
                     correct: 0,
-                    correction: 'Un flux correspond à une circulation entre différents lieux.'
+                    correction: 'Les facteurs push sont des éléments négatifs qui poussent au départ.'
                 }
             ]
         }
@@ -501,37 +507,30 @@ var GEO_CHAPITRES = {
 
     '6e': [
         {
-            id: 'geo6_developpement',
+            id: 'geo6_durable',
             titre: "1. Développement durable",
-            desc: "UAA1 - Ressources, environnement et développement durable.",
+            desc: "UAA - Les trois piliers et les ODD.",
             niveau: '6e',
-            icone: '🌱',
-            color: '#16a34a',
+            icone: '♻️',
+            color: '#38a169',
             cours: `
-                <h4>🔹 Le développement durable</h4>
-                <p>Le développement durable cherche à répondre aux besoins actuels tout en permettant aux générations futures de répondre aux leurs.</p>
-                <br>
                 <h4>🔹 Les trois piliers</h4>
                 <ul>
-                    <li><b>Économique :</b> produire et créer des richesses.</li>
-                    <li><b>Social :</b> répondre aux besoins des populations et réduire les inégalités.</li>
-                    <li><b>Environnemental :</b> préserver les ressources et les écosystèmes.</li>
+                    <li><b>Économique :</b> rentabilité et prospérité.</li>
+                    <li><b>Social :</b> équité et bien-être des populations.</li>
+                    <li><b>Environnemental :</b> préservation de la planète.</li>
                 </ul>
                 <br>
                 <h4>🔹 Les ODD</h4>
-                <p>Les Objectifs de développement durable regroupent des objectifs internationaux visant notamment à lutter contre la pauvreté, protéger l'environnement et améliorer les conditions de vie.</p>
-                <br>
-                <h4>🔹 Économie circulaire</h4>
-                <p>L'économie circulaire cherche à réduire le gaspillage en favorisant la réutilisation, la réparation, le recyclage et une utilisation plus efficace des ressources.</p>
+                <p>17 Objectifs de Développement Durable adoptés par l'ONU en 2015 pour 2030. Ils visent à éradiquer la pauvreté, protéger la planète et assurer la prospérité pour tous.</p>
             `,
             objectifs: [
-                'Définir le développement durable',
-                'Identifier les trois piliers',
-                'Comprendre les ODD',
-                "Expliquer le principe de l'économie circulaire"
+                'Connaître les trois piliers',
+                'Relier les enjeux aux ODD',
+                'Argumenter sur des choix durables'
             ],
             matieres: [
-                'Développement durable',
+                'Piliers du développement durable',
                 'ODD',
                 'Économie circulaire'
             ],
@@ -568,18 +567,18 @@ var GEO_CHAPITRES = {
                 <p>Document qui définit les usages autorisés des sols (zone d'habitat, zone industrielle, zone verte). Il encadre l'aménagement.</p>
             `,
             objectifs: [
-                "Identifier les fonctions et conflits d'usage",
-                "Analyser la pertinence d'un aménagement",
+                'Identifier les fonctions et conflits d\'usage',
+                'Analyser la pertinence d\'un aménagement',
                 'Comprendre les outils de gestion du territoire'
             ],
             matieres: [
-                "Conflits d'usage",
-                "Schéma d'aménagement",
-                "Plan d'affectation du sol"
+                'Conflits d\'usage',
+                'Schéma d\'aménagement',
+                'Plan d\'affectation du sol'
             ],
             exercices: [
                 {
-                    question: "Un conflit d'usage survient quand...",
+                    question: 'Un conflit d\'usage survient quand...',
                     options: [
                         'Deux fonctions différentes se disputent le même espace',
                         'Il y a un tremblement de terre',
@@ -587,7 +586,7 @@ var GEO_CHAPITRES = {
                         'Une autoroute est construite'
                     ],
                     correct: 0,
-                    correction: "Les conflits d'usage surgissent lorsque différents acteurs veulent utiliser le même terrain."
+                    correction: 'Les conflits d\'usage surgissent lorsque différents acteurs veulent utiliser le même terrain.'
                 }
             ]
         },
@@ -672,12 +671,12 @@ var GEO_CHAPITRES = {
                     question: 'Pour un aéroport, une contrainte est...',
                     options: [
                         'Les nuisances sonores',
-                        "La proximité d'une autoroute",
-                        "La main-d'œuvre disponible",
-                        "L'espace disponible"
+                        'La proximité d\'une autoroute',
+                        'La main-d\'œuvre disponible',
+                        'L\'espace disponible'
                     ],
                     correct: 0,
-                    correction: "Les nuisances sonores sont une contrainte pour l'environnement et les riverains."
+                    correction: 'Les nuisances sonores sont une contrainte pour l\'environnement et les riverains.'
                 }
             ]
         }
@@ -710,6 +709,7 @@ var CAPITALES = [
     { pays: "Turquie", capitale: "Ankara", continent: "Europe/Asie" },
     { pays: "Russie", capitale: "Moscou", continent: "Europe/Asie" },
     { pays: "Ukraine", capitale: "Kiev", continent: "Europe" },
+
     { pays: "États-Unis", capitale: "Washington", continent: "Amérique" },
     { pays: "Canada", capitale: "Ottawa", continent: "Amérique" },
     { pays: "Mexique", capitale: "Mexico", continent: "Amérique" },
@@ -718,6 +718,7 @@ var CAPITALES = [
     { pays: "Chili", capitale: "Santiago", continent: "Amérique" },
     { pays: "Colombie", capitale: "Bogota", continent: "Amérique" },
     { pays: "Pérou", capitale: "Lima", continent: "Amérique" },
+
     { pays: "Chine", capitale: "Pékin", continent: "Asie" },
     { pays: "Japon", capitale: "Tokyo", continent: "Asie" },
     { pays: "Corée du Sud", capitale: "Séoul", continent: "Asie" },
@@ -725,8 +726,10 @@ var CAPITALES = [
     { pays: "Thaïlande", capitale: "Bangkok", continent: "Asie" },
     { pays: "Vietnam", capitale: "Hanoï", continent: "Asie" },
     { pays: "Indonésie", capitale: "Jakarta", continent: "Asie" },
+
     { pays: "Australie", capitale: "Canberra", continent: "Océanie" },
     { pays: "Nouvelle-Zélande", capitale: "Wellington", continent: "Océanie" },
+
     { pays: "Égypte", capitale: "Le Caire", continent: "Afrique" },
     { pays: "Maroc", capitale: "Rabat", continent: "Afrique" },
     { pays: "Algérie", capitale: "Alger", continent: "Afrique" },
