@@ -420,60 +420,103 @@ function startQuiz(mode) {
     let questions;
 
     if (mode === 'truefalse') {
-        questions = flattenQuestions('all')
-            .map(function(question) {
-                const correctAnswer = question.options[question.correct];
-                const isTrue = Math.random() > 0.5;
-                return {
-                    ...question,
-                    question: isTrue ? question.question : 'Vrai ou faux : ' + question.question,
-                    options: ['Vrai', 'Faux'],
-                    correct: isTrue ? 0 : 1
-                };
-            });
-    } else {
-        questions = flattenQuestions(mode === 'mixed' ? 'all' : mode);
-    }
-
-    if (mode === 'mistakes' && !questions.length) {
-        const panel = document.getElementById('gamePanel');
-        if (panel) {
-            panel.innerHTML = `
-                <div class="empty">
-                    Aucune erreur enregistrée pour le moment.
-                    <br><br>
-                    Fais d'abord un quiz !
-                </div>
-            `;
-        }
-        return;
-    }
-
-    if (!questions.length) {
-        const panel = document.getElementById('gamePanel');
-        if (panel) {
-            panel.innerHTML = `
-                <div class="empty">
-                    Aucune question disponible pour ce mode.
-                </div>
-            `;
-        }
-        return;
-    }
-
-    questions = shuffle(questions).slice(0, 10);
-
-    quizState = {
-        qs: questions,
-        index: 0,
-        score: 0,
-        mode: mode
-    };
-
-    showView('games');
-    renderQuiz();
-}
-
+        // =====================================================
+        // VRAIES QUESTIONS VRAI/FAUX
+        // =====================================================
+        questions = [
+            // === MATHS 3e ===
+            {
+                id: 'tf_maths_1',
+                question: 'Deux triangles isométriques ont leurs côtés homologues de même longueur.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Triangles isométriques'
+            },
+            {
+                id: 'tf_maths_2',
+                question: 'Le critère CAC signifie Côté-Angle-Côté pour prouver que deux triangles sont isométriques.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Triangles isométriques'
+            },
+            {
+                id: 'tf_maths_3',
+                question: 'Des triangles semblables ont leurs côtés homologues égaux.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Triangles semblables'
+            },
+            {
+                id: 'tf_maths_4',
+                question: 'Le théorème de Thalès s\'applique uniquement avec des droites perpendiculaires.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Théorème de Thalès'
+            },
+            {
+                id: 'tf_maths_5',
+                question: '√(a²) = |a| pour tout nombre réel a.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Racines carrées'
+            },
+            {
+                id: 'tf_maths_6',
+                question: '√75 = 5√3 après simplification.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Racines carrées'
+            },
+            {
+                id: 'tf_maths_7',
+                question: '(a-b)² = a² - 2ab + b² est une identité remarquable.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Polynômes'
+            },
+            {
+                id: 'tf_maths_8',
+                question: 'a² - b² = (a-b)² est une identité remarquable correcte.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Polynômes'
+            },
+            {
+                id: 'tf_maths_9',
+                question: 'f(2)=3 signifie que l\'image de 2 par la fonction f est 3.',
+                options: ['Vrai', 'Faux'],
+                correct: 0,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Fonctions'
+            },
+            {
+                id: 'tf_maths_10',
+                question: 'Un zéro d\'une fonction correspond à l\'intersection avec l\'axe des ordonnées.',
+                options: ['Vrai', 'Faux'],
+                correct: 1,
+                matiere: 'maths',
+                annee: '3e',
+                chapter: 'Fonctions'
+            },
+            {
+               
 /* =========================================================
    QUIZ CHAPITRE
    ========================================================= */
