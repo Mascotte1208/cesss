@@ -2445,3 +2445,41 @@ grid-template-columns:1fr
 padding:13px
 }
 }
+
+
+/* NIVEAUX DES EXERCICES */
+
+.exercise-meta-row{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px
+}
+
+.exercise-level{
+display:inline-flex;
+align-items:center;
+min-height:22px;
+padding:3px 8px;
+border-radius:999px;
+background:var(--primary-soft);
+color:var(--primary);
+font-size:8px;
+font-weight:900;
+letter-spacing:.04em;
+white-space:nowrap
+}
+
+.exercise-card:nth-child(3n+2) .exercise-level{
+background:var(--green-soft);
+color:var(--green)
+}
+
+.exercise-card:nth-child(3n) .exercise-level{
+background:var(--orange-soft);
+color:#b76513
+}
+
+body.dark .exercise-card:nth-child(3n) .exercise-level{
+color:#ffc17a
+}
