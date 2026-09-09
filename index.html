@@ -36,6 +36,9 @@
             <button class="nav-item" data-view="memo" onclick="showView('memo')" type="button">
                 <span>📚</span> <span>Mémo</span>
             </button>
+            <button class="nav-item" data-view="flashcards" onclick="showView('flashcards')" type="button">
+                <span>🃏</span> <span>Flashcards</span>
+            </button>
             <button class="nav-item" data-view="games" onclick="showView('games')" type="button">
                 <span>🎮</span> <span>Jeux & quiz</span>
             </button>
@@ -167,6 +170,24 @@
             <div id="memoContent"></div>
         </section>
 
+        <!-- FLASHCARDS -->
+        <section id="flashcards" class="view">
+            <div class="page-header">
+                <div class="page-header-main">
+                    <span class="eyebrow">Mémorisation</span>
+                    <h1>🃏 Flashcards</h1>
+                    <p>Apprends le vocabulaire des mathématiques et de la géographie en retournant les cartes.</p>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;">
+                <button class="button primary" onclick="switchFlashcardSubject('maths')" type="button">📐 Maths</button>
+                <button class="button secondary" onclick="switchFlashcardSubject('geo')" type="button">🌍 Géo</button>
+            </div>
+
+            <div id="flashcardContainer"></div>
+        </section>
+
         <!-- JEUX -->
         <section id="games" class="view">
             <div class="page-header">
@@ -222,6 +243,7 @@
 <script src="maths-data.js"></script>
 <script src="geo-data.js"></script>
 <script src="geo-vocab.js"></script>
+<script src="flashcards.js"></script>
 <script src="app.js"></script>
 
 </body>
