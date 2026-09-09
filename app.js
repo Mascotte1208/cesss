@@ -1,4 +1,3 @@
-```javascript
 /* =========================================================
    CARNET CESS
    APPLICATION PRINCIPALE
@@ -271,10 +270,13 @@ function showView(id) {
     target.classList.add('active');
 
     var navButtons =
-        document.querySelectorAll('nav button');
+        document.querySelectorAll('.nav-item');
 
     for (var n = 0; n < navButtons.length; n++) {
         navButtons[n].classList.remove('active');
+        if (navButtons[n].getAttribute('data-view') === id) {
+            navButtons[n].classList.add('active');
+        }
     }
 
     try {
@@ -300,6 +302,14 @@ function showView(id) {
 
     if (id === 'memo') {
         renderMemo();
+    }
+
+    if (id === 'games') {
+        renderGamePanel();
+    }
+
+    if (id === 'exam') {
+        renderExamPanel();
     }
 
     if (id === 'progress') {
@@ -376,57 +386,52 @@ function renderHome() {
         ]
     ].map(function (item) {
 
-        return '<div class="stat">' +
-            '<b>' + item[0] + ' ' + item[1] + '</b>' +
-            '<span>' + item[2] + '</span>' +
+        return '<div class="home-stat">' +
+            '<span class="home-stat-icon">' + item[0] + '</span>' +
+            '<span class="home-stat-value">' + item[1] + '</span>' +
+            '<span class="home-stat-label">' + item[2] + '</span>' +
             '</div>';
 
     }).join('');
 
 
-    var progress =
-        document.getElementById(
-            'subjectProgress'
-        );
-
-    if (progress) {
-
-        progress.innerHTML = [
-            'maths',
-            'geo'
-        ].map(function (subject) {
-
-            var percentage =
-                pctSubject(subject);
+    // Matières sur l'accueil
+    var subjects = document.getElementById('homeSubjects');
+    if (subjects) {
+        subjects.innerHTML = ['maths', 'geo'].map(function(subject) {
+            var pct = pctSubject(subject);
+            var totalChaps = allChaps(subject).length;
+            var done = 0;
+            var chaps = allChaps(subject);
+            for (var i = 0; i < chaps.length; i++) {
+                if (getChapterProgress(chaps[i].id) >= 100) done++;
+            }
+            var cardClass = subject === 'maths' ? 'maths-card' : 'geo-card';
+            var icon = subject === 'maths' ? '📐' : '🌍';
+            var label = subject === 'maths' ? 'Mathématiques' : 'Géographie';
 
             return `
-                <div class="progress-row">
-
-                    <div class="progress-label">
-                        <span>
-                            ${CESS_SUBJECTS[subject].icon}
-                            ${CESS_SUBJECTS[subject].label}
-                        </span>
-
-                        <span>
-                            ${percentage}%
-                        </span>
+                <div class="subject-card ${cardClass}">
+                    <div class="subject-card-top">
+                        <div class="subject-icon">${icon}</div>
+                        <span class="subject-arrow">→</span>
                     </div>
-
-                    <div class="bar">
-                        <i style="width:${percentage}%"></i>
+                    <h3>${label}</h3>
+                    <p>${done}/${totalChaps} chapitres maîtrisés</p>
+                    <div class="progress-line"><span style="width:${pct}%"></span></div>
+                    <div class="subject-card-footer">
+                        <span>${pct}% terminé</span>
+                        <button onclick="showView('${subject}')">Continuer →</button>
                     </div>
-
                 </div>
             `;
-
         }).join('');
     }
 
 
     var priorities =
         document.getElementById(
-            'priorities'
+            'homePriorities'
         );
 
     if (priorities) {
@@ -437,44 +442,60 @@ function renderHome() {
                 .filter(function (chapter) {
                     return getChapterProgress(
                         chapter.id
-                    ) < 100;
+                    ) < 100 && getChapterProgress(chapter.id) > 0;
                 })
-                .slice(0, 6);
+                .slice(0, 5);
 
         if (!chapters.length) {
 
             priorities.innerHTML =
-                '<div class="empty">🎉 Tout est maîtrisé !</div>';
+                '<div class="empty-state">🎉 Tout est maîtrisé !</div>';
 
         } else {
 
             priorities.innerHTML =
+                '<div class="simple-list">' +
                 chapters.map(function (chapter) {
 
                     return `
-                        <button
-                            type="button"
-                            class="priority"
-                            onclick="openChapter('${chapter.id}')">
-
-                            <span>
-                                ${chapter.icone || '📘'}
-                                ${escapeHtml(
-                                    chapter.titre ||
-                                    'Chapitre'
-                                )}
-                            </span>
-
-                            <b>
-                                ${escapeHtml(
-                                    chapter.annee || ''
-                                )}
-                            </b>
-
-                        </button>
+                        <div class="simple-list-item">
+                            <div class="simple-list-icon">${chapter.icone || '📘'}</div>
+                            <div class="simple-list-main">
+                                <strong>${escapeHtml(chapter.titre || 'Chapitre')}</strong>
+                                <small>${escapeHtml(chapter.matiere || '')} · ${escapeHtml(chapter.annee || '')}</small>
+                            </div>
+                            <button class="simple-list-action" onclick="openChapter('${chapter.id}')">Reprendre</button>
+                        </div>
                     `;
 
-                }).join('');
+                }).join('') +
+                '</div>';
+        }
+    }
+
+
+    // Activité récente
+    var activity = document.getElementById('homeActivity');
+    if (activity) {
+        var recent = cessState.results.slice(-5).reverse();
+        if (!recent.length) {
+            activity.innerHTML = '<div class="empty-state">Aucune activité récente. Lance un quiz !</div>';
+        } else {
+            activity.innerHTML = '<div class="simple-list">' +
+                recent.map(function(r) {
+                    var date = new Date(r.date);
+                    return `
+                        <div class="simple-list-item">
+                            <div class="simple-list-icon">📝</div>
+                            <div class="simple-list-main">
+                                <strong>${escapeHtml(r.mode || 'Quiz')}</strong>
+                                <small>${r.score}/${r.total} · ${date.toLocaleDateString('fr-BE')}</small>
+                            </div>
+                            <span style="font-size:11px;font-weight:850;color:var(--primary)">${r.percentage || 0}%</span>
+                        </div>
+                    `;
+                }).join('') +
+                '</div>';
         }
     }
 }
@@ -600,7 +621,7 @@ function renderSubject(subject) {
             return `
                 <button
                     type="button"
-                    class="year-card ${active}"
+                    class="year-button ${active}"
                     onclick="
                         cessSelectedYear['${subject}']='${year}';
                         renderSubject('${subject}');
@@ -632,7 +653,7 @@ function renderSubject(subject) {
     if (!chapters.length) {
 
         contentElement.innerHTML = `
-            <div class="empty">
+            <div class="empty-state">
                 Aucun chapitre disponible
                 pour cette année.
             </div>
@@ -655,68 +676,42 @@ function renderSubject(subject) {
                 var done =
                     progress >= 100;
 
-                return `
-                    <article class="chapter">
+                var statusClass = done ? 'status-done' : (progress > 0 ? 'status-progress' : 'status-new');
+                var statusText = done ? '✓ Maîtrisé' : (progress > 0 ? progress + '%' : 'À revoir');
 
-                        <span
-                            style="font-size:30px">
+                return `
+                    <button
+                        class="chapter-item"
+                        onclick="openChapter('${chapter.id}')"
+                        type="button">
+
+                        <span class="chapter-icon">
                             ${chapter.icone || '📘'}
                         </span>
 
                         <div class="chapter-main">
 
-                            <h3>
+                            <strong>
                                 ${escapeHtml(
                                     chapter.titre ||
                                     'Chapitre'
                                 )}
-                            </h3>
+                            </strong>
 
-                            <p>
+                            <small>
                                 ${escapeHtml(
                                     chapter.desc ||
                                     ''
                                 )}
-                            </p>
-
-                            <div class="mini-progress">
-                                <i
-                                    style="
-                                        width:${progress}%
-                                    ">
-                                </i>
-                            </div>
+                            </small>
 
                         </div>
 
-                        <span
-                            class="badge ${
-                                done
-                                    ? 'done'
-                                    : ''
-                            }">
-
-                            ${
-                                done
-                                    ? '✓ Maîtrisé'
-                                    : progress > 0
-                                        ? progress + '%'
-                                        : 'À revoir'
-                            }
-
+                        <span class="chapter-status ${statusClass}">
+                            ${statusText}
                         </span>
 
-                        <button
-                            type="button"
-                            onclick="
-                                openChapter('${chapter.id}')
-                            ">
-
-                            Ouvrir
-
-                        </button>
-
-                    </article>
+                    </button>
                 `;
 
             }).join('')}
@@ -777,66 +772,58 @@ function openChapter(id) {
 
     content.innerHTML = `
 
-        <div class="detail-top">
+        <div class="chapter-top">
 
-            <div>
+            <div class="chapter-breadcrumb">
+                <button onclick="showView('${subject}')">← ${subjectInfo.label}</button>
+                <span>· ${chapter.annee}</span>
+                <span>· ${chapter.titre}</span>
+            </div>
 
-                <div class="eyebrow">
-                    ${subjectInfo.icon}
-                    ${subjectInfo.label}
-                    · ${escapeHtml(
-                        chapter.annee || ''
-                    )}
+            <div class="chapter-hero">
+
+                <div class="chapter-title-row">
+
+                    <div class="chapter-big-icon">
+                        ${chapter.icone || '📘'}
+                    </div>
+
+                    <div class="chapter-title">
+
+                        <h1>
+                            ${escapeHtml(
+                                chapter.titre ||
+                                'Chapitre'
+                            )}
+                        </h1>
+
+                        <p>
+                            ${escapeHtml(
+                                chapter.desc || ''
+                            )}
+                        </p>
+
+                    </div>
+
                 </div>
 
-                <h2>
-                    ${chapter.icone || ''}
-                    ${escapeHtml(
-                        chapter.titre ||
-                        'Chapitre'
-                    )}
-                </h2>
 
-                <p>
-                    ${escapeHtml(
-                        chapter.desc || ''
-                    )}
-                </p>
+                <div class="chapter-progress-box">
 
-            </div>
+                    <span class="chapter-progress-number">
+                        ${progress}%
+                    </span>
 
-            <button
-                type="button"
-                class="close"
-                onclick="
-                    this.closest('.detail').remove()
-                ">
+                    <span class="chapter-progress-label">
+                        Maîtrise du chapitre
+                    </span>
 
-                ✕
+                    <div class="progress-line" style="margin-top:10px">
+                        <span style="width:${progress}%"></span>
+                    </div>
 
-            </button>
+                </div>
 
-        </div>
-
-
-        <div class="chapter-progress-box">
-
-            <div>
-                <strong>
-                    Progression
-                </strong>
-
-                <span>
-                    ${progress}%
-                </span>
-            </div>
-
-            <div class="bar">
-                <i
-                    style="
-                        width:${progress}%
-                    ">
-                </i>
             </div>
 
         </div>
@@ -846,13 +833,8 @@ function openChapter(id) {
 
             <button
                 type="button"
-                class="active"
-                onclick="
-                    switchChapterTab(
-                        'course',
-                        this
-                    )
-                ">
+                class="chapter-tab active"
+                onclick="switchChapterTab('course', this)">
 
                 📖 Cours
 
@@ -860,25 +842,17 @@ function openChapter(id) {
 
             <button
                 type="button"
-                onclick="
-                    switchChapterTab(
-                        'remember',
-                        this
-                    )
-                ">
+                class="chapter-tab"
+                onclick="switchChapterTab('remember', this)">
 
-                🧠 À retenir
+                🧠 Objectifs
 
             </button>
 
             <button
                 type="button"
-                onclick="
-                    switchChapterTab(
-                        'exercise',
-                        this
-                    )
-                ">
+                class="chapter-tab"
+                onclick="switchChapterTab('exercise', this)">
 
                 🎯 Exercices
 
@@ -887,235 +861,243 @@ function openChapter(id) {
         </div>
 
 
-        <div
-            class="chapter-tab-content active"
-            data-tab="course">
+        <div class="chapter-layout">
 
-            ${
-                matieres.length
-                    ? `
-                        <div class="content-card">
+            <div>
 
-                            <h3>
-                                📚 À savoir
-                            </h3>
+                <div
+                    class="chapter-tab-content"
+                    data-tab="course">
 
-                            <ul>
-                                ${matieres.map(
-                                    function (item) {
-                                        return `
-                                            <li>
-                                                ${escapeHtml(
-                                                    item
-                                                )}
-                                            </li>
-                                        `;
-                                    }
-                                ).join('')}
-                            </ul>
-
-                        </div>
-                    `
-                    : ''
-            }
-
-
-            <div class="content-card course-content">
-
-                <h3>
-                    📖 Cours
-                </h3>
-
-                <div>
                     ${
-                        chapter.cours ||
-                        '<p>Le cours sera bientôt disponible.</p>'
+                        matieres.length
+                            ? `
+                                <div class="content-card">
+
+                                    <h3>📚 À savoir</h3>
+
+                                    <ul>
+                                        ${matieres.map(
+                                            function (item) {
+                                                return `
+                                                    <li>
+                                                        ${escapeHtml(
+                                                            item
+                                                        )}
+                                                    </li>
+                                                `;
+                                            }
+                                        ).join('')}
+                                    </ul>
+
+                                </div>
+                            `
+                            : ''
                     }
+
+
+                    <div class="content-card course-content">
+
+                        <h3>📖 Cours</h3>
+
+                        <div>
+                            ${
+                                chapter.cours ||
+                                '<p>Le cours sera bientôt disponible.</p>'
+                            }
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="chapter-tab-content"
+                    data-tab="remember"
+                    style="display:none">
+
+                    <div class="content-card">
+
+                        <h3>🎯 Objectifs du chapitre</h3>
+
+                        ${
+                            objectives.length
+                                ? `
+                                    <ul>
+                                        ${objectives.map(
+                                            function (item) {
+                                                return `
+                                                    <li>
+                                                        ${escapeHtml(
+                                                            item
+                                                        )}
+                                                    </li>
+                                                `;
+                                            }
+                                        ).join('')}
+                                    </ul>
+                                `
+                                : `
+                                    <p>
+                                        Aucun objectif
+                                        renseigné.
+                                    </p>
+                                `
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="chapter-tab-content"
+                    data-tab="exercise"
+                    style="display:none">
+
+                    ${
+                        exercices.length
+                            ? `
+                                <div class="exercise-list">
+
+                                    ${exercices.map(
+                                        function (
+                                            exercise,
+                                            index
+                                        ) {
+
+                                            var options = Array.isArray(exercise.options) ? exercise.options : [];
+
+                                            return `
+                                                <div
+                                                    class="exercise-card">
+
+                                                    <div class="exercise-number">
+                                                        Exercice ${index + 1}
+                                                    </div>
+
+                                                    <div class="exercise-question">
+                                                        ${escapeHtml(
+                                                            exercise.question ||
+                                                            'Question'
+                                                        )}
+                                                    </div>
+
+                                                    ${
+                                                        options.length
+                                                            ? `
+                                                                <div class="exercise-options">
+                                                                    ${options.map(
+                                                                        function (
+                                                                            option,
+                                                                            optionIndex
+                                                                        ) {
+
+                                                                            return `
+                                                                                <button
+                                                                                    class="exercise-option"
+                                                                                    onclick="
+                                                                                        answerChapterExercise(
+                                                                                            this,
+                                                                                            '${chapter.id}',
+                                                                                            ${index},
+                                                                                            ${optionIndex}
+                                                                                        )
+                                                                                    ">
+
+                                                                                    ${escapeHtml(
+                                                                                        option
+                                                                                    )}
+
+                                                                                </button>
+                                                                            `;
+
+                                                                        }
+                                                                    ).join('')}
+                                                                </div>
+                                                            `
+                                                            : ''
+                                                    }
+
+                                                    <div
+                                                        class="exercise-feedback">
+                                                    </div>
+
+                                                </div>
+                                            `;
+
+                                        }
+                                    ).join('')}
+
+                                </div>
+                            `
+                            : `
+                                <div class="empty-state">
+                                    Aucun exercice disponible
+                                    pour ce chapitre.
+                                </div>
+                            `
+                    }
+
                 </div>
 
             </div>
 
-        </div>
 
+            <div class="chapter-sidebar">
 
-        <div
-            class="chapter-tab-content"
-            data-tab="remember">
+                <div class="chapter-sidebar-card">
 
-            <div class="content-card">
+                    <h3>📌 Progression</h3>
 
-                <h3>
-                    🧠 Objectifs
-                </h3>
+                    <div class="progress-line">
+                        <span style="width:${progress}%"></span>
+                    </div>
+
+                    <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--text-soft)">
+                        <span>${progress}% maîtrisé</span>
+                        <span>${progress >= 100 ? '✅' : '📖'}</span>
+                    </div>
+
+                    <button
+                        class="button primary"
+                        style="width:100%;margin-top:12px"
+                        onclick="markDone('${chapter.id}')">
+
+                        ✓ Marquer maîtrisé
+
+                    </button>
+
+                </div>
+
 
                 ${
-                    objectives.length
+                    exercices.length
                         ? `
-                            <ul>
-                                ${objectives.map(
-                                    function (item) {
-                                        return `
-                                            <li>
-                                                ${escapeHtml(
-                                                    item
-                                                )}
-                                            </li>
-                                        `;
-                                    }
-                                ).join('')}
-                            </ul>
+                            <div class="chapter-sidebar-card">
+
+                                <h3>🎯 Quiz du chapitre</h3>
+
+                                <p style="font-size:11px;color:var(--text-soft)">
+                                    ${exercices.length} exercices disponibles
+                                </p>
+
+                                <button
+                                    class="button secondary"
+                                    style="width:100%;margin-top:10px"
+                                    onclick="quizChapter('${chapter.id}')">
+
+                                    🎯 Lancer le quiz
+
+                                </button>
+
+                            </div>
                         `
-                        : `
-                            <p>
-                                Aucun objectif
-                                renseigné.
-                            </p>
-                        `
+                        : ''
                 }
 
             </div>
-
-
-            <div class="content-card">
-
-                <h3>
-                    ⭐ Les points essentiels
-                </h3>
-
-                <p>
-                    Relis les notions importantes
-                    du cours puis teste-toi avec
-                    les exercices.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div
-            class="chapter-tab-content"
-            data-tab="exercise">
-
-            ${
-                exercices.length
-                    ? `
-                        <div class="exercise-list">
-
-                            ${exercices.map(
-                                function (
-                                    exercise,
-                                    index
-                                ) {
-
-                                    return `
-                                        <div
-                                            class="exercise-card">
-
-                                            <span>
-                                                Exercice
-                                                ${index + 1}
-                                            </span>
-
-                                            <h3>
-                                                ${escapeHtml(
-                                                    exercise.question ||
-                                                    'Question'
-                                                )}
-                                            </h3>
-
-                                            ${
-                                                Array.isArray(
-                                                    exercise.options
-                                                )
-                                                    ? `
-                                                        <div>
-                                                            ${exercise.options.map(
-                                                                function (
-                                                                    option,
-                                                                    optionIndex
-                                                                ) {
-
-                                                                    return `
-                                                                        <button
-                                                                            type="button"
-                                                                            onclick="
-                                                                                answerChapterExercise(
-                                                                                    this,
-                                                                                    '${chapter.id}',
-                                                                                    ${index},
-                                                                                    ${optionIndex}
-                                                                                )
-                                                                            ">
-
-                                                                            ${escapeHtml(
-                                                                                option
-                                                                            )}
-
-                                                                        </button>
-                                                                    `;
-
-                                                                }
-                                                            ).join('')}
-                                                        </div>
-                                                    `
-                                                    : ''
-                                            }
-
-                                            <div
-                                                class="exercise-feedback">
-                                            </div>
-
-                                        </div>
-                                    `;
-
-                                }
-                            ).join('')}
-
-                        </div>
-                    `
-                    : `
-                        <div class="empty">
-                            Aucun exercice disponible
-                            pour ce chapitre.
-                        </div>
-                    `
-            }
-
-        </div>
-
-
-        <div class="detail-actions">
-
-            <button
-                type="button"
-                class="success"
-                onclick="
-                    markDone('${chapter.id}')
-                ">
-
-                ✓ Marquer maîtrisé
-
-            </button>
-
-            ${
-                exercices.length
-                    ? `
-                        <button
-                            type="button"
-                            class="primary"
-                            onclick="
-                                quizChapter(
-                                    '${chapter.id}'
-                                )
-                            ">
-
-                            🎯 Faire le quiz
-
-                        </button>
-                    `
-                    : ''
-            }
 
         </div>
 
@@ -1167,7 +1149,7 @@ function switchChapterTab(
 
     var buttons =
         detail.querySelectorAll(
-            '.chapter-tabs button'
+            '.chapter-tab'
         );
 
     for (var i = 0; i < buttons.length; i++) {
@@ -1195,13 +1177,9 @@ function switchChapterTab(
                 'data-tab'
             ) === tab
         ) {
-            contents[j].classList.add(
-                'active'
-            );
+            contents[j].style.display = 'block';
         } else {
-            contents[j].classList.remove(
-                'active'
-            );
+            contents[j].style.display = 'none';
         }
     }
 }
@@ -1242,7 +1220,7 @@ function answerChapterExercise(
     }
 
     var buttons =
-        card.querySelectorAll('button');
+        card.querySelectorAll('.exercise-option');
 
     for (var i = 0; i < buttons.length; i++) {
         buttons[i].disabled = true;
@@ -1264,14 +1242,15 @@ function answerChapterExercise(
         button.classList.add('correct');
 
         feedback.innerHTML =
-            '<strong>✓ Bonne réponse !</strong>' +
+            '<div class="correction" style="border-color:var(--green);background:var(--green-soft);color:var(--green)">✓ Bonne réponse !' +
             (
                 exercise.correction
-                    ? '<p>' +
+                    ? '<p style="margin-top:5px;color:var(--text-soft)">' +
                         exercise.correction +
                       '</p>'
                     : ''
-            );
+            ) +
+            '</div>';
 
     } else {
 
@@ -1284,14 +1263,15 @@ function answerChapterExercise(
         }
 
         feedback.innerHTML =
-            '<strong>✗ Pas tout à fait.</strong>' +
+            '<div class="correction" style="border-color:var(--red);background:var(--red-soft);color:var(--red)">✗ Pas tout à fait.' +
             (
                 exercise.correction
-                    ? '<p>' +
+                    ? '<p style="margin-top:5px;color:var(--text-soft)">' +
                         exercise.correction +
                       '</p>'
                     : ''
-            );
+            ) +
+            '</div>';
     }
 }
 
@@ -1325,25 +1305,21 @@ function markDone(id) {
         );
 
     if (detail) {
-        var message =
+        var box =
             detail.querySelector(
                 '.chapter-progress-box'
             );
 
-        if (message) {
-            message.innerHTML = `
-                <div>
-                    <strong>
-                        ✓ Chapitre maîtrisé
-                    </strong>
-
-                    <span>
-                        100%
-                    </span>
-                </div>
-
-                <div class="bar">
-                    <i style="width:100%"></i>
+        if (box) {
+            box.innerHTML = `
+                <span class="chapter-progress-number">
+                    100%
+                </span>
+                <span class="chapter-progress-label">
+                    ✅ Chapitre maîtrisé !
+                </span>
+                <div class="progress-line" style="margin-top:10px">
+                    <span style="width:100%"></span>
                 </div>
             `;
         }
@@ -1493,6 +1469,29 @@ function startQuiz(mode) {
         filter = 'mistakes';
     }
 
+    if (mode === 'truefalse') {
+        // Questions Vrai/Faux spécifiques
+        var tfQuestions = [
+            { id: 'tf_1', question: 'Un triangle isométrique a des côtés de même longueur.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
+            { id: 'tf_2', question: 'La racine carrée de 16 est 4.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '3e' },
+            { id: 'tf_3', question: '(a+b)² = a² + b²', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
+            { id: 'tf_4', question: 'La Belgique a un climat méditerranéen.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'geo', annee: '3e' },
+            { id: 'tf_5', question: 'Les séismes se produisent aux frontières des plaques.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '3e' },
+            { id: 'tf_6', question: 'Le développement durable a 3 piliers.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '6e' },
+            { id: 'tf_7', question: 'Le cosinus est opposé/hypoténuse.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
+            { id: 'tf_8', question: 'Une fonction croissante a une dérivée positive.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '6e' }
+        ];
+        var questions = shuffle(tfQuestions).slice(0, 10);
+        cessQuizState = {
+            mode: mode,
+            questions: questions,
+            index: 0,
+            score: 0,
+            answered: false
+        };
+        renderQuizQuestion();
+        return;
+    }
 
     var questions =
         flattenQuestions(filter);
@@ -1506,7 +1505,7 @@ function startQuiz(mode) {
 
         if (panel) {
             panel.innerHTML = `
-                <div class="empty">
+                <div class="empty-state">
                     ${
                         mode === 'mistakes'
                             ? 'Tu n’as pas encore d’erreurs à revoir.'
@@ -1672,91 +1671,96 @@ function renderQuizQuestion() {
 
     panel.innerHTML = `
 
-        <div class="quiz-header">
+        <div class="quiz-question-card">
 
-            <span>
-                Question
-                ${state.index + 1}
-                / ${total}
-            </span>
+            <div class="quiz-meta">
 
-            <strong>
-                ${state.score}
-                point${state.score > 1 ? 's' : ''}
-            </strong>
+                <span>
+                    Question
+                    ${state.index + 1}
+                    / ${total}
+                </span>
 
-        </div>
+                <strong>
+                    ${state.score}
+                    point${state.score > 1 ? 's' : ''}
+                </strong>
 
-
-        <div class="quiz-progress">
-
-            <i
-                style="
-                    width:${
-                        (
-                            state.index /
-                            total
-                        ) * 100
-                    }%
-                ">
-            </i>
-
-        </div>
+            </div>
 
 
-        <div class="quiz-question">
+            <div class="quiz-progress">
 
-            <span class="eyebrow">
-                ${q.matiere === 'geo'
-                    ? '🌍 Géographie'
-                    : '📐 Mathématiques'}
-            </span>
+                <span
+                    style="
+                        width:${
+                            (
+                                state.index /
+                                total
+                            ) * 100
+                        }%
+                    ">
+                </span>
 
-            <h2>
-                ${escapeHtml(
-                    q.question
-                )}
-            </h2>
-
-        </div>
+            </div>
 
 
-        <div class="quiz-options">
+            <div class="quiz-question">
 
-            ${q.options.map(
-                function (option, index) {
+                <div class="eyebrow">
+                    ${q.matiere === 'geo'
+                        ? '🌍 Géographie'
+                        : '📐 Mathématiques'}
+                </div>
 
-                    return `
-                        <button
-                            type="button"
-                            onclick="
-                                answerQuiz(
-                                    ${index}
-                                )
-                            ">
+                <h2>
+                    ${escapeHtml(
+                        q.question
+                    )}
+                </h2>
 
-                            <span>
-                                ${String.fromCharCode(
-                                    65 + index
+            </div>
+
+
+            <div class="quiz-options">
+
+                ${q.options.map(
+                    function (option, index) {
+
+                        return `
+                            <button
+                                type="button"
+                                class="quiz-option"
+                                onclick="
+                                    answerQuiz(
+                                        ${index}
+                                    )
+                                ">
+
+                                <span class="option-letter">
+                                    ${String.fromCharCode(
+                                        65 + index
+                                    )}
+                                </span>
+
+                                ${escapeHtml(
+                                    option
                                 )}
-                            </span>
 
-                            ${escapeHtml(
-                                option
-                            )}
+                            </button>
+                        `;
 
-                        </button>
-                    `;
+                    }
+                ).join('')}
 
-                }
-            ).join('')}
-
-        </div>
+            </div>
 
 
-        <div
-            id="quizFeedback"
-            class="quiz-feedback">
+            <div
+                id="quizFeedback"
+                class="quiz-feedback">
+            </div>
+
         </div>
 
     `;
@@ -1801,7 +1805,7 @@ function answerQuiz(optionIndex) {
 
     var buttons =
         panel.querySelectorAll(
-            '.quiz-options button'
+            '.quiz-option'
         );
 
     for (
@@ -1856,24 +1860,22 @@ function answerQuiz(optionIndex) {
 
         feedback.innerHTML = `
 
-            <div class="${
-                good
-                    ? 'good'
-                    : 'bad'
-            }">
+            <div style="
+                margin-top:15px;
+                padding:15px;
+                border-radius:10px;
+                background:${good ? 'var(--green-soft)' : 'var(--red-soft)'};
+                border:1px solid ${good ? 'var(--green)' : 'var(--red)'};
+            ">
 
-                <strong>
-                    ${
-                        good
-                            ? '✓ Bonne réponse !'
-                            : '✗ Mauvaise réponse'
-                    }
+                <strong style="color:${good ? 'var(--green)' : 'var(--red)'}">
+                    ${good ? '✓ Bonne réponse !' : '✗ Mauvaise réponse'}
                 </strong>
 
                 ${
                     q.correction
                         ? `
-                            <p>
+                            <p style="margin-top:8px;color:var(--text-soft)">
                                 ${escapeHtml(
                                     q.correction
                                 )}
@@ -1883,7 +1885,8 @@ function answerQuiz(optionIndex) {
                 }
 
                 <button
-                    type="button"
+                    class="button primary"
+                    style="margin-top:12px"
                     onclick="nextQuizQuestion()">
 
                     ${
@@ -1992,33 +1995,22 @@ function finishQuiz() {
 
         <div class="quiz-result">
 
-            <span class="result-icon">
-                ${
-                    percentage >= 80
-                        ? '🏆'
-                        : percentage >= 60
-                            ? '⭐'
-                            : '📚'
-                }
-            </span>
+            <div class="result-circle">
+                ${percentage}%
+            </div>
 
             <h2>
                 ${message}
             </h2>
 
-            <div class="result-score">
-                ${score} / ${total}
-            </div>
-
             <p>
-                ${percentage}% de réussite
+                ${score} / ${total} bonnes réponses
             </p>
 
             <div class="result-actions">
 
                 <button
-                    type="button"
-                    class="primary"
+                    class="button primary"
                     onclick="replayQuiz()">
 
                     🔄 Recommencer
@@ -2026,7 +2018,7 @@ function finishQuiz() {
                 </button>
 
                 <button
-                    type="button"
+                    class="button secondary"
                     onclick="showView('progress')">
 
                     📊 Voir ma progression
@@ -2076,7 +2068,6 @@ function replayQuiz() {
    ========================================================= */
 
 var CESS_CAPITALS = [
-
     ['France', 'Paris'],
     ['Belgique', 'Bruxelles'],
     ['Allemagne', 'Berlin'],
@@ -2093,11 +2084,7 @@ var CESS_CAPITALS = [
     ['Suède', 'Stockholm'],
     ['Finlande', 'Helsinki'],
     ['Danemark', 'Copenhague'],
-    ['Irlande', 'Dublin'],
-    ['Roumanie', 'Bucarest'],
-    ['Hongrie', 'Budapest'],
-    ['Tchéquie', 'Prague']
-
+    ['Irlande', 'Dublin']
 ];
 
 
@@ -2186,7 +2173,7 @@ function startCapitals() {
 
     };
 
-
+    showView('games');
     renderQuizQuestion();
 }
 
@@ -2195,29 +2182,15 @@ function startCapitals() {
    MEMO
    ========================================================= */
 
-function memoTab(mode, button) {
-
+function setMemoMode(mode) {
     cessMemoMode = mode;
 
-    var buttons =
-        document.querySelectorAll(
-            '.memo-tabs button'
-        );
-
-    for (
-        var i = 0;
-        i < buttons.length;
-        i++
-    ) {
-        buttons[i].classList.remove(
-            'active'
-        );
-    }
-
-    if (button) {
-        button.classList.add(
-            'active'
-        );
+    var tabs = document.querySelectorAll('.memo-tab');
+    for (var i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+        if (tabs[i].getAttribute('data-mode') === mode) {
+            tabs[i].classList.add('active');
+        }
     }
 
     renderMemo();
@@ -2295,7 +2268,7 @@ function renderFormules(
     if (!formulas) {
 
         content.innerHTML = `
-            <div class="empty">
+            <div class="empty-state">
                 Les formules ne sont pas
                 disponibles.
             </div>
@@ -2393,7 +2366,7 @@ function renderFormules(
     if (!items.length) {
 
         content.innerHTML = `
-            <div class="empty">
+            <div class="empty-state">
                 Aucune formule trouvée.
             </div>
         `;
@@ -2421,33 +2394,25 @@ function renderFormules(
                     '';
 
                 var description =
+                    item.definition ||
                     item.description ||
                     item.desc ||
                     '';
 
                 return `
 
-                    <article
-                        class="memo-card">
+                    <div class="memo-card">
 
-                        <span>
-                            ${escapeHtml(
-                                item.annee ||
-                                ''
-                            )}
-                        </span>
-
-                        <h3>
+                        <strong>
                             ${escapeHtml(
                                 title
                             )}
-                        </h3>
+                        </strong>
 
                         ${
                             formula
                                 ? `
-                                    <div
-                                        class="formula">
+                                    <div class="memo-example">
                                         ${escapeHtml(
                                             formula
                                         )}
@@ -2468,7 +2433,15 @@ function renderFormules(
                                 : ''
                         }
 
-                    </article>
+                        <span class="memo-tag">
+                            ${escapeHtml(
+                                item.annee ||
+                                ''
+                            )}
+                            ${item.categorie ? ' · ' + escapeHtml(item.categorie) : ''}
+                        </span>
+
+                    </div>
 
                 `;
 
@@ -2489,17 +2462,13 @@ function renderVocabulaire(
     var vocab =
         typeof GEO_VOCAB !== 'undefined'
             ? GEO_VOCAB
-            : (
-                typeof GEO_VOCABULAIRE !== 'undefined'
-                    ? GEO_VOCABULAIRE
-                    : null
-            );
+            : null;
 
 
     if (!vocab) {
 
         content.innerHTML = `
-            <div class="empty">
+            <div class="empty-state">
                 Le vocabulaire n'est pas
                 disponible.
             </div>
@@ -2512,52 +2481,7 @@ function renderVocabulaire(
     var items =
         Array.isArray(vocab)
             ? vocab.slice()
-            : Object.keys(vocab).map(
-                function (key) {
-
-                    var value =
-                        vocab[key];
-
-                    if (
-                        value &&
-                        typeof value === 'object'
-                    ) {
-
-                        var copy = {};
-
-                        for (
-                            var k in value
-                        ) {
-
-                            if (
-                                Object.prototype
-                                    .hasOwnProperty
-                                    .call(
-                                        value,
-                                        k
-                                    )
-                            ) {
-                                copy[k] =
-                                    value[k];
-                            }
-                        }
-
-                        copy.terme =
-                            copy.terme ||
-                            copy.term ||
-                            key;
-
-                        return copy;
-                    }
-
-                    return {
-                        terme: key,
-                        definition:
-                            value
-                    };
-
-                }
-            );
+            : [];
 
 
     items =
@@ -2590,7 +2514,7 @@ function renderVocabulaire(
     if (!items.length) {
 
         content.innerHTML = `
-            <div class="empty">
+            <div class="empty-state">
                 Aucun mot trouvé.
             </div>
         `;
@@ -2606,32 +2530,25 @@ function renderVocabulaire(
             ${items.map(function (item) {
 
                 var term =
+                    item.mot ||
                     item.terme ||
                     item.term ||
-                    item.nom ||
                     'Terme';
 
                 var definition =
-                    item.definition ||
                     item.def ||
-                    item.description ||
-                    item.desc ||
+                    item.definition ||
                     '';
 
                 return `
 
-                    <article
-                        class="memo-card vocab-card">
+                    <div class="memo-card">
 
-                        <span>
-                            🌍 Vocabulaire
-                        </span>
-
-                        <h3>
+                        <strong>
                             ${escapeHtml(
                                 term
                             )}
-                        </h3>
+                        </strong>
 
                         <p>
                             ${escapeHtml(
@@ -2639,7 +2556,15 @@ function renderVocabulaire(
                             )}
                         </p>
 
-                    </article>
+                        <span class="memo-tag">
+                            ${escapeHtml(
+                                item.annee ||
+                                ''
+                            )}
+                            ${item.theme ? ' · ' + escapeHtml(item.theme) : ''}
+                        </span>
+
+                    </div>
 
                 `;
 
@@ -2654,6 +2579,29 @@ function renderVocabulaire(
 /* =========================================================
    EXAMENS
    ========================================================= */
+
+function renderExamPanel() {
+    var panel = document.getElementById('examPanel');
+    if (!panel) return;
+
+    panel.innerHTML = `
+        <div class="exam-list">
+            <div class="exam-card">
+                <div class="exam-icon">📐</div>
+                <h3>Examen blanc Maths</h3>
+                <p>15 questions aléatoires de mathématiques</p>
+                <button class="button primary" onclick="startExam('maths')">Commencer →</button>
+            </div>
+            <div class="exam-card">
+                <div class="exam-icon">🌍</div>
+                <h3>Examen blanc Géographie</h3>
+                <p>15 questions aléatoires de géographie</p>
+                <button class="button primary" onclick="startExam('geo')">Commencer →</button>
+            </div>
+        </div>
+    `;
+}
+
 
 function startExam(subject) {
 
@@ -2670,7 +2618,7 @@ function startExam(subject) {
         if (panel) {
 
             panel.innerHTML = `
-                <div class="empty">
+                <div class="empty-state">
                     Aucun exercice disponible
                     pour cet examen.
                 </div>
@@ -2749,97 +2697,102 @@ function renderExamQuestion() {
 
     panel.innerHTML = `
 
-        <div class="quiz-header">
+        <div class="quiz-question-card">
 
-            <span>
-                Question
-                ${state.index + 1}
-                /
-                ${state.questions.length}
-            </span>
+            <div class="quiz-meta">
 
-            <strong>
-                ${state.score}
-                point${state.score > 1 ? 's' : ''}
-            </strong>
+                <span>
+                    Question
+                    ${state.index + 1}
+                    /
+                    ${state.questions.length}
+                </span>
 
-        </div>
+                <strong>
+                    ${state.score}
+                    point${state.score > 1 ? 's' : ''}
+                </strong>
 
-
-        <div class="quiz-progress">
-
-            <i
-                style="
-                    width:${
-                        (
-                            state.index /
-                            state.questions.length
-                        ) * 100
-                    }%
-                ">
-            </i>
-
-        </div>
+            </div>
 
 
-        <div class="quiz-question">
+            <div class="quiz-progress">
 
-            <span class="eyebrow">
-                ${
-                    state.subject === 'geo'
-                        ? '🌍 Géographie'
-                        : '📐 Mathématiques'
-                }
-            </span>
+                <span
+                    style="
+                        width:${
+                            (
+                                state.index /
+                                state.questions.length
+                            ) * 100
+                        }%
+                    ">
+                </span>
 
-            <h2>
-                ${escapeHtml(
-                    q.question
-                )}
-            </h2>
-
-        </div>
+            </div>
 
 
-        <div class="quiz-options">
+            <div class="quiz-question">
 
-            ${q.options.map(
-                function (
-                    option,
-                    index
-                ) {
+                <div class="eyebrow">
+                    ${
+                        state.subject === 'geo'
+                            ? '🌍 Géographie'
+                            : '📐 Mathématiques'
+                    }
+                </div>
 
-                    return `
-                        <button
-                            type="button"
-                            onclick="
-                                answerExam(
-                                    ${index}
-                                )
-                            ">
+                <h2>
+                    ${escapeHtml(
+                        q.question
+                    )}
+                </h2>
 
-                            <span>
-                                ${String.fromCharCode(
-                                    65 + index
+            </div>
+
+
+            <div class="quiz-options">
+
+                ${q.options.map(
+                    function (
+                        option,
+                        index
+                    ) {
+
+                        return `
+                            <button
+                                type="button"
+                                class="quiz-option"
+                                onclick="
+                                    answerExam(
+                                        ${index}
+                                    )
+                                ">
+
+                                <span class="option-letter">
+                                    ${String.fromCharCode(
+                                        65 + index
+                                    )}
+                                </span>
+
+                                ${escapeHtml(
+                                    option
                                 )}
-                            </span>
 
-                            ${escapeHtml(
-                                option
-                            )}
+                            </button>
+                        `;
 
-                        </button>
-                    `;
+                    }
+                ).join('')}
 
-                }
-            ).join('')}
-
-        </div>
+            </div>
 
 
-        <div
-            id="examFeedback"
-            class="quiz-feedback">
+            <div
+                id="examFeedback"
+                class="quiz-feedback">
+            </div>
+
         </div>
 
     `;
@@ -2886,7 +2839,7 @@ function answerExam(optionIndex) {
 
     var buttons =
         panel.querySelectorAll(
-            '.quiz-options button'
+            '.quiz-option'
         );
 
 
@@ -2945,24 +2898,22 @@ function answerExam(optionIndex) {
 
         feedback.innerHTML = `
 
-            <div class="${
-                good
-                    ? 'good'
-                    : 'bad'
-            }">
+            <div style="
+                margin-top:15px;
+                padding:15px;
+                border-radius:10px;
+                background:${good ? 'var(--green-soft)' : 'var(--red-soft)'};
+                border:1px solid ${good ? 'var(--green)' : 'var(--red)'};
+            ">
 
-                <strong>
-                    ${
-                        good
-                            ? '✓ Bonne réponse !'
-                            : '✗ Mauvaise réponse'
-                    }
+                <strong style="color:${good ? 'var(--green)' : 'var(--red)'}">
+                    ${good ? '✓ Bonne réponse !' : '✗ Mauvaise réponse'}
                 </strong>
 
                 ${
                     q.correction
                         ? `
-                            <p>
+                            <p style="margin-top:8px;color:var(--text-soft)">
                                 ${escapeHtml(
                                     q.correction
                                 )}
@@ -2972,7 +2923,8 @@ function answerExam(optionIndex) {
                 }
 
                 <button
-                    type="button"
+                    class="button primary"
+                    style="margin-top:12px"
                     onclick="nextExamQuestion()">
 
                     ${
@@ -3068,33 +3020,22 @@ function finishExam() {
 
         <div class="quiz-result">
 
-            <span class="result-icon">
-                ${
-                    percentage >= 80
-                        ? '🏆'
-                        : percentage >= 60
-                            ? '⭐'
-                            : '📚'
-                }
-            </span>
+            <div class="result-circle">
+                ${percentage}%
+            </div>
 
             <h2>
                 Examen terminé
             </h2>
 
-            <div class="result-score">
-                ${score} / ${total}
-            </div>
-
             <p>
-                ${percentage}% de réussite
+                ${score} / ${total} bonnes réponses
             </p>
 
             <div class="result-actions">
 
                 <button
-                    type="button"
-                    class="primary"
+                    class="button primary"
                     onclick="
                         startExam(
                             '${state.subject}'
@@ -3102,6 +3043,14 @@ function finishExam() {
                     ">
 
                     🔄 Recommencer
+
+                </button>
+
+                <button
+                    class="button secondary"
+                    onclick="showView('progress')">
+
+                    📊 Voir ma progression
 
                 </button>
 
@@ -3199,77 +3148,45 @@ function renderProgress() {
             : 0;
 
 
+    var streak = cessState.streak || 0;
+
+
     content.innerHTML = `
 
-        <div class="progress-summary">
+        <div class="progress-overview">
 
-            <div class="stat">
-                <b>
-                    ${overall}%
-                </b>
-                <span>
-                    Progression globale
-                </span>
+            <div class="progress-big-card">
+                <strong>${overall}%</strong>
+                <span>Progression globale</span>
             </div>
 
-            <div class="stat">
-                <b>
-                    ${mastered}/${total}
-                </b>
-                <span>
-                    Chapitres maîtrisés
-                </span>
+            <div class="progress-big-card">
+                <strong>${mastered}/${total}</strong>
+                <span>Chapitres maîtrisés</span>
             </div>
 
-            <div class="stat">
-                <b>
-                    ${cessState.results.length}
-                </b>
-                <span>
-                    Quiz réalisés
-                </span>
-            </div>
-
-            <div class="stat">
-                <b>
-                    ${quizRate}%
-                </b>
-                <span>
-                    Réussite aux quiz
-                </span>
+            <div class="progress-big-card">
+                <strong>${quizRate}%</strong>
+                <span>Réussite aux quiz</span>
             </div>
 
         </div>
 
 
-        <div class="grid2">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px">
 
             <div class="panel">
 
-                <h2>
-                    📐 Mathématiques
-                </h2>
+                <h2>📐 Mathématiques</h2>
 
                 <div class="progress-row">
+                    <div class="progress-row-name">Progression</div>
+                    <div class="progress-row-bar"><span style="width:${pctSubject('maths')}%"></span></div>
+                    <div class="progress-row-value">${pctSubject('maths')}%</div>
+                </div>
 
-                    <div class="progress-label">
-                        <span>
-                            Progression
-                        </span>
-
-                        <strong>
-                            ${pctSubject('maths')}%
-                        </strong>
-                    </div>
-
-                    <div class="bar">
-                        <i
-                            style="
-                                width:${pctSubject('maths')}%
-                            ">
-                        </i>
-                    </div>
-
+                <div style="margin-top:10px;font-size:11px;color:var(--text-soft)">
+                    ${maths.filter(function(c){return getChapterProgress(c.id)>=100}).length}/${maths.length} chapitres
                 </div>
 
             </div>
@@ -3277,30 +3194,16 @@ function renderProgress() {
 
             <div class="panel">
 
-                <h2>
-                    🌍 Géographie
-                </h2>
+                <h2>🌍 Géographie</h2>
 
                 <div class="progress-row">
+                    <div class="progress-row-name">Progression</div>
+                    <div class="progress-row-bar"><span style="width:${pctSubject('geo')}%"></span></div>
+                    <div class="progress-row-value">${pctSubject('geo')}%</div>
+                </div>
 
-                    <div class="progress-label">
-                        <span>
-                            Progression
-                        </span>
-
-                        <strong>
-                            ${pctSubject('geo')}%
-                        </strong>
-                    </div>
-
-                    <div class="bar">
-                        <i
-                            style="
-                                width:${pctSubject('geo')}%
-                            ">
-                        </i>
-                    </div>
-
+                <div style="margin-top:10px;font-size:11px;color:var(--text-soft)">
+                    ${geo.filter(function(c){return getChapterProgress(c.id)>=100}).length}/${geo.length} chapitres
                 </div>
 
             </div>
@@ -3310,19 +3213,28 @@ function renderProgress() {
 
         <div class="panel">
 
-            <h2>
-                📝 Historique des quiz
-            </h2>
+            <h2>🔥 Série en cours</h2>
+
+            <p style="font-size:13px;color:var(--text-soft)">
+                ${streak > 0 ? '🔥 ' + streak + ' jour' + (streak > 1 ? 's' : '') + ' de suite !' : '📖 Continue tes révisions quotidiennes !'}
+            </p>
+
+        </div>
+
+
+        <div class="panel" style="margin-top:18px">
+
+            <h2>📝 Historique des quiz</h2>
 
             ${
                 cessState.results.length
                     ? `
-                        <div class="history">
+                        <div style="margin-top:12px">
 
                             ${cessState.results
                                 .slice()
                                 .reverse()
-                                .slice(0, 10)
+                                .slice(0, 20)
                                 .map(
                                     function (
                                         result
@@ -3334,36 +3246,36 @@ function renderProgress() {
                                             );
 
                                         return `
-                                            <div
-                                                class="history-row">
+                                            <div style="
+                                                display:flex;
+                                                align-items:center;
+                                                justify-content:space-between;
+                                                padding:10px 0;
+                                                border-bottom:1px solid var(--line);
+                                                font-size:12px;
+                                            ">
 
-                                                <span>
+                                                <span style="color:var(--text-soft)">
                                                     ${escapeHtml(
-                                                        result.mode
+                                                        result.mode || 'Quiz'
                                                     )}
                                                 </span>
 
                                                 <strong>
-                                                    ${
-                                                        result.score
-                                                    } /
-                                                    ${
-                                                        result.total
-                                                    }
+                                                    ${result.score}/${result.total}
                                                 </strong>
 
-                                                <b>
-                                                    ${
-                                                        result.percentage
-                                                    }%
-                                                </b>
+                                                <span style="
+                                                    font-weight:850;
+                                                    color:${result.percentage >= 70 ? 'var(--green)' : 'var(--red)'}
+                                                ">
+                                                    ${result.percentage || 0}%
+                                                </span>
 
-                                                <small>
-                                                    ${
-                                                        date.toLocaleDateString(
-                                                            'fr-BE'
-                                                        )
-                                                    }
+                                                <small style="color:var(--text-light)">
+                                                    ${date.toLocaleDateString(
+                                                        'fr-BE'
+                                                    )}
                                                 </small>
 
                                             </div>
@@ -3376,7 +3288,7 @@ function renderProgress() {
                         </div>
                     `
                     : `
-                        <div class="empty">
+                        <div class="empty-state">
                             Aucun quiz réalisé pour
                             le moment.
                         </div>
@@ -3390,6 +3302,51 @@ function renderProgress() {
 
 
 /* =========================================================
+   GAME PANEL
+   ========================================================= */
+
+function renderGamePanel() {
+    var panel = document.getElementById('gamePanel');
+    if (!panel) return;
+
+    panel.innerHTML = `
+        <div class="game-grid">
+            <button class="game-card" onclick="startQuiz('mixed')">
+                <span>🎯</span>
+                <strong>Quiz express</strong>
+                <small>10 questions mélangées</small>
+            </button>
+            <button class="game-card" onclick="startQuiz('truefalse')">
+                <span>⚡</span>
+                <strong>Vrai / Faux</strong>
+                <small>Répondre très vite</small>
+            </button>
+            <button class="game-card" onclick="startCapitals()">
+                <span>🌍</span>
+                <strong>Jeu des capitales</strong>
+                <small>Teste tes connaissances</small>
+            </button>
+            <button class="game-card" onclick="startQuiz('mistakes')">
+                <span>🧠</span>
+                <strong>Mes erreurs</strong>
+                <small>Rejouer les questions ratées</small>
+            </button>
+            <button class="game-card" onclick="startQuiz('maths')">
+                <span>📐</span>
+                <strong>Défi Maths</strong>
+                <small>Questions de mathématiques</small>
+            </button>
+            <button class="game-card" onclick="startQuiz('geo')">
+                <span>🌍</span>
+                <strong>Défi Géo</strong>
+                <small>Questions de géographie</small>
+            </button>
+        </div>
+    `;
+}
+
+
+/* =========================================================
    INITIALISATION
    ========================================================= */
 
@@ -3398,6 +3355,10 @@ function initCESS() {
     applyTheme();
 
     renderHome();
+
+    renderGamePanel();
+
+    renderExamPanel();
 
     if (
         typeof CHAPITRES === 'undefined'
@@ -3436,4 +3397,3 @@ if (
     initCESS();
 
 }
-```
