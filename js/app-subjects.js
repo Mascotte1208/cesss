@@ -472,8 +472,18 @@ function openChapter(id) {
                                                 <div
                                                     class="exercise-card">
 
-                                                    <div class="exercise-number">
-                                                        Exercice ${index + 1}
+                                                    <div class="exercise-meta-row">
+                                                        <div class="exercise-number">
+                                                            Exercice ${index + 1}
+                                                        </div>
+                                                        ${exercise.niveau
+                                                            ? `
+                                                                <span class="exercise-level">
+                                                                    ${escapeHtml(exercise.niveau)}
+                                                                </span>
+                                                            `
+                                                            : ''
+                                                        }
                                                     </div>
 
                                                     <div class="exercise-question">
