@@ -702,114 +702,71 @@ function replayQuiz() {
    CAPITALES
    ========================================================= */
 
-var CESS_CAPITALS = [
-    // Europe
-    ['France', 'Paris', 'Europe'],
-    ['Belgique', 'Bruxelles', 'Europe'],
-    ['Allemagne', 'Berlin', 'Europe'],
-    ['Espagne', 'Madrid', 'Europe'],
-    ['Italie', 'Rome', 'Europe'],
-    ['Portugal', 'Lisbonne', 'Europe'],
-    ['Royaume-Uni', 'Londres', 'Europe'],
-    ['Pays-Bas', 'Amsterdam', 'Europe'],
-    ['Suisse', 'Berne', 'Europe'],
-    ['Autriche', 'Vienne', 'Europe'],
-    ['Pologne', 'Varsovie', 'Europe'],
-    ['Grèce', 'Athènes', 'Europe'],
-    ['Norvège', 'Oslo', 'Europe'],
-    ['Suède', 'Stockholm', 'Europe'],
-    ['Finlande', 'Helsinki', 'Europe'],
-    ['Danemark', 'Copenhague', 'Europe'],
-    ['Irlande', 'Dublin', 'Europe'],
-    ['Islande', 'Reykjavik', 'Europe'],
-    ['Luxembourg', 'Luxembourg', 'Europe'],
-    ['Tchéquie', 'Prague', 'Europe'],
-    ['Slovaquie', 'Bratislava', 'Europe'],
-    ['Hongrie', 'Budapest', 'Europe'],
-    ['Roumanie', 'Bucarest', 'Europe'],
-    ['Bulgarie', 'Sofia', 'Europe'],
-    ['Croatie', 'Zagreb', 'Europe'],
-    ['Slovénie', 'Ljubljana', 'Europe'],
-    ['Serbie', 'Belgrade', 'Europe'],
-    ['Albanie', 'Tirana', 'Europe'],
-    ['Estonie', 'Tallinn', 'Europe'],
-    ['Lettonie', 'Riga', 'Europe'],
-    ['Lituanie', 'Vilnius', 'Europe'],
-    ['Ukraine', 'Kyiv', 'Europe'],
-
-    // Afrique
-    ['Maroc', 'Rabat', 'Afrique'],
-    ['Algérie', 'Alger', 'Afrique'],
-    ['Tunisie', 'Tunis', 'Afrique'],
-    ['Égypte', 'Le Caire', 'Afrique'],
-    ['Sénégal', 'Dakar', 'Afrique'],
-    ['Mali', 'Bamako', 'Afrique'],
-    ['Côte d’Ivoire', 'Yamoussoukro', 'Afrique'],
-    ['Ghana', 'Accra', 'Afrique'],
-    ['Nigeria', 'Abuja', 'Afrique'],
-    ['Cameroun', 'Yaoundé', 'Afrique'],
-    ['République démocratique du Congo', 'Kinshasa', 'Afrique'],
-    ['Éthiopie', 'Addis-Abeba', 'Afrique'],
-    ['Kenya', 'Nairobi', 'Afrique'],
-    ['Tanzanie', 'Dodoma', 'Afrique'],
-    ['Ouganda', 'Kampala', 'Afrique'],
-    ['Rwanda', 'Kigali', 'Afrique'],
-    ['Angola', 'Luanda', 'Afrique'],
-    ['Mozambique', 'Maputo', 'Afrique'],
-    ['Madagascar', 'Antananarivo', 'Afrique'],
-
-    // Asie
-    ['Chine', 'Pékin', 'Asie'],
-    ['Japon', 'Tokyo', 'Asie'],
-    ['Corée du Sud', 'Séoul', 'Asie'],
-    ['Inde', 'New Delhi', 'Asie'],
-    ['Pakistan', 'Islamabad', 'Asie'],
-    ['Bangladesh', 'Dacca', 'Asie'],
-    ['Népal', 'Katmandou', 'Asie'],
-    ['Thaïlande', 'Bangkok', 'Asie'],
-    ['Vietnam', 'Hanoï', 'Asie'],
-    ['Cambodge', 'Phnom Penh', 'Asie'],
-    ['Indonésie', 'Jakarta', 'Asie'],
-    ['Philippines', 'Manille', 'Asie'],
-    ['Mongolie', 'Oulan-Bator', 'Asie'],
-    ['Kazakhstan', 'Astana', 'Asie'],
-    ['Turquie', 'Ankara', 'Asie'],
-    ['Arabie saoudite', 'Riyad', 'Asie'],
-    ['Émirats arabes unis', 'Abou Dabi', 'Asie'],
-    ['Jordanie', 'Amman', 'Asie'],
-    ['Liban', 'Beyrouth', 'Asie'],
-
-    // Amériques
-    ['Canada', 'Ottawa', 'Amérique'],
-    ['États-Unis', 'Washington', 'Amérique'],
-    ['Mexique', 'Mexico', 'Amérique'],
-    ['Cuba', 'La Havane', 'Amérique'],
-    ['Haïti', 'Port-au-Prince', 'Amérique'],
-    ['République dominicaine', 'Saint-Domingue', 'Amérique'],
-    ['Costa Rica', 'San José', 'Amérique'],
-    ['Panama', 'Panama', 'Amérique'],
-    ['Colombie', 'Bogota', 'Amérique'],
-    ['Venezuela', 'Caracas', 'Amérique'],
-    ['Équateur', 'Quito', 'Amérique'],
-    ['Pérou', 'Lima', 'Amérique'],
-    ['Brésil', 'Brasilia', 'Amérique'],
-    ['Chili', 'Santiago', 'Amérique'],
-    ['Argentine', 'Buenos Aires', 'Amérique'],
-    ['Uruguay', 'Montevideo', 'Amérique'],
-    ['Paraguay', 'Asuncion', 'Amérique'],
-
-    // Océanie
-    ['Australie', 'Canberra', 'Océanie'],
-    ['Nouvelle-Zélande', 'Wellington', 'Océanie'],
-    ['Papouasie-Nouvelle-Guinée', 'Port Moresby', 'Océanie'],
-    ['Fidji', 'Suva', 'Océanie']
-];
+var CESS_CAPITALS =
+    typeof CESS_CAPITALS_DATA !== 'undefined'
+        ? CESS_CAPITALS_DATA
+        : [];
 
 
-function startCapitals() {
+function showCapitalLevels() {
+    var panel =
+        document.getElementById('gamePanel');
+
+    if (!panel) {
+        return;
+    }
+
+    var niveaux = [
+        ['Facile', '⭐', 'Capitales les plus connues'],
+        ['Moyen', '⭐⭐', 'Pays de difficulté intermédiaire'],
+        ['Expert', '⭐⭐⭐', 'Petits États et capitales difficiles']
+    ];
+
+    panel.innerHTML = `
+        <div class="quiz-start">
+            <button class="back-button" onclick="renderGamePanel()" type="button">
+                ← Retour aux jeux
+            </button>
+            <span class="eyebrow">195 pays disponibles</span>
+            <h2>🌍 Choisis ton niveau</h2>
+            <p>Chaque partie propose 15 pays et évite ceux joués récemment.</p>
+            <div class="game-grid capital-level-grid">
+                ${niveaux.map(function (niveau) {
+                    return `
+                        <button
+                            class="game-card"
+                            onclick="startCapitals('${niveau[0]}')"
+                            type="button">
+                            <span>${niveau[1]}</span>
+                            <strong>${niveau[0]}</strong>
+                            <small>${niveau[2]}</small>
+                        </button>
+                    `;
+                }).join('')}
+                <button class="game-card" onclick="startCapitals('all')" type="button">
+                    <span>🌐</span>
+                    <strong>Tous les pays</strong>
+                    <small>Les trois niveaux mélangés</small>
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+
+function startCapitals(level) {
+
+    level = level || 'all';
+
+    var paysDisponibles =
+        level === 'all'
+            ? CESS_CAPITALS
+            : CESS_CAPITALS.filter(function (item) {
+                return item[3] === level;
+            });
 
     var banque =
-        CESS_CAPITALS.map(function (item) {
+        paysDisponibles.map(function (item) {
             return {
                 id: 'capital_' + item[0],
                 data: item
@@ -820,7 +777,7 @@ function startCapitals() {
         selectFreshQuestions(
             banque,
             15,
-            'capitales'
+            'capitales_' + level
         );
 
     var questions =
@@ -858,7 +815,8 @@ function startCapitals() {
                     item[1] +
                     '.',
                 matiere: 'geo',
-                region: item[2]
+                region: item[2],
+                niveau: item[3]
             };
 
         });
