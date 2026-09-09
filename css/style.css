@@ -2483,3 +2483,110 @@ color:#b76513
 body.dark .exercise-card:nth-child(3n) .exercise-level{
 color:#ffc17a
 }
+
+
+/* BIOLOGIE */
+
+.bio-card{
+background:linear-gradient(145deg,rgba(139,92,246,.1),var(--paper) 55%)
+}
+
+.bio-card .subject-icon{
+background:#8b5cf6
+}
+
+.bio-card .progress-line span{
+background:#8b5cf6
+}
+
+@media(min-width:781px){
+.subject-cards{
+grid-template-columns:repeat(3,minmax(0,1fr))
+}
+}
+
+#bio .page-header{
+margin-bottom:20px;
+padding:20px 22px;
+border:1px solid var(--line);
+border-radius:var(--radius-lg);
+background:linear-gradient(135deg,var(--paper),rgba(139,92,246,.07));
+box-shadow:var(--shadow-sm)
+}
+
+#bio .page-header h1{
+font-size:clamp(27px,3vw,36px)
+}
+
+#bio .year-selector{
+display:grid;
+grid-template-columns:repeat(4,minmax(0,1fr));
+gap:8px;
+margin-bottom:14px
+}
+
+#bio .year-button{
+min-width:0;
+padding:9px 12px;
+text-align:center
+}
+
+#bioContent .chapter-list{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:10px
+}
+
+#bioContent .chapter-item{
+min-height:70px;
+padding:12px 14px;
+border-color:transparent;
+background:var(--paper);
+box-shadow:var(--shadow-sm)
+}
+
+#bioContent .chapter-item:hover{
+border-color:rgba(139,92,246,.35);
+box-shadow:var(--shadow);
+transform:translateY(-2px)
+}
+
+#bioContent .chapter-icon{
+width:36px;
+height:36px;
+background:rgba(139,92,246,.12)
+}
+
+@media(max-width:900px){
+#bioContent .chapter-list{
+grid-template-columns:1fr
+}
+}
+
+@media(max-width:780px){
+.mobile-nav{
+grid-template-columns:repeat(6,1fr)
+}
+}
+
+@media(max-width:600px){
+#bio .page-header{
+padding:17px;
+margin-bottom:15px
+}
+
+#bio .page-header p{
+display:none
+}
+
+#bio .year-selector{
+display:flex;
+flex-wrap:nowrap;
+overflow-x:auto;
+padding-bottom:4px
+}
+
+#bio .year-button{
+flex:0 0 105px
+}
+}
