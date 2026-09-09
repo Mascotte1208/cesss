@@ -376,12 +376,10 @@ function renderHome() {
         ]
     ].map(function (item) {
 
-        return `
-            <div class="stat">
-                <b>${item[0]} ${item[1]}</b>
-                <span>${item[2]}</span>
-            </div>
-        `;
+        return '<div class="stat">' +
+            '<b>' + item[0] + ' ' + item[1] + '</b>' +
+            '<span>' + item[2] + '</span>' +
+            '</div>';
 
     }).join('');
 
