@@ -703,90 +703,165 @@ function replayQuiz() {
    ========================================================= */
 
 var CESS_CAPITALS = [
-    ['France', 'Paris'],
-    ['Belgique', 'Bruxelles'],
-    ['Allemagne', 'Berlin'],
-    ['Espagne', 'Madrid'],
-    ['Italie', 'Rome'],
-    ['Portugal', 'Lisbonne'],
-    ['Royaume-Uni', 'Londres'],
-    ['Pays-Bas', 'Amsterdam'],
-    ['Suisse', 'Berne'],
-    ['Autriche', 'Vienne'],
-    ['Pologne', 'Varsovie'],
-    ['Grèce', 'Athènes'],
-    ['Norvège', 'Oslo'],
-    ['Suède', 'Stockholm'],
-    ['Finlande', 'Helsinki'],
-    ['Danemark', 'Copenhague'],
-    ['Irlande', 'Dublin']
+    // Europe
+    ['France', 'Paris', 'Europe'],
+    ['Belgique', 'Bruxelles', 'Europe'],
+    ['Allemagne', 'Berlin', 'Europe'],
+    ['Espagne', 'Madrid', 'Europe'],
+    ['Italie', 'Rome', 'Europe'],
+    ['Portugal', 'Lisbonne', 'Europe'],
+    ['Royaume-Uni', 'Londres', 'Europe'],
+    ['Pays-Bas', 'Amsterdam', 'Europe'],
+    ['Suisse', 'Berne', 'Europe'],
+    ['Autriche', 'Vienne', 'Europe'],
+    ['Pologne', 'Varsovie', 'Europe'],
+    ['Grèce', 'Athènes', 'Europe'],
+    ['Norvège', 'Oslo', 'Europe'],
+    ['Suède', 'Stockholm', 'Europe'],
+    ['Finlande', 'Helsinki', 'Europe'],
+    ['Danemark', 'Copenhague', 'Europe'],
+    ['Irlande', 'Dublin', 'Europe'],
+    ['Islande', 'Reykjavik', 'Europe'],
+    ['Luxembourg', 'Luxembourg', 'Europe'],
+    ['Tchéquie', 'Prague', 'Europe'],
+    ['Slovaquie', 'Bratislava', 'Europe'],
+    ['Hongrie', 'Budapest', 'Europe'],
+    ['Roumanie', 'Bucarest', 'Europe'],
+    ['Bulgarie', 'Sofia', 'Europe'],
+    ['Croatie', 'Zagreb', 'Europe'],
+    ['Slovénie', 'Ljubljana', 'Europe'],
+    ['Serbie', 'Belgrade', 'Europe'],
+    ['Albanie', 'Tirana', 'Europe'],
+    ['Estonie', 'Tallinn', 'Europe'],
+    ['Lettonie', 'Riga', 'Europe'],
+    ['Lituanie', 'Vilnius', 'Europe'],
+    ['Ukraine', 'Kyiv', 'Europe'],
+
+    // Afrique
+    ['Maroc', 'Rabat', 'Afrique'],
+    ['Algérie', 'Alger', 'Afrique'],
+    ['Tunisie', 'Tunis', 'Afrique'],
+    ['Égypte', 'Le Caire', 'Afrique'],
+    ['Sénégal', 'Dakar', 'Afrique'],
+    ['Mali', 'Bamako', 'Afrique'],
+    ['Côte d’Ivoire', 'Yamoussoukro', 'Afrique'],
+    ['Ghana', 'Accra', 'Afrique'],
+    ['Nigeria', 'Abuja', 'Afrique'],
+    ['Cameroun', 'Yaoundé', 'Afrique'],
+    ['République démocratique du Congo', 'Kinshasa', 'Afrique'],
+    ['Éthiopie', 'Addis-Abeba', 'Afrique'],
+    ['Kenya', 'Nairobi', 'Afrique'],
+    ['Tanzanie', 'Dodoma', 'Afrique'],
+    ['Ouganda', 'Kampala', 'Afrique'],
+    ['Rwanda', 'Kigali', 'Afrique'],
+    ['Angola', 'Luanda', 'Afrique'],
+    ['Mozambique', 'Maputo', 'Afrique'],
+    ['Madagascar', 'Antananarivo', 'Afrique'],
+
+    // Asie
+    ['Chine', 'Pékin', 'Asie'],
+    ['Japon', 'Tokyo', 'Asie'],
+    ['Corée du Sud', 'Séoul', 'Asie'],
+    ['Inde', 'New Delhi', 'Asie'],
+    ['Pakistan', 'Islamabad', 'Asie'],
+    ['Bangladesh', 'Dacca', 'Asie'],
+    ['Népal', 'Katmandou', 'Asie'],
+    ['Thaïlande', 'Bangkok', 'Asie'],
+    ['Vietnam', 'Hanoï', 'Asie'],
+    ['Cambodge', 'Phnom Penh', 'Asie'],
+    ['Indonésie', 'Jakarta', 'Asie'],
+    ['Philippines', 'Manille', 'Asie'],
+    ['Mongolie', 'Oulan-Bator', 'Asie'],
+    ['Kazakhstan', 'Astana', 'Asie'],
+    ['Turquie', 'Ankara', 'Asie'],
+    ['Arabie saoudite', 'Riyad', 'Asie'],
+    ['Émirats arabes unis', 'Abou Dabi', 'Asie'],
+    ['Jordanie', 'Amman', 'Asie'],
+    ['Liban', 'Beyrouth', 'Asie'],
+
+    // Amériques
+    ['Canada', 'Ottawa', 'Amérique'],
+    ['États-Unis', 'Washington', 'Amérique'],
+    ['Mexique', 'Mexico', 'Amérique'],
+    ['Cuba', 'La Havane', 'Amérique'],
+    ['Haïti', 'Port-au-Prince', 'Amérique'],
+    ['République dominicaine', 'Saint-Domingue', 'Amérique'],
+    ['Costa Rica', 'San José', 'Amérique'],
+    ['Panama', 'Panama', 'Amérique'],
+    ['Colombie', 'Bogota', 'Amérique'],
+    ['Venezuela', 'Caracas', 'Amérique'],
+    ['Équateur', 'Quito', 'Amérique'],
+    ['Pérou', 'Lima', 'Amérique'],
+    ['Brésil', 'Brasilia', 'Amérique'],
+    ['Chili', 'Santiago', 'Amérique'],
+    ['Argentine', 'Buenos Aires', 'Amérique'],
+    ['Uruguay', 'Montevideo', 'Amérique'],
+    ['Paraguay', 'Asuncion', 'Amérique'],
+
+    // Océanie
+    ['Australie', 'Canberra', 'Océanie'],
+    ['Nouvelle-Zélande', 'Wellington', 'Océanie'],
+    ['Papouasie-Nouvelle-Guinée', 'Port Moresby', 'Océanie'],
+    ['Fidji', 'Suva', 'Océanie']
 ];
 
 
 function startCapitals() {
 
+    var banque =
+        CESS_CAPITALS.map(function (item) {
+            return {
+                id: 'capital_' + item[0],
+                data: item
+            };
+        });
+
+    var selection =
+        selectFreshQuestions(
+            banque,
+            15,
+            'capitales'
+        );
+
     var questions =
-        shuffle(CESS_CAPITALS)
-            .slice(0, 10)
-            .map(function (item, index) {
+        selection.map(function (entry) {
 
-                var wrong =
-                    shuffle(
-                        CESS_CAPITALS
-                            .filter(
-                                function (other) {
-                                    return (
-                                        other[1] !==
-                                        item[1]
-                                    );
-                                }
-                            )
-                    )
-                    .slice(0, 3)
-                    .map(
+            var item = entry.data;
+
+            var wrong =
+                shuffle(
+                    CESS_CAPITALS.filter(
                         function (other) {
-                            return other[1];
+                            return other[1] !== item[1];
                         }
-                    );
+                    )
+                )
+                .slice(0, 3)
+                .map(function (other) {
+                    return other[1];
+                });
 
-                var options =
-                    shuffle(
-                        wrong.concat([
-                            item[1]
-                        ])
-                    );
+            var options =
+                shuffle(wrong.concat([item[1]]));
 
-                return {
+            return {
+                id: entry.id,
+                question:
+                    'Quelle est la capitale de ' +
+                    item[0] +
+                    ' ?',
+                options: options,
+                correct: options.indexOf(item[1]),
+                correction:
+                    item[0] +
+                    ' a pour capitale ' +
+                    item[1] +
+                    '.',
+                matiere: 'geo',
+                region: item[2]
+            };
 
-                    id:
-                        'capital_' +
-                        index,
-
-                    question:
-                        'Quelle est la capitale de ' +
-                        item[0] +
-                        ' ?',
-
-                    options:
-                        options,
-
-                    correct:
-                        options.indexOf(
-                            item[1]
-                        ),
-
-                    correction:
-                        item[0] +
-                        ' a pour capitale ' +
-                        item[1] +
-                        '.',
-
-                    matiere:
-                        'geo'
-
-                };
-
-            });
+        });
 
 
     cessQuizState = {
