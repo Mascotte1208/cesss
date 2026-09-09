@@ -55,6 +55,10 @@ function showView(id) {
         renderSubject('geo');
     }
 
+    if (id === 'bio') {
+        renderSubject('bio');
+    }
+
     if (id === 'memo') {
         renderMemo();
     }
