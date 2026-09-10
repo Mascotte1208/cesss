@@ -52,3 +52,5 @@ function returnToSubject(subject) {
     }
     showView(subject);
 }
+
+registerLibrarySubjects();
