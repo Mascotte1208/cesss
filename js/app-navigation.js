@@ -23,13 +23,15 @@ function showView(id) {
     }
 
     target.classList.add('active');
+    if (typeof stopMiniGame === 'function') stopMiniGame();
+    if (typeof quizTimer !== 'undefined' && quizTimer) { clearInterval(quizTimer); quizTimer = null; }
 
     var navButtons =
         document.querySelectorAll('.nav-item, .mobile-nav button');
 
     for (var n = 0; n < navButtons.length; n++) {
         navButtons[n].classList.remove('active');
-        if (navButtons[n].getAttribute('data-view') === id) {
+        if (navButtons[n].getAttribute('data-view') === ((typeof CESS_SUBJECTS !== 'undefined' && CESS_SUBJECTS[id]) ? 'library' : id)) {
             navButtons[n].classList.add('active');
         }
     }
@@ -81,7 +83,7 @@ function showView(id) {
 
     if (id === 'flashcards') {
         if (typeof initFlashcards === 'function') {
-            initFlashcards('maths');
+            initFlashcards(typeof flashcardSubject !== 'undefined' ? flashcardSubject : 'maths');
         }
     }
 }
