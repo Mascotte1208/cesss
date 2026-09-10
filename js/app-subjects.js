@@ -613,12 +613,15 @@ function openChapter(id) {
     `;
 
 
-    var host =
-        document.getElementById(
-            subject === 'geo'
-                ? 'geoContent'
-                : 'mathContent'
-        );
+    var contentHosts = {
+        maths: 'mathContent',
+        geo: 'geoContent',
+        bio: 'bioContent'
+    };
+
+    var host = document.getElementById(
+        contentHosts[subject] || 'mathContent'
+    );
 
     if (!host) {
         return;
@@ -1120,4 +1123,3 @@ function printChapter(id) {
     win.document.close();
     win.print();
 }
-
