@@ -337,11 +337,7 @@ function renderQuizQuestion() {
             <div class="quiz-question">
 
                 <div class="eyebrow">
-                    ${q.matiere === 'geo'
-                        ? '🌍 Géographie'
-                        : (q.matiere === 'bio'
-                            ? '🧬 Biologie'
-                            : '📐 Mathématiques')}
+                    ${escapeHtml(CESS_SUBJECTS[q.matiere] ? CESS_SUBJECTS[q.matiere].label : (q.matiere || 'Entraînement'))}
                 </div>
 
                 <h2>
