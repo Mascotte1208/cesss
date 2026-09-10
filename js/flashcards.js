@@ -75,6 +75,27 @@ var FLASHCARDS_DATA = {
         { terme: 'ONU', definition: 'Organisation des Nations Unies.' },
         { terme: 'Soft power', definition: 'Puissance fondée sur l\'attractivité et l\'influence.' },
         { terme: 'Hard power', definition: 'Puissance fondée sur la contrainte ou la capacité matérielle.' }
+    ],
+
+    bio: [
+        { terme: 'Cellule', definition: 'Plus petite unité structurale et fonctionnelle du vivant.' },
+        { terme: 'Membrane cellulaire', definition: 'Enveloppe qui délimite la cellule et contrôle les échanges.' },
+        { terme: 'ADN', definition: 'Molécule qui porte l’information génétique.' },
+        { terme: 'Gène', definition: 'Portion d’ADN participant à la production d’une molécule ou d’un caractère.' },
+        { terme: 'Mitose', definition: 'Division produisant deux cellules génétiquement identiques.' },
+        { terme: 'Photosynthèse', definition: 'Production de matière organique grâce à la lumière, au CO₂ et à l’eau.' },
+        { terme: 'Respiration cellulaire', definition: 'Libération d’énergie à partir de nutriments, généralement avec du dioxygène.' },
+        { terme: 'Enzyme', definition: 'Protéine qui accélère une réaction chimique précise.' },
+        { terme: 'Homéostasie', definition: 'Maintien d’un équilibre interne malgré les variations du milieu.' },
+        { terme: 'Neurone', definition: 'Cellule spécialisée dans la transmission de messages nerveux.' },
+        { terme: 'Hormone', definition: 'Messager chimique agissant sur des cellules cibles.' },
+        { terme: 'Immunité', definition: 'Ensemble des défenses de l’organisme contre les agents pathogènes.' },
+        { terme: 'Écosystème', definition: 'Ensemble formé par les êtres vivants et leur milieu.' },
+        { terme: 'Biodiversité', definition: 'Diversité des êtres vivants, de leurs gènes et des écosystèmes.' },
+        { terme: 'Sélection naturelle', definition: 'Processus favorisant les caractères qui améliorent survie et reproduction.' },
+        { terme: 'Mutation', definition: 'Modification de la séquence de l’ADN.' },
+        { terme: 'Vaccination', definition: 'Préparation du système immunitaire à reconnaître un agent infectieux.' },
+        { terme: 'Synapse', definition: 'Zone de communication entre neurones ou avec une cellule cible.' }
     ]
 };
 
@@ -118,7 +139,7 @@ function renderFlashcard() {
 
     container.innerHTML = `
         <div style="text-align:center;margin-bottom:12px;font-size:11px;color:var(--text-soft);">
-            ${flashcardIndex + 1} / ${total} · ${flashcardSubject === 'maths' ? '📐 Mathématiques' : '🌍 Géographie'}
+            ${flashcardIndex + 1} / ${total} · ${flashcardSubject === 'maths' ? '📐 Mathématiques' : (flashcardSubject === 'geo' ? '🌍 Géographie' : '🧬 Biologie')}
             <span style="margin-left:12px;">
                 <button class="button secondary" style="padding:4px 10px;font-size:9px;" onclick="toggleFlashcardMode()">
                     ${flashcardMode === 'term-def' ? 'Définition → Terme' : 'Terme → Définition'}
