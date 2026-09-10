@@ -272,7 +272,7 @@ function openChapterBplus(id) {
 
     var content = document.createElement('div');
     content.className = 'detail bplus-detail bplus-' + subject;
-    content.innerHTML = '<div class="bplus-breadcrumb"><button onclick="showView(\'' + subject + '\')">← ' + escapeHtml(subjectInfo.label) + '</button><span>/</span><span>' + escapeHtml(chapter.annee || '') + '</span><span>/</span><span>' + safeTitle + '</span></div>' +
+    content.innerHTML = '<div class="bplus-breadcrumb"><button onclick="returnToSubject(\'' + subject + '\')">← ' + escapeHtml(subjectInfo.label) + '</button><span>/</span><span>' + escapeHtml(chapter.annee || '') + '</span><span>/</span><span>' + safeTitle + '</span></div>' +
         '<header class="bplus-header">' +
           '<div class="bplus-badges"><span class="bplus-badge accent">' + escapeHtml(chapter.annee || '') + ' secondaire</span><span class="bplus-badge">' + escapeHtml(subjectInfo.label) + '</span><span class="bplus-badge warm">' + bplusDifficulty(chapter.annee) + '</span><span class="bplus-badge">≈ ' + minutes + ' min</span></div>' +
           '<div class="bplus-heading"><div class="bplus-icon">' + (chapter.icone || '📘') + '</div><div><p class="bplus-kicker">FICHE DE COURS COMPLÈTE</p><h1>' + safeTitle + '</h1><p class="bplus-lead">' + escapeHtml(chapter.desc || '') + '</p></div></div>' +
@@ -1045,10 +1045,11 @@ function flattenQuestions(filter) {
 
     filter = filter || 'all';
 
-    var chapters =
-        allChaps('maths')
-            .concat(allChaps('geo'))
-            .concat(allChaps('bio'));
+    var chapters = [];
+
+    Object.keys(CESS_SUBJECTS).forEach(function (subject) {
+        chapters = chapters.concat(allChaps(subject));
+    });
 
     var questions = [];
 
@@ -1126,18 +1127,10 @@ function flattenQuestions(filter) {
     }
 
 
-    if (
-        filter === 'maths' ||
-        filter === 'geo' ||
-        filter === 'bio'
-    ) {
-
-        questions =
-            questions.filter(
-                function (q) {
-                    return q.matiere === filter;
-                }
-            );
+    if (CESS_SUBJECTS[filter]) {
+        questions = questions.filter(function (q) {
+            return q.matiere === filter;
+        });
     }
 
 
