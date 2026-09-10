@@ -98,9 +98,11 @@ function allChaps(subject) {
 }
 
 function findChapter(id) {
-    var chapters = allChaps('maths')
-        .concat(allChaps('geo'))
-        .concat(allChaps('bio'));
+    var chapters = [];
+
+    Object.keys(CESS_SUBJECTS).forEach(function (subject) {
+        chapters = chapters.concat(allChaps(subject));
+    });
 
     for (var i = 0; i < chapters.length; i++) {
         if (
