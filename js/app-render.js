@@ -115,7 +115,7 @@ function renderHome() {
         if (!chapters.length) {
 
             priorities.innerHTML =
-                '<div class="empty-state">🎉 Tout est maîtrisé !</div>';
+                '<div class="empty-state">Aucun chapitre en cours. Choisis une matière pour commencer.</div>';
 
         } else {
 
@@ -903,18 +903,22 @@ function renderProgress() {
    ========================================================= */
 
 function renderGamePanel() {
+    if (typeof stopMiniGame === 'function') stopMiniGame();
+    if (typeof quizTimer !== 'undefined' && quizTimer) { clearInterval(quizTimer); quizTimer = null; }
     var panel = document.getElementById('gamePanel');
     if (!panel) return;
 
     panel.innerHTML = `
         <div class="game-grid">
+<button class="game-card" type="button" onclick="startMini('repair')"><span>✎</span><strong>Phrase et formule à réparer</strong><small>Langues, maths et sciences · 8 défis</small></button>
+<button class="game-card" type="button" onclick="startMini('lab')"><span>⚗️</span><strong>Mission laboratoire</strong><small>Variables, mesures et hypothèses · 6 défis</small></button>
             <button class="game-card" onclick="startSprintGame()" type="button">
-                <span>⏱️</span><strong>Sprint 10</strong>
-                <small>10 questions rapides, toutes matières</small>
+                <span>⏱️</span><strong>Sprint 60 secondes</strong>
+                <small>Calcul mental · une minute</small>
             </button>
             <button class="game-card" onclick="startAssociationGame()" type="button">
-                <span>🔗</span><strong>Association express</strong>
-                <small>Relie une notion à sa matière</small>
+                <span>🔗</span><strong>Chronologie express</strong>
+                <small>Dates et événements historiques</small>
             </button>
             <button class="game-card" onclick="startDetectiveGame()" type="button">
                 <span>🔎</span><strong>Détective de document</strong>
