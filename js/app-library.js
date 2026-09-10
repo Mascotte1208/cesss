@@ -16,6 +16,7 @@ function registerLibrarySubjects() {
 function renderLibrary() {
     var root = document.getElementById('libraryContent');
     if (!root || typeof CESS_LIBRARY_DATA === 'undefined') return;
+    var query = String(window.cessLibrarySearch || '').trim().toLowerCase();
     var groups = {
         'Fondamentales': ['francais', 'maths', 'geo', 'bio'],
         'Langues': ['anglais', 'neerlandais', 'latin'],
@@ -27,7 +28,20 @@ function renderLibrary() {
         physique: 'Sciences selon l’option', chimie: 'Sciences selon l’option', numerique: 'Option / cours d’école',
         histoire: 'Matière centrale', sciences_sociales: 'Option', sciences_economiques: 'Option', epc: 'Selon le réseau'
     };
-    var cards = function (keys) { return keys.filter(function (key) { return CESS_SUBJECTS[key]; }).map(function (key) {
+    var cards = function (keys) { return keys.filter(function (key) {
+            if (!CESS_SUBJECTS[key]) return false;
+            if (!query) return true;
+            var subject = CESS_SUBJECTS[key];
+            var data = subject.getData();
+            var words = [subject.label, status[key] || ''];
+            Object.keys(data).forEach(function (year) {
+                (data[year] || []).forEach(function (chapter) {
+                    words.push(chapter.titre || '');
+                    words.push((chapter.matieres || []).join(' '));
+                });
+            });
+            return words.join(' ').toLowerCase().indexOf(query) !== -1;
+        }).map(function (key) {
             var subject = CESS_SUBJECTS[key];
             var data = subject.getData();
             var count = Object.keys(data).reduce(function (total, year) { return total + (data[year] || []).length; }, 0);
@@ -36,10 +50,14 @@ function renderLibrary() {
                 '<h3>' + escapeHtml(subject.label) + '</h3><p>3e à 6e secondaire · ' + count + ' chapitres</p>' +
                 '<div class="subject-card-footer"><span>' + (status[key] || 'Programme à adapter') + '</span><span>→</span></div></button>';
         }).join(''); };
+    var sections = Object.keys(groups).map(function (group) {
+        var groupCards = cards(groups[group]);
+        if (!groupCards) return '';
+        return '<section class="home-section"><div class="section-heading"><span class="eyebrow">Catalogue</span><h2>' + group + '</h2></div><div class="subject-cards library-subject-cards">' + groupCards + '</div></section>';
+    }).join('');
     root.innerHTML = '<div class="panel library-notice"><span class="eyebrow">Repère</span><h2>Choisis uniquement les matières de ton horaire</h2><p>Les options, le nombre d’heures et les programmes exacts varient selon l’école et le réseau. Le catalogue est organisé pour rester clair, pas pour tout réviser en même temps.</p></div>' +
-        Object.keys(groups).map(function (group) {
-            return '<section class="home-section"><div class="section-heading"><span class="eyebrow">Catalogue</span><h2>' + group + '</h2></div><div class="subject-cards library-subject-cards">' + cards(groups[group]) + '</div></section>';
-        }).join('');
+        '<div class="search-box" style="margin-top:18px"><span>⌕</span><input id="librarySearch" type="search" value="' + escapeHtml(window.cessLibrarySearch || '') + '" oninput="cessLibrarySearch=this.value;renderLibrary()" placeholder="Rechercher une matière, un chapitre ou une notion"></div>' +
+        (sections || '<div class="empty-state">Aucune matière ou notion ne correspond à cette recherche.</div>');
 }
 
 function renderLibrarySubject(subject) {
