@@ -17,19 +17,20 @@ function renderLibrary() {
     var root = document.getElementById('libraryContent');
     if (!root || typeof CESS_LIBRARY_DATA === 'undefined') return;
     var groups = {
-        'Fondamentales': ['francais'],
+        'Fondamentales': ['francais', 'maths', 'geo', 'bio'],
         'Langues': ['anglais', 'neerlandais', 'latin'],
         'Sciences': ['physique', 'chimie', 'numerique'],
         'Sciences humaines': ['histoire', 'sciences_sociales', 'sciences_economiques', 'epc']
     };
     var status = {
-        francais: 'Matière centrale', anglais: 'Selon la langue choisie', neerlandais: 'Selon la langue choisie', latin: 'Option',
+        francais: 'Matière centrale', maths: 'Matière centrale', geo: 'Matière centrale', bio: 'Sciences selon l’option', anglais: 'Selon la langue choisie', neerlandais: 'Selon la langue choisie', latin: 'Option',
         physique: 'Sciences selon l’option', chimie: 'Sciences selon l’option', numerique: 'Option / cours d’école',
         histoire: 'Matière centrale', sciences_sociales: 'Option', sciences_economiques: 'Option', epc: 'Selon le réseau'
     };
-    var cards = function (keys) { return keys.filter(function (key) { return CESS_LIBRARY_DATA[key]; }).map(function (key) {
-            var subject = CESS_LIBRARY_DATA[key];
-            var count = Object.keys(subject.data).reduce(function (total, year) { return total + subject.data[year].length; }, 0);
+    var cards = function (keys) { return keys.filter(function (key) { return CESS_SUBJECTS[key]; }).map(function (key) {
+            var subject = CESS_SUBJECTS[key];
+            var data = subject.getData();
+            var count = Object.keys(data).reduce(function (total, year) { return total + (data[year] || []).length; }, 0);
             return '<button class="subject-card games-card" type="button" onclick="renderLibrarySubject(\'' + key + '\')">' +
                 '<div class="subject-card-top"><div class="subject-icon">' + subject.icon + '</div><span class="subject-arrow">→</span></div>' +
                 '<h3>' + escapeHtml(subject.label) + '</h3><p>3e à 6e secondaire · ' + count + ' chapitres</p>' +
@@ -44,7 +45,11 @@ function renderLibrary() {
 function renderLibrarySubject(subject) {
     var root = document.getElementById('libraryContent');
     var info = CESS_SUBJECTS[subject];
-    if (!root || !info || !info.library) return;
+    if (!root || !info) return;
+    if (!info.library) {
+        showView(subject);
+        return;
+    }
     var data = info.getData();
     var years = ['3e', '4e', '5e', '6e'];
     root.innerHTML = '<div class="page-header"><div class="page-header-main"><span class="eyebrow">Bibliothèque CESS</span><h1>' + info.icon + ' ' + escapeHtml(info.label) + '</h1><p>Choisis une année puis ouvre un chapitre pour étudier le cours et t’entraîner.</p></div>' +
