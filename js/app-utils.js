@@ -149,6 +149,52 @@ function parseCoursSections(cours) {
     return sections;
 }
 
+/* Regroupe les nombreux petits panneaux historiques en grands chapitres
+   de lecture. Le contenu source reste intact : seuls les titres et leur
+   présentation sont réorganisés. */
+function groupCoursSections(sections) {
+    if (!Array.isArray(sections) || !sections.length) {
+        return [];
+    }
+
+    var groups = [
+        { title: 'Notions essentielles', icon: '◆', match: /essentiel|d[eé]finition|vocabulaire|rep[eè]re|th[eé]or[eè]me|c.est quoi|notion|introduction/i, items: [] },
+        { title: 'Comprendre le cours', icon: '◎', match: /comprendre|m[eé]canisme|fonctionnement|principe|explication|le cours|propri[eé]t[eé]/i, items: [] },
+        { title: 'Formules et applications', icon: '∑', match: /formule|calcul|exemple|application|cas |diagonale|r[eé]ciproque|relation|loi /i, items: [] },
+        { title: 'Méthode et raisonnement', icon: '→', match: /m[eé]thode|d[eé]marche|raisonnement|observer|exp[eé]riment|document|r[eé]soudre|pas [àa] pas/i, items: [] },
+        { title: 'Approfondir et relier', icon: '↗', match: /approfond|connexion|lien|niveau examen|transfert|aller plus loin|cess/i, items: [] },
+        { title: 'Pièges et erreurs à éviter', icon: '!', match: /pi[eè]ge|erreur|attention|confusion/i, items: [] },
+        { title: 'Synthèse et vérification', icon: '✓', match: /check|synth[eè]se|objectif|retenir|bilan|entra[iî]nement/i, items: [] }
+    ];
+
+    sections.forEach(function (section, index) {
+        var plainTitle = String(section.title || '').replace(/<[^>]*>/g, ' ').trim();
+        var target = null;
+        for (var i = 0; i < groups.length; i++) {
+            if (groups[i].match.test(plainTitle)) {
+                target = groups[i];
+                break;
+            }
+        }
+        if (!target) {
+            target = index < Math.ceil(sections.length / 2) ? groups[1] : groups[4];
+        }
+        target.items.push(section);
+    });
+
+    return groups.filter(function (group) {
+        return group.items.length;
+    }).map(function (group) {
+        return {
+            title: group.title,
+            icon: group.icon,
+            body: group.items.map(function (item) {
+                return '<section class="bplus-subsection"><h4>' + item.title + '</h4>' + item.body + '</section>';
+            }).join('')
+        };
+    });
+}
+
 function pctSubject(subject) {
     var chapters = allChaps(subject);
 
@@ -170,4 +216,3 @@ function pctSubject(subject) {
         done / chapters.length * 100
     );
 }
-
