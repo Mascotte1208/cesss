@@ -930,7 +930,7 @@ function renderGamePanel() {
             <button class="game-card" onclick="startQuiz('mistakes')">
                 <span>🧠</span>
                 <strong>Mes erreurs</strong>
-                <small>Rejouer les questions ratées</small>
+                <small>${cessState.mistakes.length ? cessState.mistakes.length + ' question' + (cessState.mistakes.length > 1 ? 's' : '') + ' à revoir' : 'Aucune erreur à revoir'}</small>
             </button>
             <button class="game-card" onclick="startQuiz('maths')">
                 <span>📐</span>
