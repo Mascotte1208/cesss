@@ -25,7 +25,7 @@ function showView(id) {
     target.classList.add('active');
 
     var navButtons =
-        document.querySelectorAll('.nav-item');
+        document.querySelectorAll('.nav-item, .mobile-nav button');
 
     for (var n = 0; n < navButtons.length; n++) {
         navButtons[n].classList.remove('active');
