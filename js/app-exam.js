@@ -9,31 +9,23 @@
 function renderExamPanel() {
     var panel = document.getElementById('examPanel');
     if (!panel) return;
-
-    panel.innerHTML = `
-        <div class="exam-list">
-            <div class="exam-card">
-                <div class="exam-icon">📐</div>
-                <h3>Examen blanc Maths</h3>
-                <p>15 questions aléatoires de mathématiques</p>
-                <button class="button primary" onclick="startExam('maths')">Commencer →</button>
-            </div>
-            <div class="exam-card">
-                <div class="exam-icon">🌍</div>
-                <h3>Examen blanc Géographie</h3>
-                <p>15 questions aléatoires de géographie</p>
-                <button class="button primary" onclick="startExam('geo')">Commencer →</button>
-            </div>
-            <div class="exam-card">
-                <div class="exam-icon">🧬</div>
-                <h3>Examen blanc Biologie</h3>
-                <p>15 questions aléatoires sur le vivant</p>
-                <button class="button primary" onclick="startExam('bio')">Commencer →</button>
-            </div>
-        </div>
-    `;
+    var subjects = Object.keys(CESS_SUBJECTS || {}).filter(function (key) {
+        return allChaps(key).length && flattenQuestions(key).length;
+    });
+    var options = '<option value="all">Toutes les matières — examen mixte</option>' +
+        subjects.map(function (key) {
+            return '<option value="' + key + '">' + escapeHtml(CESS_SUBJECTS[key].icon || '📘') + ' ' + escapeHtml(CESS_SUBJECTS[key].label) + '</option>';
+        }).join('');
+    panel.innerHTML =
+        '<div class="panel" style="margin-bottom:18px"><span class="eyebrow">Examen blanc</span><h2>Un entraînement ciblé ou mixte</h2><p>15 questions tirées au hasard. Choisis une matière de ton horaire, ou mélange-les pour t’entraîner à passer d’un sujet à l’autre.</p>' +
+        '<div class="memo-filter" style="margin-top:15px"><select id="examSubjectSelect">' + options + '</select><button class="button primary" type="button" onclick="startExam(document.getElementById(\'examSubjectSelect\').value)">Commencer →</button></div></div>' +
+        '<div class="exam-list">' +
+        '<div class="exam-card"><div class="exam-icon">🎓</div><h3>Examen mixte</h3><p>Un sujet global de 15 questions, utile pour varier les révisions.</p><button class="button primary" onclick="startExam(\'all\')">Commencer →</button></div>' +
+        subjects.slice(0, 6).map(function (key) {
+            var item = CESS_SUBJECTS[key];
+            return '<div class="exam-card"><div class="exam-icon">' + (item.icon || '📘') + '</div><h3>Examen ' + escapeHtml(item.label) + '</h3><p>15 questions aléatoires de la matière.</p><button class="button primary" onclick="startExam(\'' + key + '\')">Commencer →</button></div>';
+        }).join('') + '</div>';
 }
-
 
 function startExam(subject) {
 
@@ -168,9 +160,9 @@ function renderExamQuestion() {
 
                 <div class="eyebrow">
                     ${
-                        state.subject === 'geo'
-                            ? '🌍 Géographie'
-                            : '📐 Mathématiques'
+                        state.subject === 'all'
+                            ? '🎓 Examen mixte'
+                            : escapeHtml((CESS_SUBJECTS[state.subject] && CESS_SUBJECTS[state.subject].icon ? CESS_SUBJECTS[state.subject].icon + ' ' : '') + (CESS_SUBJECTS[state.subject] ? CESS_SUBJECTS[state.subject].label : 'Entraînement'))
                     }
                 </div>
 
