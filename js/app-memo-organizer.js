@@ -35,7 +35,7 @@
         });
         return Object.keys(groups).sort().map(function (key) {
             var entries = groups[key];
-            return '<details class="memo-group" open><summary><strong>' + escapeHtml(key) + '</strong><span>' + entries.length + ' mémo' + (entries.length > 1 ? 's' : '') + '</span></summary><div class="memo-grid">' + entries.map(card).join('') + '</div></details>';
+            return '<details class="memo-group"><summary><strong>' + escapeHtml(key) + '</strong><span>' + entries.length + ' mémo' + (entries.length > 1 ? 's' : '') + '</span></summary><div class="memo-grid">' + entries.map(card).join('') + '</div></details>';
         }).join('');
     }
 
