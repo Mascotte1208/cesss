@@ -59,6 +59,10 @@ function showView(id) {
         renderSubject('bio');
     }
 
+    if (id === 'library') {
+        renderLibrary();
+    }
+
     if (id === 'memo') {
         renderMemo();
     }
