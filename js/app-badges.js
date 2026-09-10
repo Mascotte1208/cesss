@@ -13,6 +13,7 @@ var BADGES = {
     perfect_score: { id: 'perfect_score', nom: 'Parfait !', description: 'Obtenir 100% à un quiz', icone: '⭐' },
     maths_champion: { id: 'maths_champion', nom: 'Champion Maths', description: 'Maîtriser tous les chapitres de maths', icone: '📐' },
     geo_champion: { id: 'geo_champion', nom: 'Champion Géo', description: 'Maîtriser tous les chapitres de géographie', icone: '🌍' },
+    bio_champion: { id: 'bio_champion', nom: 'Champion Bio', description: 'Maîtriser tous les chapitres de biologie', icone: '🧬' },
     ten_streak: { id: 'ten_streak', nom: 'Série en cours', description: '10 jours de révision consécutifs', icone: '📅' },
     master_all: { id: 'master_all', nom: 'Maître CESS', description: 'Maîtriser tous les chapitres', icone: '👑' }
 };
@@ -22,7 +23,8 @@ function getBadges() {
     var results = cessState.results || [];
     var mathsChaps = allChaps('maths');
     var geoChaps = allChaps('geo');
-    var allChapsTotal = mathsChaps.concat(geoChaps);
+    var bioChaps = allChaps('bio');
+    var allChapsTotal = mathsChaps.concat(geoChaps).concat(bioChaps);
 
     if (results.length >= 1) unlocked.push('first_quiz');
     if (results.length >= 5) unlocked.push('five_quizzes');
@@ -47,9 +49,15 @@ function getBadges() {
     }
     if (geoDone === geoChaps.length && geoChaps.length > 0) unlocked.push('geo_champion');
 
+    var bioDone = 0;
+    for (var b = 0; b < bioChaps.length; b++) {
+        if (getChapterProgress(bioChaps[b].id) >= 100) bioDone++;
+    }
+    if (bioDone === bioChaps.length && bioChaps.length > 0) unlocked.push('bio_champion');
+
     if (cessState.streak >= 10) unlocked.push('ten_streak');
 
-    if (mathsDone === mathsChaps.length && geoDone === geoChaps.length && allChapsTotal.length > 0) unlocked.push('master_all');
+    if (mathsDone === mathsChaps.length && geoDone === geoChaps.length && bioDone === bioChaps.length && allChapsTotal.length > 0) unlocked.push('master_all');
 
     return unlocked.filter(function(value, index, self) {
         return self.indexOf(value) === index;
@@ -99,4 +107,3 @@ function renderBadges() {
 
     container.innerHTML = html;
 }
-

@@ -22,8 +22,11 @@ function renderHome() {
     var geoCount =
         allChaps('geo').length;
 
+    var bioCount =
+        allChaps('bio').length;
+
     var total =
-        mathsCount + geoCount;
+        mathsCount + geoCount + bioCount;
 
     stats.innerHTML = [
         [
@@ -608,8 +611,11 @@ function renderProgress() {
     var geo =
         allChaps('geo');
 
+    var bio =
+        allChaps('bio');
+
     var all =
-        maths.concat(geo);
+        maths.concat(geo).concat(bio);
 
 
     var mastered =
@@ -706,7 +712,7 @@ function renderProgress() {
         </div>
 
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-bottom:18px">
 
             <div class="panel">
 
@@ -737,6 +743,23 @@ function renderProgress() {
 
                 <div style="margin-top:10px;font-size:11px;color:var(--text-soft)">
                     ${geo.filter(function(c){return getChapterProgress(c.id)>=100}).length}/${geo.length} chapitres
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <h2>🧬 Biologie</h2>
+
+                <div class="progress-row">
+                    <div class="progress-row-name">Progression</div>
+                    <div class="progress-row-bar"><span style="width:${pctSubject('bio')}%"></span></div>
+                    <div class="progress-row-value">${pctSubject('bio')}%</div>
+                </div>
+
+                <div style="margin-top:10px;font-size:11px;color:var(--text-soft)">
+                    ${bio.filter(function(c){return getChapterProgress(c.id)>=100}).length}/${bio.length} chapitres
                 </div>
 
             </div>
@@ -923,4 +946,3 @@ function renderGamePanel() {
         </div>
     `;
 }
-
