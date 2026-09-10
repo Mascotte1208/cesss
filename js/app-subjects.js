@@ -59,7 +59,8 @@ function renderSubject(subject) {
         '3e',
         '4e',
         '5e',
-        '6e'
+        '6e',
+        'transversal'
     ];
 
     yearsElement.innerHTML =
