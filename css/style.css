@@ -2212,7 +2212,8 @@ margin-top:4px
 
 /* Un en-tête plus court laisse davantage de place aux chapitres. */
 #maths .page-header,
-#geo .page-header{
+#geo .page-header,
+#bio .page-header{
 margin-bottom:20px;
 padding:20px 22px;
 border:1px solid var(--line);
@@ -2222,18 +2223,21 @@ box-shadow:var(--shadow-sm)
 }
 
 #maths .page-header h1,
-#geo .page-header h1{
+#geo .page-header h1,
+#bio .page-header h1{
 font-size:clamp(27px,3vw,36px)
 }
 
 #maths .page-header p,
-#geo .page-header p{
+#geo .page-header p,
+#bio .page-header p{
 margin-top:7px
 }
 
 /* Les années restent faciles à parcourir sans prendre trop de hauteur. */
 #maths .year-selector,
-#geo .year-selector{
+#geo .year-selector,
+#bio .year-selector{
 display:grid;
 grid-template-columns:repeat(4,minmax(0,1fr));
 gap:8px;
@@ -2241,28 +2245,32 @@ margin-bottom:14px
 }
 
 #maths .year-button,
-#geo .year-button{
+#geo .year-button,
+#bio .year-button{
 min-width:0;
 padding:9px 12px;
 text-align:center
 }
 
 #maths .year-button small,
-#geo .year-button small{
+#geo .year-button small,
+#bio .year-button small{
 margin-top:2px;
 white-space:nowrap
 }
 
 /* Deux colonnes raccourcissent la page et rendent le parcours plus rapide. */
 #mathContent .chapter-list,
-#geoContent .chapter-list{
+#geoContent .chapter-list,
+#bioContent .chapter-list{
 display:grid;
 grid-template-columns:repeat(2,minmax(0,1fr));
 gap:10px
 }
 
 #mathContent .chapter-item,
-#geoContent .chapter-item{
+#geoContent .chapter-item,
+#bioContent .chapter-item{
 min-height:70px;
 padding:12px 14px;
 border-color:transparent;
@@ -2271,40 +2279,47 @@ box-shadow:var(--shadow-sm)
 }
 
 #mathContent .chapter-item:hover,
-#geoContent .chapter-item:hover{
+#geoContent .chapter-item:hover,
+#bioContent .chapter-item:hover{
 border-color:rgba(49,91,234,.28);
 box-shadow:var(--shadow);
 transform:translateY(-2px)
 }
 
-#geoContent .chapter-item:hover{
+#geoContent .chapter-item:hover,
+#bioContent .chapter-item:hover{
 border-color:rgba(22,165,121,.32)
 }
 
 #mathContent .chapter-icon,
-#geoContent .chapter-icon{
+#geoContent .chapter-icon,
+#bioContent .chapter-icon{
 width:36px;
 height:36px;
 background:var(--primary-soft)
 }
 
-#geoContent .chapter-icon{
+#geoContent .chapter-icon,
+#bioContent .chapter-icon{
 background:var(--green-soft)
 }
 
 #mathContent .chapter-main strong,
-#geoContent .chapter-main strong{
+#geoContent .chapter-main strong,
+#bioContent .chapter-main strong{
 font-size:12px
 }
 
 #mathContent .chapter-main small,
-#geoContent .chapter-main small{
+#geoContent .chapter-main small,
+#bioContent .chapter-main small{
 margin-top:3px;
 line-height:1.35
 }
 
 #mathContent .chapter-status,
-#geoContent .chapter-status{
+#geoContent .chapter-status,
+#bioContent .chapter-status{
 padding:4px 7px;
 border-radius:999px;
 background:var(--paper-soft);
@@ -2314,25 +2329,29 @@ white-space:nowrap
 
 @media(max-width:900px){
 #mathContent .chapter-list,
-#geoContent .chapter-list{
+#geoContent .chapter-list,
+#bioContent .chapter-list{
 grid-template-columns:1fr
 }
 }
 
 @media(max-width:600px){
 #maths .page-header,
-#geo .page-header{
+#geo .page-header,
+#bio .page-header{
 padding:17px;
 margin-bottom:15px
 }
 
 #maths .page-header p,
-#geo .page-header p{
+#geo .page-header p,
+#bio .page-header p{
 display:none
 }
 
 #maths .year-selector,
-#geo .year-selector{
+#geo .year-selector,
+#bio .year-selector{
 display:flex;
 flex-wrap:nowrap;
 overflow-x:auto;
@@ -2341,23 +2360,27 @@ scrollbar-width:none
 }
 
 #maths .year-selector::-webkit-scrollbar,
-#geo .year-selector::-webkit-scrollbar{
+#geo .year-selector::-webkit-scrollbar,
+#bio .year-selector::-webkit-scrollbar{
 display:none
 }
 
 #maths .year-button,
-#geo .year-button{
+#geo .year-button,
+#bio .year-button{
 flex:0 0 105px
 }
 
 #mathContent .chapter-item,
-#geoContent .chapter-item{
+#geoContent .chapter-item,
+#bioContent .chapter-item{
 min-height:62px;
 padding:10px 11px
 }
 
 #mathContent .chapter-main small,
-#geoContent .chapter-main small{
+#geoContent .chapter-main small,
+#bioContent .chapter-main small{
 display:none
 }
 }
@@ -2505,105 +2528,22 @@ grid-template-columns:repeat(3,minmax(0,1fr))
 }
 }
 
-#bio .page-header{
-margin-bottom:20px;
-padding:20px 22px;
-border:1px solid var(--line);
-border-radius:var(--radius-lg);
-background:linear-gradient(135deg,var(--paper),rgba(139,92,246,.07));
-box-shadow:var(--shadow-sm)
-}
-
-#bio .page-header h1{
-font-size:clamp(27px,3vw,36px)
-}
-
-#bio .year-selector{
-display:grid;
-grid-template-columns:repeat(4,minmax(0,1fr));
-gap:8px;
-margin-bottom:14px
-}
-
-#bio .year-button{
-min-width:0;
-padding:9px 12px;
-text-align:center
-}
-
-#bioContent .chapter-list{
-display:grid;
-grid-template-columns:repeat(2,minmax(0,1fr));
-gap:10px
-}
-
-#bioContent .chapter-item{
-min-width:0;
-min-height:70px;
-padding:12px 14px;
-border-color:transparent;
-background:var(--paper);
-box-shadow:var(--shadow-sm)
-}
-
-#bioContent .chapter-item:hover{
-border-color:rgba(139,92,246,.35);
-box-shadow:var(--shadow);
-transform:translateY(-2px)
-}
-
-#bioContent .chapter-icon{
-width:36px;
-height:36px;
-background:rgba(139,92,246,.12)
-}
-
-@media(max-width:900px){
-#bioContent .chapter-list{
-grid-template-columns:minmax(0,1fr)
-}
-}
-
+/* Les trois matières partagent les règles de fiches ci-dessus. */
 @media(max-width:780px){
-.mobile-nav{
-grid-template-columns:repeat(6,1fr)
+.mobile-nav{grid-template-columns:repeat(6,minmax(0,1fr))}
 }
+.main-content,.view,.chapter-list,.chapter-item{min-width:0}
+#bioContent,#mathContent,#geoContent{width:100%;min-width:0}
+#bioContent .chapter-list,#mathContent .chapter-list,#geoContent .chapter-list{width:100%}
+#bioContent .chapter-main strong,#mathContent .chapter-main strong,#geoContent .chapter-main strong{white-space:normal;overflow-wrap:anywhere}
+@media(max-width:900px){
+#bioContent .chapter-list,#mathContent .chapter-list,#geoContent .chapter-list{grid-template-columns:minmax(0,1fr)}
 }
-
 @media(max-width:600px){
-#bio .page-header{
-padding:17px;
-margin-bottom:15px
+#bio .year-selector,#maths .year-selector,#geo .year-selector{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;overflow:visible}
+#bio .year-button,#maths .year-button,#geo .year-button{min-width:0;padding:8px 4px}
+#bio .year-button small,#maths .year-button small,#geo .year-button small{white-space:normal}
+#bioContent .chapter-item,#mathContent .chapter-item,#geoContent .chapter-item{min-width:0;max-width:100%}
 }
-
-#bio .page-header p{
-display:none
-}
-
-#bio .year-selector{
-display:flex;
-flex-wrap:nowrap;
-overflow-x:auto;
-padding-bottom:4px
-}
-
-#bio .year-button{
-flex:0 0 105px
-}
-}
-
-/* Cartes bio : la grille doit pouvoir rétrécir sur téléphone. */
-#bio, #bioContent, #bio .chapter-list{min-width:0;max-width:100%}
-#bioContent .chapter-main strong{white-space:normal;overflow-wrap:anywhere;line-height:1.4;font-size:14px}
-#bioContent .chapter-main small{white-space:normal;overflow-wrap:anywhere;line-height:1.45}
-#bioContent .chapter-status{padding:4px 7px;border-radius:999px;background:var(--paper-soft);white-space:nowrap;font-size:11px}
 .body-game-choices{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
 .body-game-choices button{min-height:44px;white-space:normal}
-@media(max-width:600px){
-#bioContent .chapter-item{min-height:62px;padding:10px 11px;flex-wrap:wrap}
-#bioContent .chapter-main{flex:1 1 160px}
-#bioContent .chapter-main small{display:none}
-#bioContent .chapter-status{margin-left:auto}
-#bio .year-selector{max-width:100%;scrollbar-width:none}
-#bio .year-selector::-webkit-scrollbar{display:none}
-}
