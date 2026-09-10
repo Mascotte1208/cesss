@@ -471,6 +471,13 @@ function answerQuiz(optionIndex) {
 
         state.score++;
 
+        var errorIndex =
+            cessState.mistakes.indexOf(q.id);
+
+        if (errorIndex !== -1) {
+            cessState.mistakes.splice(errorIndex, 1);
+        }
+
     } else {
 
         if (
