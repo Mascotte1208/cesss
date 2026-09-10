@@ -55,9 +55,31 @@ function answerMini(i){
 function nextMiniGame(){if(!cessMiniGame||!cessMiniGame.answered||cessMiniGame.finished)return;cessMiniGame.index++;renderMini();}
 function finishMiniGame(){
  var s=cessMiniGame;if(!s||s.finished)return;s.finished=true;stopMiniGame();var total=s.mode==='sprint'?Math.min(s.cards.length,s.index+(s.answered?1:0)):s.cards.length;var pct=total?Math.round(s.score/total*100):0;
- cessState.results.push({date:new Date().toISOString(),mode:MINI_LABELS[s.mode],score:s.score,total:total,percentage:pct});cessSave();
+ cessState.results.push({contentVersion:2,date:new Date().toISOString(),mode:MINI_LABELS[s.mode],score:s.score,total:total,percentage:pct});cessSave();
  document.getElementById('gamePanel').innerHTML='<div class="quiz-result"><h2>'+s.score+' bonne(s) réponse(s)</h2><p>'+total+' question(s) traitée(s) · '+pct+' % de réussite</p><button class="button primary" onclick="startMini(\''+s.mode+'\')">Rejouer</button> <button class="button secondary" onclick="renderGamePanel()">Tous les jeux</button></div>';
 }
 function startSprintGame(){startMini('sprint');}
 function startAssociationGame(){startMini('association');}
 function startDetectiveGame(){startMini('detective');}
+
+var matchingState=null;
+function startMatchingGame(){
+    stopMiniGame();var pool=personalChapters().filter(function(c){return (c.fiches||[]).length;});
+    var selected=shuffle(pool).slice(0,4).map(function(c){return {chapterId:c.id,subject:c.matiere,term:c.fiches[0].term,definition:c.fiches[0].definition};});
+    // Une même notion peut être étudiée à plusieurs niveaux : conserver des paires distinctes.
+    selected=selected.filter(function(f,i,a){return a.findIndex(function(x){return x.term===f.term&&x.subject===f.subject;})===i;});
+    matchingState={cards:selected,order:shuffle(selected.map(function(_,i){return i;})),selected:null,matched:[],attempts:0,finished:false};renderMatchingGame();
+}
+function renderMatchingGame(){
+    var s=matchingState,root=document.getElementById('gamePanel');if(!s||!root)return;
+    root.innerHTML='<button class="button secondary" onclick="renderGamePanel()">← Jeux</button><h2>Relier les notions</h2><p>Choisis un terme, puis sa définition. '+s.matched.length+' / '+s.cards.length+' paires trouvées.</p>'+(s.cards.length?'<div class="content-grid"><section aria-label="Termes">'+s.cards.map(function(f,i){return '<button class="content-card" '+(s.matched.includes(i)?'disabled':'')+' aria-pressed="'+(s.selected===i)+'" onclick="chooseMatchingTerm('+i+')">'+escapeHtml(f.term)+'<small>'+escapeHtml(CESS_SUBJECTS[f.subject].label)+'</small>'+(s.matched.includes(i)?' ✓':'')+'</button>';}).join('')+'</section><section aria-label="Définitions">'+s.order.map(function(i){return '<button class="content-card" '+(s.matched.includes(i)?'disabled':'')+' onclick="chooseMatchingDefinition('+i+')">'+escapeHtml(s.cards[i].definition)+(s.matched.includes(i)?' ✓':'')+'</button>';}).join('')+'</section></div><p id="matchingFeedback" role="status"></p>':'<p>Aucune fiche de notions dans ce parcours. Les autres jeux restent disponibles.</p>');
+    if(s.finished)root.innerHTML+='<div class="panel"><h3>Série terminée</h3><p>'+s.cards.length+' paires trouvées en '+s.attempts+' tentative(s).</p><button class="button primary" onclick="startMatchingGame()">Nouvelle série</button></div>';
+}
+function chooseMatchingTerm(i){var s=matchingState;if(!s||s.finished||s.matched.includes(i))return;s.selected=i;renderMatchingGame();}
+function chooseMatchingDefinition(i){
+    var s=matchingState;if(!s||s.finished||s.selected===null||s.matched.includes(i))return;
+    s.attempts++;var good=s.selected===i;
+    if(good)s.matched.push(i);s.selected=null;
+    if(s.matched.length===s.cards.length){s.finished=true;cessState.results.push({contentVersion:2,date:new Date().toISOString(),mode:'Relier les notions',score:s.cards.length,total:s.attempts,percentage:Math.round(s.cards.length/s.attempts*100)});cessSave();}
+    renderMatchingGame();document.getElementById('matchingFeedback').textContent=good?'Bonne association.':'Pas cette définition. Relis les deux propositions puis réessaie.';
+}

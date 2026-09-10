@@ -43,19 +43,6 @@
         });
     }
 
-    function exercises(title, notions) {
-        return notions.map(function (notion, index) {
-            var options = [notion, 'Une notion sans lien avec ce chapitre', 'Une réponse imprécise', 'Un élément étudié dans un autre chapitre'];
-            return {
-                niveau: index < 2 ? 'Comprendre' : 'Appliquer',
-                question: 'Quelle notion est essentielle dans « ' + title + ' » ?',
-                options: options,
-                correct: 0,
-                correction: '« ' + notion + ' » fait partie des notions à mobiliser dans ce chapitre.'
-            };
-        });
-    }
-
     var data = {};
     Object.keys(programme).forEach(function (year) {
         data[year] = programme[year].map(function (item, index) {
@@ -71,7 +58,7 @@
                 matieres: notions,
                 objectifs: ['Comprendre et analyser avec précision', 'Produire une réponse structurée et justifiée'],
                 cours: '<h4>Notions essentielles</h4><p>Ce chapitre développe : <strong>' + safe(title) + '</strong>. Retrouve et définis les notions suivantes : ' + notions.map(safe).join(', ') + '.</p><h4>Lire et analyser</h4><p>Appuie toujours ton interprétation sur un indice précis du texte : une citation courte, un procédé, une formulation ou l’organisation du document.</p><h4>Écrire et réviser</h4><p>Prépare un plan, rédige des paragraphes reliés par des connecteurs, puis relis ton texte en vérifiant le sens, la structure, les accords et la ponctuation.</p><h4>Tâche type CESS</h4><p>Rédige une réponse organisée : annonce ton idée, justifie-la avec deux éléments précis, prends en compte une nuance puis conclus en répondant directement à la consigne.</p>',
-                exercices: exercises(title, notions)
+                exercices: []
             };
         });
     });
@@ -85,3 +72,4 @@
         data: data
     };
 })();
+

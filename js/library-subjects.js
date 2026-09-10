@@ -2494,13 +2494,6 @@ var CESS_LIBRARY_CATALOG = [
 
 (function () {
   function safe(value) { return String(value || '').replace(/[&<>]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]; }); }
-  function exercises(chapter) {
-    var notions = chapter.matieres.length ? chapter.matieres : [chapter.titre];
-    return notions.slice(0, 5).map(function (notion, index) {
-      var options = [notion, 'Une notion sans lien avec ce chapitre', 'Un élément étudié dans une autre matière', 'Une réponse trop vague pour être exacte'];
-      return { niveau: index < 2 ? 'Comprendre' : 'S’entraîner', question: 'Quelle notion fait partie du chapitre « ' + chapter.titre + ' » ?', options: options, correct: 0, correction: '« ' + notion + ' » fait partie des notions clés de ce chapitre.' };
-    });
-  }
   window.CESS_LIBRARY_DATA = {};
   CESS_LIBRARY_CATALOG.forEach(function (subject) {
     var data = {};
@@ -2516,10 +2509,11 @@ var CESS_LIBRARY_CATALOG = [
           objectifs: ['Définir et relier les notions du chapitre', 'Les mobiliser dans une tâche structurée'],
           cours: '<h4>Notions essentielles</h4><p>Ce chapitre porte sur <strong>' + safe(title) + '</strong>. Les notions à maîtriser sont : ' + notions.map(safe).join(', ') + '.</p><h4>Comprendre et appliquer</h4><p>Repère chaque notion dans une situation, explique son rôle avec tes propres mots puis justifie ta réponse à l’aide d’un exemple précis.</p><h4>Méthode de révision</h4><p>Construis une fiche avec les définitions, une relation importante entre deux notions et un exemple d’application. Termine par une autoévaluation sans consulter le cours.</p><h4>Pour le CESS</h4><p>Une réponse attendue est organisée : définition précise, démarche explicite, exemple ou donnée pertinente, puis conclusion liée à la consigne.</p>'
         };
-        chapter.exercices = exercises(chapter);
+        chapter.exercices = [];
         return chapter;
       });
     });
     window.CESS_LIBRARY_DATA[subject.key] = { label: subject.label, icon: subject.icon, color: subject.color, data: data };
   });
 })();
+

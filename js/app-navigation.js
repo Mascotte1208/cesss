@@ -8,6 +8,9 @@
    ========================================================= */
 
 function showView(id) {
+    var librarySubject = CESS_SUBJECTS[id] && CESS_SUBJECTS[id].library ? id : null;
+    if (librarySubject) id = 'library';
+    if (typeof stopExamTimer === 'function') stopExamTimer();
     var target = document.getElementById(id);
 
     if (!target) {
@@ -62,7 +65,7 @@ function showView(id) {
     }
 
     if (id === 'library') {
-        renderLibrary();
+        if (librarySubject) renderLibrarySubject(librarySubject); else renderLibrary();
     }
 
     if (id === 'memo') {
@@ -112,4 +115,5 @@ function applyTheme() {
         document.body.classList.remove('dark');
     }
 }
+
 

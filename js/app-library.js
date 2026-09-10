@@ -13,72 +13,33 @@ function registerLibrarySubjects() {
     });
 }
 
+function libraryNormalize(text) {
+    return String(text || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
 function renderLibrary() {
     var root = document.getElementById('libraryContent');
-    if (!root || typeof CESS_LIBRARY_DATA === 'undefined') return;
-    var query = String(window.cessLibrarySearch || '').trim().toLowerCase();
-    var groups = {
-        'Fondamentales': ['francais', 'maths', 'geo', 'bio'],
-        'Langues': ['anglais', 'neerlandais', 'latin'],
-        'Sciences': ['physique', 'chimie', 'numerique'],
-        'Sciences humaines': ['histoire', 'sciences_sociales', 'sciences_economiques', 'epc']
-    };
-    var status = {
-        francais: 'Matière centrale', maths: 'Matière centrale', geo: 'Matière centrale', bio: 'Sciences selon l’option', anglais: 'Selon la langue choisie', neerlandais: 'Selon la langue choisie', latin: 'Option',
-        physique: 'Sciences selon l’option', chimie: 'Sciences selon l’option', numerique: 'Option / cours d’école',
-        histoire: 'Matière centrale', sciences_sociales: 'Option', sciences_economiques: 'Option', epc: 'Selon le réseau'
-    };
-    var cards = function (keys) { return keys.filter(function (key) {
-            if (!CESS_SUBJECTS[key]) return false;
-            if (!query) return true;
-            var subject = CESS_SUBJECTS[key];
-            var data = subject.getData();
-            var words = [subject.label, status[key] || ''];
-            Object.keys(data).forEach(function (year) {
-                (data[year] || []).forEach(function (chapter) {
-                    words.push(chapter.titre || '');
-                    words.push((chapter.matieres || []).join(' '));
-                });
-            });
-            return words.join(' ').toLowerCase().indexOf(query) !== -1;
-        }).map(function (key) {
-            var subject = CESS_SUBJECTS[key];
-            var data = subject.getData();
-            var count = Object.keys(data).reduce(function (total, year) { return total + (data[year] || []).length; }, 0);
-            return '<button class="subject-card games-card" type="button" onclick="renderLibrarySubject(\'' + key + '\')">' +
-                '<div class="subject-card-top"><div class="subject-icon">' + subject.icon + '</div><span class="subject-arrow">→</span></div>' +
-                '<h3>' + escapeHtml(subject.label) + '</h3><p>3e à 6e secondaire · ' + count + ' chapitres</p>' +
-                '<div class="subject-card-footer"><span>' + (status[key] || 'Programme à adapter') + '</span><span>→</span></div></button>';
-        }).join(''); };
-    var sections = Object.keys(groups).map(function (group) {
-        var groupCards = cards(groups[group]);
-        if (!groupCards) return '';
-        return '<section class="home-section"><div class="section-heading"><span class="eyebrow">Catalogue</span><h2>' + group + '</h2></div><div class="subject-cards library-subject-cards">' + groupCards + '</div></section>';
-    }).join('');
-    root.innerHTML = '<div class="panel library-notice"><span class="eyebrow">Repère</span><h2>Choisis uniquement les matières de ton horaire</h2><p>Les options, le nombre d’heures et les programmes exacts varient selon l’école et le réseau. Le catalogue est organisé pour rester clair, pas pour tout réviser en même temps.</p></div>' +
-        '<div class="search-box" style="margin-top:18px"><span>⌕</span><input id="librarySearch" type="search" value="' + escapeHtml(window.cessLibrarySearch || '') + '" oninput="cessLibrarySearch=this.value;renderLibrary()" placeholder="Rechercher une matière, un chapitre ou une notion"></div>' +
-        (sections || '<div class="empty-state">Aucune matière ou notion ne correspond à cette recherche.</div>');
+    if(!root) return;
+    root.innerHTML = '<div class="search-box"><label for="librarySearch">Recherche</label><input id="librarySearch" type="search" placeholder="Matière, chapitre, notion…" oninput="cessLibrarySearch=this.value;renderLibraryResults()"></div><div id="libraryResults" aria-live="polite"></div>';
+    document.getElementById('librarySearch').value = window.cessLibrarySearch || '';
+    renderLibraryResults();
 }
-
-function renderLibrarySubject(subject) {
-    var root = document.getElementById('libraryContent');
-    var info = CESS_SUBJECTS[subject];
-    if (!root || !info) return;
-    if (!info.library) {
-        showView(subject);
-        return;
+function renderLibraryResults() {
+    var root = document.getElementById('libraryResults');if(!root)return;
+    var query=libraryNormalize(window.cessLibrarySearch), p=learningProfile();
+    if(query){
+        var matches=[];
+        Object.keys(CESS_SUBJECTS).forEach(function(k){allChaps(k).forEach(function(c){if(libraryNormalize(CESS_SUBJECTS[k].label+' '+c.titre+' '+(c.matieres||[]).join(' ')).includes(query)) matches.push(c);});});
+        root.innerHTML='<p>'+matches.length+' chapitre(s) trouvé(s)</p><div class="content-grid">'+matches.map(chapterLink).join('')+'</div>'+(matches.length?'':'<p class="empty-state">Essaie un autre mot ou une expression plus courte.</p>');return;
     }
-    var data = info.getData();
-    var years = ['3e', '4e', '5e', '6e'];
-    root.innerHTML = '<div class="page-header"><div class="page-header-main"><span class="eyebrow">Bibliothèque CESS</span><h1>' + info.icon + ' ' + escapeHtml(info.label) + '</h1><p>Choisis une année puis ouvre un chapitre pour étudier le cours et t’entraîner.</p></div>' +
-        '<button class="button secondary" type="button" onclick="renderLibrary()">← Toutes les matières</button></div>' +
-        years.map(function (year) {
-            var chapters = data[year] || [];
-            return '<section class="panel" style="margin-top:18px"><div class="panel-header"><span class="eyebrow">' + year + ' secondaire</span><h2>' + chapters.length + ' chapitres</h2></div><div class="content-grid">' +
-                chapters.map(function (chapter) {
-                    return '<button type="button" class="content-card" style="text-align:left" onclick="openChapterBplus(\'' + chapter.id + '\')"><span class="content-icon">' + chapter.icone + '</span><div><strong>' + escapeHtml(chapter.titre) + '</strong><small>' + escapeHtml(chapter.matieres.slice(0, 3).join(' · ')) + '</small></div><span>→</span></button>';
-                }).join('') + '</div></section>';
-        }).join('');
+    var groups={'Langue française et mathématiques':['francais','maths'],'Langues':['anglais','neerlandais','latin'],'Sciences':['bio','physique','chimie'],'Sciences humaines':['geo','histoire','sciences_sociales','sciences_economiques','epc'],'Numérique':['numerique']};
+    root.innerHTML=Object.keys(groups).map(function(group){return '<section class="home-section"><h2>'+group+'</h2><div class="subject-cards">'+groups[group].filter(function(k){return !!CESS_SUBJECTS[k];}).map(function(k){return '<button class="subject-card" type="button" onclick="showView(\''+k+'\')"><div class="subject-icon">'+(CESS_SUBJECTS[k].icon||'📘')+'</div><h3>'+escapeHtml(CESS_SUBJECTS[k].label)+'</h3><p>'+allChaps(k).length+' chapitres · 3e à 6e</p><small>'+(p.subjects.indexOf(k)>=0?'Dans mon parcours':'Catalogue complet')+'</small></button>';}).join('')+'</div></section>';}).join('');
+}
+function renderLibrarySubject(subject) {
+    var root=document.getElementById('libraryContent'),info=CESS_SUBJECTS[subject];
+    if(!root||!info)return;
+    if(!info.library){showView(subject);return;}
+    var p=learningProfile();
+    root.innerHTML='<div class="page-header"><h1>'+escapeHtml(info.label)+'</h1><button class="button secondary" onclick="renderLibrary()">← Catalogue</button></div>'+['3e','4e','5e','6e'].map(function(year){var chapters=allChaps(subject).filter(function(c){return c.annee===year;});return '<details class="memo-group"'+(p.year===year?' open':'')+'><summary><strong>'+year+' secondaire</strong><span>'+chapters.length+' chapitres</span></summary><div class="content-grid">'+chapters.map(chapterLink).join('')+'</div></details>';}).join('');
 }
 
 function returnToSubject(subject) {
@@ -108,3 +69,4 @@ function libraryActivityHtml(chapter, subject) {
 }
 
 registerLibrarySubjects();
+

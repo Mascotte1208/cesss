@@ -61,7 +61,7 @@ function selectFreshQuestions(questions, count, mode) {
 
 function startQuiz(mode) {
 
-    var filter = 'all';
+    var filter = CESS_SUBJECTS[mode] ? mode : 'all';
 
     if (mode === 'maths') {
         filter = 'maths';
@@ -82,14 +82,14 @@ function startQuiz(mode) {
     if (mode === 'truefalse') {
         // Questions Vrai/Faux spécifiques
         var tfQuestions = [
-            { id: 'tf_1', question: 'Un triangle isométrique a des côtés de même longueur.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
+            { id: 'tf_1', question: 'Tout triangle isocèle possède trois côtés de même longueur.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
             { id: 'tf_2', question: 'La racine carrée de 16 est 4.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '3e' },
             { id: 'tf_3', question: '(a+b)² = a² + b²', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
             { id: 'tf_4', question: 'La Belgique a un climat méditerranéen.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'geo', annee: '3e' },
             { id: 'tf_5', question: 'Les séismes se produisent aux frontières des plaques.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '3e' },
             { id: 'tf_6', question: 'Le développement durable a 3 piliers.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '6e' },
             { id: 'tf_7', question: 'Le cosinus est opposé/hypoténuse.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
-            { id: 'tf_8', question: 'Une fonction croissante a une dérivée positive.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '6e' },
+            { id: 'tf_8', question: 'Une fonction dérivable croissante sur un intervalle a une dérivée positive ou nulle sur cet intervalle.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '6e' },
             { id: 'tf_9', question: 'Multiplier une inéquation par un nombre négatif inverse son sens.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '3e' },
             { id: 'tf_10', question: 'La solution d’un système de deux équations est toujours un nombre unique.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
             { id: 'tf_11', question: 'Une réduction de 20 % correspond à un coefficient multiplicateur de 0,8.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '3e' },
@@ -121,6 +121,10 @@ function startQuiz(mode) {
 
     var questions =
         flattenQuestions(filter);
+    if (filter === 'all') {
+        var profile=learningProfile();
+        questions=questions.filter(function(q){return profile.subjects.indexOf(q.matiere)>=0 && (profile.year==='all'||q.annee===profile.year);});
+    }
 
     if (!questions.length) {
 
@@ -146,7 +150,7 @@ function startQuiz(mode) {
 
 
     questions =
-        selectFreshQuestions(questions, 15, mode);
+        filter==='all' ? balancedQuestions(questions,15) : selectFreshQuestions(questions,15,mode).map(shuffleAnswers);
 
 
     cessQuizState = {
@@ -248,7 +252,7 @@ function quizChapter(id) {
         chapterId: chapter.id,
 
         questions:
-            shuffle(questions),
+            shuffle(questions).map(shuffleAnswers),
 
         index: 0,
 
@@ -416,6 +420,8 @@ function answerQuiz(optionIndex) {
     var q =
         state.questions[state.index];
 
+    state.responses = state.responses || [];
+    state.responses[state.index] = optionIndex;
     var correct =
         Number(q.correct || 0);
 
@@ -545,6 +551,7 @@ function answerQuiz(optionIndex) {
 
 
 function nextQuizQuestion() {
+    if(!cessQuizState || !cessQuizState.answered || cessQuizState.finished) return;
 
     if (!cessQuizState) {
         return;
@@ -558,6 +565,9 @@ function nextQuizQuestion() {
 
 
 function finishQuiz() {
+    if (!cessQuizState || cessQuizState.finished) return;
+    cessQuizState.finished = true;
+    noteQuizAttempts(cessQuizState);
 
     var state =
         cessQuizState;
@@ -587,6 +597,7 @@ function finishQuiz() {
 
 
     cessState.results.push({
+        contentVersion: 2,
 
         date:
             new Date().toISOString(),
@@ -606,12 +617,7 @@ function finishQuiz() {
     });
 
 
-    if (percentage >= 70) {
-        cessState.streak++;
-    } else {
-        cessState.streak = 0;
-    }
-
+    cessState.streak = studyStreak();
 
     cessSave();
 
@@ -902,3 +908,4 @@ function formatTime(seconds) {
     var secs = seconds % 60;
     return String(minutes).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
 }
+

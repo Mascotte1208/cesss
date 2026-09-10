@@ -247,7 +247,7 @@ function openChapterBplus(id) {
     var rawSections = parseCoursSections(chapter.cours);
     var coursSections = groupCoursSections(rawSections);
     var words = String(chapter.cours || '').replace(/<[^>]*>/g, ' ').trim().split(/\s+/).length;
-    var minutes = Math.max(15, Math.min(60, Math.ceil(words / 180) * 5));
+    var minutes = Math.max(1, Math.ceil(words / 180));
     var safeTitle = escapeHtml(chapter.titre || 'Chapitre');
 
     var chips = coursSections.map(function (section, index) {
@@ -274,15 +274,15 @@ function openChapterBplus(id) {
     content.className = 'detail bplus-detail bplus-' + subject;
     content.innerHTML = '<div class="bplus-breadcrumb"><button onclick="returnToSubject(\'' + subject + '\')">← ' + escapeHtml(subjectInfo.label) + '</button><span>/</span><span>' + escapeHtml(chapter.annee || '') + '</span><span>/</span><span>' + safeTitle + '</span></div>' +
         '<header class="bplus-header">' +
-          '<div class="bplus-badges"><span class="bplus-badge accent">' + escapeHtml(chapter.annee || '') + ' secondaire</span><span class="bplus-badge">' + escapeHtml(subjectInfo.label) + '</span><span class="bplus-badge warm">' + bplusDifficulty(chapter.annee) + '</span><span class="bplus-badge">≈ ' + minutes + ' min</span></div>' +
-          '<div class="bplus-heading"><div class="bplus-icon">' + (chapter.icone || '📘') + '</div><div><p class="bplus-kicker">FICHE DE COURS COMPLÈTE</p><h1>' + safeTitle + '</h1><p class="bplus-lead">' + escapeHtml(chapter.desc || '') + '</p></div></div>' +
+          '<div class="bplus-badges"><span class="bplus-badge accent">' + escapeHtml(chapter.annee || '') + ' secondaire</span><span class="bplus-badge">' + escapeHtml(subjectInfo.label) + '</span><span class="bplus-badge warm">' + bplusDifficulty(chapter.annee) + '</span><span class="bplus-badge">≈ ' + minutes + ' min de lecture</span></div>' +
+          '<div class="bplus-heading"><div class="bplus-icon">' + (chapter.icone || '📘') + '</div><div><p class="bplus-kicker">FICHE DE RÉVISION</p><h1>' + safeTitle + '</h1><p class="bplus-lead">' + escapeHtml(chapter.desc || '') + '</p></div></div>' +
           '<div class="bplus-meta"><div><small>PARCOURS</small><strong>' + escapeHtml(chapter.annee || '') + ' · ' + escapeHtml(subjectInfo.label) + '</strong></div><div><small>OBJECTIFS</small><strong>' + escapeHtml(objectives.slice(0, 2).join(' · ') || 'Comprendre et appliquer le chapitre') + '</strong></div><div><small>FORMAT</small><strong>Cours · synthèse · exercices</strong></div></div>' +
         '</header>' +
         ((matieres.length || objectives.length) ? '<aside class="bplus-prerequisites"><span>✓</span><div><strong>Avant de commencer</strong><p>' + escapeHtml((matieres.slice(0, 4).concat(objectives.slice(0, 1))).join(' · ')) + '</p></div></aside>' : '') +
         '<nav class="bplus-chips" aria-label="Sommaire du chapitre"><span>Sommaire</span>' + chips + '</nav>' +
-        '<div class="bplus-layout"><main class="bplus-reading"><div class="bplus-intro"><p class="bplus-kicker">COURS STRUCTURÉ</p><h2>Comprendre, retenir, appliquer</h2><p>Ouvre une partie à la fois pour avancer sans surcharger la page. Tous les éléments du cours d’origine sont conservés et réorganisés ci-dessous.</p></div><div class="cours-sections">' + courseHtml + exercisesHtml + (typeof libraryActivityHtml === 'function' && subjectInfo.library ? libraryActivityHtml(chapter, subject) : '') + '</div>' +
+        '<div class="bplus-layout"><main class="bplus-reading"><div class="bplus-intro"><p class="bplus-kicker">COURS STRUCTURÉ</p><h2>Comprendre, retenir, appliquer</h2><p>Ouvre une partie à la fois pour avancer sans surcharger la page. Lis les explications, travaille les exemples puis vérifie tes réponses.</p></div><div class="cours-sections">' + courseHtml + exercisesHtml + (typeof libraryActivityHtml === 'function' && subjectInfo.library && !chapter.contentVersion ? libraryActivityHtml(chapter, subject) : '') + '</div>' +
           '<div class="bplus-print"><button class="button primary" onclick="printChapter(\'' + chapter.id + '\')" type="button">🖨️ Imprimer ou enregistrer en PDF</button></div></main>' +
-          '<aside class="bplus-rail"><section><small>PROGRESSION</small><strong class="bplus-score">' + progress + '%</strong><div class="progress-line"><span style="width:' + progress + '%"></span></div><button class="button primary" onclick="markDone(\'' + chapter.id + '\')">✓ Marquer maîtrisé</button></section>' +
+          '<aside class="bplus-rail"><section><small>PROGRESSION</small><strong class="bplus-score">' + progress + '%</strong><div class="progress-line"><span style="width:' + progress + '%"></span></div><button class="button primary" onclick="markDone(\'' + chapter.id + '\')">✓ Marquer comme lu</button></section>' +
           (exercices.length ? '<section><small>QUIZ DU CHAPITRE</small><h3>' + exercices.length + ' exercices</h3><p>Vérifie ce que tu as retenu.</p><button class="button secondary" onclick="quizChapter(\'' + chapter.id + '\')">🎯 Lancer le quiz</button></section>' : '') + '</aside></div>';
 
     var hosts = {maths:'mathContent', geo:'geoContent', bio:'bioContent'};
@@ -661,7 +661,7 @@ function openChapter(id) {
                         style="width:100%;margin-top:12px"
                         onclick="markDone('${chapter.id}')">
 
-                        ✓ Marquer maîtrisé
+                        ✓ Marquer comme lu
 
                     </button>
 
@@ -904,6 +904,7 @@ function answerChapterExercise(
     optionIndex
 ) {
 
+    if (button.disabled) return;
     var chapter =
         findChapter(chapterId);
 
@@ -990,56 +991,12 @@ function answerChapterExercise(
    ========================================================= */
 
 function markDone(id) {
-
-    var chapter =
-        findChapter(id);
-
-    if (!chapter) {
-        return;
-    }
-
-    cessState.progress[id] = 100;
-
+    if (!findChapter(id)) return;
+    cessState.readChapters = cessState.readChapters || {};
+    cessState.readChapters[id] = true;
     cessSave();
-
-    renderHome();
-
-    renderSubject(
-        chapter.matiere || 'maths'
-    );
-
-    var detail =
-        document.querySelector(
-            '.detail'
-        );
-
-    if (detail) {
-        var box =
-            detail.querySelector(
-                '.chapter-progress-box'
-            );
-
-        if (box) {
-            box.innerHTML = `
-                <span class="chapter-progress-number">
-                    100%
-                </span>
-                <span class="chapter-progress-label">
-                    ✅ Chapitre maîtrisé !
-                </span>
-                <div class="progress-line" style="margin-top:10px">
-                    <span style="width:100%"></span>
-                </div>
-            `;
-        }
-    }
+    openChapterBplus(id);
 }
-
-
-
-/* =========================================================
-   QUESTIONS
-   ========================================================= */
 
 function flattenQuestions(filter) {
 
@@ -1204,3 +1161,4 @@ function printChapter(id) {
     win.document.close();
     win.print();
 }
+

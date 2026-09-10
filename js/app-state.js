@@ -43,7 +43,7 @@ var cessExamState = null;
    c'est elle qui permet de retrouver les données existantes.
    --------------------------------------------------------- */
 
-var CESS_STATE_VERSION = 1;
+var CESS_STATE_VERSION = 2;
 
 // Liste ordonnée des migrations à appliquer, dans l'ordre,
 // depuis la version stockée jusqu'à CESS_STATE_VERSION.
@@ -54,7 +54,15 @@ var CESS_STATE_VERSION = 1;
 //       return data;
 //   }
 //   var CESS_MIGRATIONS = [migrateV1_to_V2];
-var CESS_MIGRATIONS = [];
+var CESS_MIGRATIONS = [function(data) {
+    data.readChapters = data.readChapters || {};
+    Object.keys(data.progress || {}).forEach(function(id){ if(data.progress[id]>0) data.readChapters[id]=true; });
+    data.mastery = data.mastery || {};
+    data.legacyMistakes = data.mistakes || [];
+    data.mistakes = [];
+    data.version = 2;
+    return data;
+}];
 
 function applyMigrations(data) {
     var fromVersion = Number(data.version || 1);
@@ -86,6 +94,11 @@ function applyMigrations(data) {
 
                 cessState = {
                     progress: parsed.progress || {},
+                    profile: parsed.profile || null,
+                    legacyMistakes: parsed.legacyMistakes || [],
+                    readChapters: parsed.readChapters || {},
+                    mastery: parsed.mastery || {},
+                    flashLearning: parsed.flashLearning || {},
                     results: Array.isArray(parsed.results)
                         ? parsed.results
                         : [],
@@ -183,4 +196,5 @@ var CESS_SUBJECTS = {
         }
     }
 };
+
 

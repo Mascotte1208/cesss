@@ -910,6 +910,7 @@ function renderGamePanel() {
 
     panel.innerHTML = `
         <div class="game-grid">
+<button class="game-card" type="button" onclick="startMatchingGame()"><span>↔</span><strong>Relier les notions</strong><small>4 paires · les matières de mon parcours</small></button>
 <button class="game-card" type="button" onclick="startMini('repair')"><span>✎</span><strong>Phrase et formule à réparer</strong><small>Langues, maths et sciences · 8 défis</small></button>
 <button class="game-card" type="button" onclick="startMini('lab')"><span>⚗️</span><strong>Mission laboratoire</strong><small>Variables, mesures et hypothèses · 6 défis</small></button>
             <button class="game-card" onclick="startSprintGame()" type="button">
@@ -966,3 +967,4 @@ function renderGamePanel() {
         </div>
     `;
 }
+
