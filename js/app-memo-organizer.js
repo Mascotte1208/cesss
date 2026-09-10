@@ -54,12 +54,39 @@
         return '<div class="memo-card"><strong>' + escapeHtml(term) + '</strong><p>' + escapeHtml(item.def || item.definition || '') + '</p><span class="memo-tag">' + escapeHtml(item.annee || '') + '</span></div>';
     }
 
+    function chapterNotions() {
+        var selected = (document.getElementById('memoSubject') || {}).value || 'all';
+        var entries = [];
+        Object.keys(CESS_SUBJECTS || {}).forEach(function (key) {
+            if (selected !== 'all' && selected !== key) return;
+            var info = CESS_SUBJECTS[key];
+            allChaps(key).forEach(function (chapter) {
+                (chapter.matieres || []).forEach(function (term) {
+                    entries.push({ mot: term, definition: 'À revoir dans « ' + (chapter.titre || 'ce chapitre') + ' ».', annee: chapter.annee || '', categorie: (info.label || key) + ' · ' + (chapter.titre || 'Chapitre') });
+                });
+            });
+        });
+        return entries;
+    }
+
+    function updateSubjects() {
+        var select = document.getElementById('memoSubject');
+        if (!select) return;
+        var was = select.value || 'all';
+        select.innerHTML = '<option value="all">Toutes les matières</option>' + Object.keys(CESS_SUBJECTS || {}).map(function (key) {
+            return '<option value="' + key + '">' + escapeHtml((CESS_SUBJECTS[key].icon || '📘') + ' ' + CESS_SUBJECTS[key].label) + '</option>';
+        }).join('');
+        select.value = CESS_SUBJECTS[was] ? was : 'all';
+        select.style.display = cessMemoMode === 'notions' ? '' : 'none';
+    }
+
     window.renderMemo = function () {
         var content = document.getElementById('memoContent');
         if (!content) return;
+        updateSubjects();
         var source = cessMemoMode === 'formules'
             ? (typeof FORMULES_DATA !== 'undefined' ? FORMULES_DATA : [])
-            : (typeof GEO_VOCAB !== 'undefined' ? GEO_VOCAB : []);
+            : (cessMemoMode === 'vocab' ? (typeof GEO_VOCAB !== 'undefined' ? GEO_VOCAB : []) : chapterNotions());
         var items = flatten(source);
         var search = (document.getElementById('memoSearch').value || '').toLowerCase().trim();
         var year = document.getElementById('memoYear').value || 'all';
