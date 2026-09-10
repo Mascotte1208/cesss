@@ -129,6 +129,12 @@ function ensureSubjectFlashcards() {
         });
         FLASHCARDS_DATA[subject] = cards;
     });
+
+    FLASHCARDS_DATA.all = Object.keys(CESS_SUBJECTS).reduce(function (cards, subject) {
+        return cards.concat((FLASHCARDS_DATA[subject] || []).map(function (card) {
+            return { terme: card.terme, definition: card.definition, subject: subject };
+        }));
+    }, []);
 }
 
 function renderFlashcardSelector() {
@@ -137,11 +143,12 @@ function renderFlashcardSelector() {
 
     ensureSubjectFlashcards();
 
-    select.innerHTML = Object.keys(CESS_SUBJECTS).map(function (subject) {
-        var info = CESS_SUBJECTS[subject];
-        var total = (FLASHCARDS_DATA[subject] || []).length;
-        return '<option value="' + subject + '">' + (info.icon || '📘') + ' ' + escapeHtml(info.label) + ' · ' + total + ' cartes</option>';
-    }).join('');
+    select.innerHTML = '<option value="all">🗂️ Toutes les matières · ' + (FLASHCARDS_DATA.all || []).length + ' cartes</option>' +
+        Object.keys(CESS_SUBJECTS).map(function (subject) {
+            var info = CESS_SUBJECTS[subject];
+            var total = (FLASHCARDS_DATA[subject] || []).length;
+            return '<option value="' + subject + '">' + (info.icon || '📘') + ' ' + escapeHtml(info.label) + ' · ' + total + ' cartes</option>';
+        }).join('');
     select.value = flashcardSubject;
 }
 
@@ -178,7 +185,7 @@ function renderFlashcard() {
 
     container.innerHTML = `
         <div style="text-align:center;margin-bottom:12px;font-size:11px;color:var(--text-soft);">
-            ${flashcardIndex + 1} / ${total} · ${(typeof CESS_SUBJECTS !== 'undefined' && CESS_SUBJECTS[flashcardSubject]) ? (CESS_SUBJECTS[flashcardSubject].icon + ' ' + CESS_SUBJECTS[flashcardSubject].label) : 'Flashcards'}
+            ${flashcardIndex + 1} / ${total} · ${flashcardSubject === 'all' ? '🗂️ Toutes les matières' : ((typeof CESS_SUBJECTS !== 'undefined' && CESS_SUBJECTS[flashcardSubject]) ? (CESS_SUBJECTS[flashcardSubject].icon + ' ' + CESS_SUBJECTS[flashcardSubject].label) : 'Flashcards')}
             <span style="margin-left:12px;">
                 <button class="button secondary" style="padding:4px 10px;font-size:9px;" onclick="toggleFlashcardMode()">
                     ${flashcardMode === 'term-def' ? 'Définition → Terme' : 'Terme → Définition'}
