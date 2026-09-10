@@ -24,6 +24,12 @@ function renderExamPanel() {
                 <p>15 questions aléatoires de géographie</p>
                 <button class="button primary" onclick="startExam('geo')">Commencer →</button>
             </div>
+            <div class="exam-card">
+                <div class="exam-icon">🧬</div>
+                <h3>Examen blanc Biologie</h3>
+                <p>15 questions aléatoires sur le vivant</p>
+                <button class="button primary" onclick="startExam('bio')">Commencer →</button>
+            </div>
         </div>
     `;
 }
