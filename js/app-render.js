@@ -908,6 +908,18 @@ function renderGamePanel() {
 
     panel.innerHTML = `
         <div class="game-grid">
+            <button class="game-card" onclick="startSprintGame()" type="button">
+                <span>⏱️</span><strong>Sprint 10</strong>
+                <small>10 questions rapides, toutes matières</small>
+            </button>
+            <button class="game-card" onclick="startAssociationGame()" type="button">
+                <span>🔗</span><strong>Association express</strong>
+                <small>Relie une notion à sa matière</small>
+            </button>
+            <button class="game-card" onclick="startDetectiveGame()" type="button">
+                <span>🔎</span><strong>Détective de document</strong>
+                <small>Adopte les bons réflexes d’analyse</small>
+            </button>
             <button class="game-card" onclick="showBodyGame()" type="button">
                 <span>🦴</span><strong>Mission Corps humain</strong>
                 <small>Os, organes et fonctions · 36 questions</small>
