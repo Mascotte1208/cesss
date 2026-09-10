@@ -67,4 +67,21 @@ function returnToSubject(subject) {
     showView(subject);
 }
 
+function libraryActivityHtml(chapter, subject) {
+    var notions = (chapter.matieres || []).slice(0, 4).map(escapeHtml).join(' · ');
+    var info = CESS_SUBJECTS[subject] || {};
+    var title = escapeHtml(chapter.titre || 'ce chapitre');
+    var type = subject === 'francais' || subject === 'anglais' || subject === 'neerlandais' || subject === 'latin'
+        ? 'langue' : (subject === 'physique' || subject === 'chimie' || subject === 'bio' ? 'science' : 'analyse');
+    var task = type === 'langue'
+        ? '<ol><li>Prépare un brouillon de cinq idées ou formulations utiles.</li><li>Rédige ou présente une réponse de 8 à 12 lignes / phrases adaptées à la consigne.</li><li>Relis-la : précision, connecteurs, registre, orthographe ou grammaire.</li></ol>'
+        : type === 'science'
+            ? '<ol><li>Formule une hypothèse liée au problème étudié.</li><li>Indique les données, unités ou observations utiles et explique la démarche.</li><li>Conclue avec une interprétation et une limite expérimentale.</li></ol>'
+            : '<ol><li>Identifie le document, son contexte et son idée principale.</li><li>Mobilise deux notions du chapitre pour l’analyser.</li><li>Rédige une conclusion nuancée, appuyée par un exemple précis.</li></ol>';
+    return '<section class="cours-section bplus-accordion bplus-exercises" data-index="activity">' +
+        '<button type="button" class="cours-section-header bplus-accordion-button" aria-expanded="false" onclick="toggleCoursSection(this)">' +
+        '<span class="bplus-section-number">★</span><span><small>ACTIVITÉ GUIDÉE</small>Appliquer sans QCM</span><span class="cours-chevron">▸</span></button>' +
+        '<div class="cours-section-body bplus-accordion-body" style="display:none"><p><strong>' + title + '</strong></p><p>Notions à mobiliser : ' + notions + '.</p>' + task + '</div></section>';
+}
+
 registerLibrarySubjects();
