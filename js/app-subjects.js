@@ -280,13 +280,13 @@ function openChapterBplus(id) {
         '</header>' +
         ((matieres.length || objectives.length) ? '<aside class="bplus-prerequisites"><span>✓</span><div><strong>Avant de commencer</strong><p>' + escapeHtml((matieres.slice(0, 4).concat(objectives.slice(0, 1))).join(' · ')) + '</p></div></aside>' : '') +
         '<nav class="bplus-chips" aria-label="Sommaire du chapitre"><span>Sommaire</span>' + chips + '</nav>' +
-        '<div class="bplus-layout"><main class="bplus-reading"><div class="bplus-intro"><p class="bplus-kicker">COURS STRUCTURÉ</p><h2>Comprendre, retenir, appliquer</h2><p>Ouvre une partie à la fois pour avancer sans surcharger la page. Tous les éléments du cours d’origine sont conservés et réorganisés ci-dessous.</p></div><div class="cours-sections">' + courseHtml + exercisesHtml + '</div>' +
+        '<div class="bplus-layout"><main class="bplus-reading"><div class="bplus-intro"><p class="bplus-kicker">COURS STRUCTURÉ</p><h2>Comprendre, retenir, appliquer</h2><p>Ouvre une partie à la fois pour avancer sans surcharger la page. Tous les éléments du cours d’origine sont conservés et réorganisés ci-dessous.</p></div><div class="cours-sections">' + courseHtml + exercisesHtml + (typeof libraryActivityHtml === 'function' && subjectInfo.library ? libraryActivityHtml(chapter, subject) : '') + '</div>' +
           '<div class="bplus-print"><button class="button primary" onclick="printChapter(\'' + chapter.id + '\')" type="button">🖨️ Imprimer ou enregistrer en PDF</button></div></main>' +
           '<aside class="bplus-rail"><section><small>PROGRESSION</small><strong class="bplus-score">' + progress + '%</strong><div class="progress-line"><span style="width:' + progress + '%"></span></div><button class="button primary" onclick="markDone(\'' + chapter.id + '\')">✓ Marquer maîtrisé</button></section>' +
           (exercices.length ? '<section><small>QUIZ DU CHAPITRE</small><h3>' + exercices.length + ' exercices</h3><p>Vérifie ce que tu as retenu.</p><button class="button secondary" onclick="quizChapter(\'' + chapter.id + '\')">🎯 Lancer le quiz</button></section>' : '') + '</aside></div>';
 
     var hosts = {maths:'mathContent', geo:'geoContent', bio:'bioContent'};
-    var host = document.getElementById(hosts[subject] || 'mathContent');
+    var host = document.getElementById(subjectInfo.library ? 'libraryContent' : (hosts[subject] || 'mathContent'));
     if (!host) return;
     var previous = host.querySelector('.detail');
     if (previous) previous.remove();
