@@ -108,9 +108,48 @@ var flashcardIndex = 0;
 var flashcardSubject = 'maths';
 var flashcardMode = 'term-def'; // 'term-def' ou 'def-term'
 
+function ensureSubjectFlashcards() {
+    if (typeof CESS_SUBJECTS === 'undefined' || typeof allChaps !== 'function') return;
+
+    Object.keys(CESS_SUBJECTS).forEach(function (subject) {
+        if (Array.isArray(FLASHCARDS_DATA[subject]) && FLASHCARDS_DATA[subject].length) return;
+
+        var seen = {};
+        var cards = [];
+        allChaps(subject).forEach(function (chapter) {
+            (chapter.matieres || []).forEach(function (notion) {
+                var key = String(notion).toLowerCase().trim();
+                if (!key || seen[key]) return;
+                seen[key] = true;
+                cards.push({
+                    terme: notion,
+                    definition: 'Notion étudiée dans « ' + (chapter.titre || 'ce chapitre') + ' ».'
+                });
+            });
+        });
+        FLASHCARDS_DATA[subject] = cards;
+    });
+}
+
+function renderFlashcardSelector() {
+    var select = document.getElementById('flashcardSubjectSelect');
+    if (!select || typeof CESS_SUBJECTS === 'undefined') return;
+
+    ensureSubjectFlashcards();
+
+    select.innerHTML = Object.keys(CESS_SUBJECTS).map(function (subject) {
+        var info = CESS_SUBJECTS[subject];
+        var total = (FLASHCARDS_DATA[subject] || []).length;
+        return '<option value="' + subject + '">' + (info.icon || '📘') + ' ' + escapeHtml(info.label) + ' · ' + total + ' cartes</option>';
+    }).join('');
+    select.value = flashcardSubject;
+}
+
 function initFlashcards(subject) {
+    ensureSubjectFlashcards();
     flashcardSubject = subject || 'maths';
     flashcardIndex = 0;
+    renderFlashcardSelector();
     renderFlashcard();
 }
 
@@ -139,7 +178,7 @@ function renderFlashcard() {
 
     container.innerHTML = `
         <div style="text-align:center;margin-bottom:12px;font-size:11px;color:var(--text-soft);">
-            ${flashcardIndex + 1} / ${total} · ${flashcardSubject === 'maths' ? '📐 Mathématiques' : (flashcardSubject === 'geo' ? '🌍 Géographie' : '🧬 Biologie')}
+            ${flashcardIndex + 1} / ${total} · ${(typeof CESS_SUBJECTS !== 'undefined' && CESS_SUBJECTS[flashcardSubject]) ? (CESS_SUBJECTS[flashcardSubject].icon + ' ' + CESS_SUBJECTS[flashcardSubject].label) : 'Flashcards'}
             <span style="margin-left:12px;">
                 <button class="button secondary" style="padding:4px 10px;font-size:9px;" onclick="toggleFlashcardMode()">
                     ${flashcardMode === 'term-def' ? 'Définition → Terme' : 'Terme → Définition'}
@@ -251,5 +290,10 @@ function toggleFlashcardMode() {
 function switchFlashcardSubject(subject) {
     flashcardSubject = subject;
     flashcardIndex = 0;
+    renderFlashcardSelector();
     renderFlashcard();
+}
+
+function selectFlashcardSubject(subject) {
+    switchFlashcardSubject(subject);
 }
