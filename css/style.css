@@ -2584,3 +2584,16 @@ body.dark .bplus-accordion-body{color:var(--text-soft)}body.dark .bplus-badge.wa
 @media(max-width:700px){.bplus-detail{margin-bottom:55px}.bplus-header{padding:22px 18px;border-radius:19px}.bplus-heading{gap:12px}.bplus-icon{width:46px;height:46px;flex-basis:46px;font-size:22px}.bplus-heading h1{font-size:29px}.bplus-meta{grid-template-columns:1fr;gap:12px}.bplus-chips{margin-left:-2px;margin-right:-2px}.bplus-chips>span{display:none}.bplus-intro{padding:22px 18px}.bplus-accordion-button{grid-template-columns:32px minmax(0,1fr) 18px;padding:16px 14px;gap:9px}.bplus-section-number{width:29px;height:29px}.bplus-accordion-button>span:nth-child(2){font-size:14px}.bplus-accordion-body{padding:4px 17px 24px!important;font-size:14px}.bplus-exercises .bplus-accordion-body{padding:4px 12px 20px!important}.bplus-rail{grid-template-columns:1fr 1fr}.bplus-rail section{padding:14px}}
 @media(max-width:460px){.bplus-rail{grid-template-columns:1fr}.bplus-badges .bplus-badge:nth-child(2){display:none}.bplus-lead{font-size:14px}}
 @media print{.sidebar,.mobile-nav,.bplus-breadcrumb,.bplus-chips,.bplus-rail,.bplus-print{display:none!important}.main-content{margin:0!important;padding:0!important}.bplus-detail{max-width:none}.bplus-accordion-body{display:block!important}.bplus-accordion{break-inside:avoid}.bplus-header{box-shadow:none}}
+
+
+/* Bibliothèque de matières */
+.library-subject-cards{grid-template-columns:repeat(3,minmax(0,1fr));}
+.library-subject-cards .subject-card{border:1px solid var(--line);}
+.content-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.content-grid .content-card{width:100%;border:1px solid var(--line);background:var(--paper);border-radius:14px;padding:16px;display:flex;align-items:center;gap:12px;color:var(--text);}
+.content-grid .content-card:hover{border-color:var(--primary);transform:translateY(-1px);}
+.content-grid .content-card div{display:flex;min-width:0;flex:1;flex-direction:column;gap:3px;}
+.content-grid .content-card small{color:var(--text-soft);font-size:11px;}
+.content-grid .content-icon{font-size:24px;}
+@media(max-width:1050px){.library-subject-cards{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:780px){.library-subject-cards,.content-grid{grid-template-columns:1fr;}}
