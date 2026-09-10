@@ -209,7 +209,93 @@ function renderSubject(subject) {
    CHAPITRE
    ========================================================= */
 
+function bplusDifficulty(year) {
+    return ({'3e':'Fondamental','4e':'Intermédiaire','5e':'Avancé','6e':'Type CESS'})[year] || 'Transversal';
+}
+
+function bplusExerciseHtml(chapter, exercices) {
+    if (!exercices.length) {
+        return '<div class="empty-state">Aucun exercice disponible pour ce chapitre.</div>';
+    }
+    return '<div class="exercise-list">' + exercices.map(function (exercise, index) {
+        var options = Array.isArray(exercise.options) ? exercise.options : [];
+        return '<article class="exercise-card">' +
+            '<div class="exercise-meta-row"><div class="exercise-number">Exercice ' + (index + 1) + '</div>' +
+            (exercise.niveau ? '<span class="exercise-level">' + escapeHtml(exercise.niveau) + '</span>' : '') + '</div>' +
+            '<div class="exercise-question">' + escapeHtml(exercise.question || 'Question') + '</div>' +
+            (options.length ? '<div class="exercise-options">' + options.map(function (option, optionIndex) {
+                return '<button class="exercise-option" onclick="answerChapterExercise(this,\'' + chapter.id + '\',' + index + ',' + optionIndex + ')">' + escapeHtml(option) + '</button>';
+            }).join('') + '</div>' : '') +
+            '<div class="exercise-feedback"></div></article>';
+    }).join('') + '</div>';
+}
+
+function openChapterBplus(id) {
+    var chapter = findChapter(id);
+    if (!chapter) {
+        alert('Impossible de trouver ce chapitre.');
+        return;
+    }
+
+    var subject = chapter.matiere || 'maths';
+    var subjectInfo = CESS_SUBJECTS[subject] || CESS_SUBJECTS.maths;
+    var objectives = Array.isArray(chapter.objectifs) ? chapter.objectifs : [];
+    var matieres = Array.isArray(chapter.matieres) ? chapter.matieres : [];
+    var exercices = Array.isArray(chapter.exercices) ? chapter.exercices : [];
+    var progress = getChapterProgress(chapter.id);
+    var rawSections = parseCoursSections(chapter.cours);
+    var coursSections = groupCoursSections(rawSections);
+    var words = String(chapter.cours || '').replace(/<[^>]*>/g, ' ').trim().split(/\s+/).length;
+    var minutes = Math.max(15, Math.min(60, Math.ceil(words / 180) * 5));
+    var safeTitle = escapeHtml(chapter.titre || 'Chapitre');
+
+    var chips = coursSections.map(function (section, index) {
+        return '<button type="button" data-index="' + index + '" onclick="jumpToCoursSection(this)">' + section.icon + ' ' + escapeHtml(section.title) + '</button>';
+    }).join('');
+    if (exercices.length) {
+        chips += '<button type="button" data-index="exercises" onclick="jumpToCoursSection(this)">✎ Exercices</button>';
+    }
+
+    var courseHtml = coursSections.length ? coursSections.map(function (section, index) {
+        var open = index === 0;
+        return '<section class="cours-section bplus-accordion' + (open ? ' open' : '') + '" data-index="' + index + '">' +
+            '<button type="button" class="cours-section-header bplus-accordion-button" aria-expanded="' + open + '" onclick="toggleCoursSection(this)">' +
+            '<span class="bplus-section-number">' + (index + 1) + '</span><span><small>' + section.icon + ' PARTIE ' + (index + 1) + '</small>' + escapeHtml(section.title) + '</span><span class="cours-chevron">' + (open ? '▾' : '▸') + '</span></button>' +
+            '<div class="cours-section-body bplus-accordion-body" style="display:' + (open ? 'block' : 'none') + '">' + section.body + '</div></section>';
+    }).join('') : '<section class="bplus-paper">' + (chapter.cours || '<p>Le cours sera bientôt disponible.</p>') + '</section>';
+
+    var exercisesHtml = exercices.length ? '<section class="cours-section bplus-accordion bplus-exercises" data-index="exercises">' +
+        '<button type="button" class="cours-section-header bplus-accordion-button" aria-expanded="false" onclick="toggleCoursSection(this)">' +
+        '<span class="bplus-section-number">' + (coursSections.length + 1) + '</span><span><small>✎ ENTRAÎNEMENT</small>Exercices du chapitre</span><span class="cours-chevron">▸</span></button>' +
+        '<div class="cours-section-body bplus-accordion-body" style="display:none">' + bplusExerciseHtml(chapter, exercices) + '</div></section>' : '';
+
+    var content = document.createElement('div');
+    content.className = 'detail bplus-detail bplus-' + subject;
+    content.innerHTML = '<div class="bplus-breadcrumb"><button onclick="showView(\'' + subject + '\')">← ' + escapeHtml(subjectInfo.label) + '</button><span>/</span><span>' + escapeHtml(chapter.annee || '') + '</span><span>/</span><span>' + safeTitle + '</span></div>' +
+        '<header class="bplus-header">' +
+          '<div class="bplus-badges"><span class="bplus-badge accent">' + escapeHtml(chapter.annee || '') + ' secondaire</span><span class="bplus-badge">' + escapeHtml(subjectInfo.label) + '</span><span class="bplus-badge warm">' + bplusDifficulty(chapter.annee) + '</span><span class="bplus-badge">≈ ' + minutes + ' min</span></div>' +
+          '<div class="bplus-heading"><div class="bplus-icon">' + (chapter.icone || '📘') + '</div><div><p class="bplus-kicker">FICHE DE COURS COMPLÈTE</p><h1>' + safeTitle + '</h1><p class="bplus-lead">' + escapeHtml(chapter.desc || '') + '</p></div></div>' +
+          '<div class="bplus-meta"><div><small>PARCOURS</small><strong>' + escapeHtml(chapter.annee || '') + ' · ' + escapeHtml(subjectInfo.label) + '</strong></div><div><small>OBJECTIFS</small><strong>' + escapeHtml(objectives.slice(0, 2).join(' · ') || 'Comprendre et appliquer le chapitre') + '</strong></div><div><small>FORMAT</small><strong>Cours · synthèse · exercices</strong></div></div>' +
+        '</header>' +
+        ((matieres.length || objectives.length) ? '<aside class="bplus-prerequisites"><span>✓</span><div><strong>Avant de commencer</strong><p>' + escapeHtml((matieres.slice(0, 4).concat(objectives.slice(0, 1))).join(' · ')) + '</p></div></aside>' : '') +
+        '<nav class="bplus-chips" aria-label="Sommaire du chapitre"><span>Sommaire</span>' + chips + '</nav>' +
+        '<div class="bplus-layout"><main class="bplus-reading"><div class="bplus-intro"><p class="bplus-kicker">COURS STRUCTURÉ</p><h2>Comprendre, retenir, appliquer</h2><p>Ouvre une partie à la fois pour avancer sans surcharger la page. Tous les éléments du cours d’origine sont conservés et réorganisés ci-dessous.</p></div><div class="cours-sections">' + courseHtml + exercisesHtml + '</div>' +
+          '<div class="bplus-print"><button class="button primary" onclick="printChapter(\'' + chapter.id + '\')" type="button">🖨️ Imprimer ou enregistrer en PDF</button></div></main>' +
+          '<aside class="bplus-rail"><section><small>PROGRESSION</small><strong class="bplus-score">' + progress + '%</strong><div class="progress-line"><span style="width:' + progress + '%"></span></div><button class="button primary" onclick="markDone(\'' + chapter.id + '\')">✓ Marquer maîtrisé</button></section>' +
+          (exercices.length ? '<section><small>QUIZ DU CHAPITRE</small><h3>' + exercices.length + ' exercices</h3><p>Vérifie ce que tu as retenu.</p><button class="button secondary" onclick="quizChapter(\'' + chapter.id + '\')">🎯 Lancer le quiz</button></section>' : '') + '</aside></div>';
+
+    var hosts = {maths:'mathContent', geo:'geoContent', bio:'bioContent'};
+    var host = document.getElementById(hosts[subject] || 'mathContent');
+    if (!host) return;
+    var previous = host.querySelector('.detail');
+    if (previous) previous.remove();
+    host.prepend(content);
+    try { content.scrollIntoView({behavior:'smooth', block:'start'}); } catch (error) { content.scrollIntoView(); }
+}
+
 function openChapter(id) {
+
+    return openChapterBplus(id);
 
     var chapter =
         findChapter(id);
@@ -1041,7 +1127,8 @@ function flattenQuestions(filter) {
 
     if (
         filter === 'maths' ||
-        filter === 'geo'
+        filter === 'geo' ||
+        filter === 'bio'
     ) {
 
         questions =
@@ -1112,7 +1199,7 @@ function printChapter(id) {
             ${chapter.cours || ''}
 
             <div class="footer">
-                Fiche générée depuis le Carnet CESS — Révision Mathématiques & Géographie
+                Fiche générée depuis le Carnet CESS — Mathématiques, Géographie & Biologie
             </div>
         </body>
         </html>
