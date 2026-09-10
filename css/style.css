@@ -2538,6 +2538,7 @@ gap:10px
 }
 
 #bioContent .chapter-item{
+min-width:0;
 min-height:70px;
 padding:12px 14px;
 border-color:transparent;
@@ -2559,7 +2560,7 @@ background:rgba(139,92,246,.12)
 
 @media(max-width:900px){
 #bioContent .chapter-list{
-grid-template-columns:1fr
+grid-template-columns:minmax(0,1fr)
 }
 }
 
@@ -2589,4 +2590,20 @@ padding-bottom:4px
 #bio .year-button{
 flex:0 0 105px
 }
+}
+
+/* Cartes bio : la grille doit pouvoir rétrécir sur téléphone. */
+#bio, #bioContent, #bio .chapter-list{min-width:0;max-width:100%}
+#bioContent .chapter-main strong{white-space:normal;overflow-wrap:anywhere;line-height:1.4;font-size:14px}
+#bioContent .chapter-main small{white-space:normal;overflow-wrap:anywhere;line-height:1.45}
+#bioContent .chapter-status{padding:4px 7px;border-radius:999px;background:var(--paper-soft);white-space:nowrap;font-size:11px}
+.body-game-choices{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+.body-game-choices button{min-height:44px;white-space:normal}
+@media(max-width:600px){
+#bioContent .chapter-item{min-height:62px;padding:10px 11px;flex-wrap:wrap}
+#bioContent .chapter-main{flex:1 1 160px}
+#bioContent .chapter-main small{display:none}
+#bioContent .chapter-status{margin-left:auto}
+#bio .year-selector{max-width:100%;scrollbar-width:none}
+#bio .year-selector::-webkit-scrollbar{display:none}
 }

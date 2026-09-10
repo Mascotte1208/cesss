@@ -908,6 +908,10 @@ function renderGamePanel() {
 
     panel.innerHTML = `
         <div class="game-grid">
+            <button class="game-card" onclick="showBodyGame()" type="button">
+                <span>🦴</span><strong>Mission Corps humain</strong>
+                <small>Os, organes et fonctions · 36 questions</small>
+            </button>
             <button class="game-card" onclick="startQuiz('mixed')">
                 <span>🎯</span>
                 <strong>Quiz express</strong>

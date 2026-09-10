@@ -675,6 +675,11 @@ function finishQuiz() {
 
 function replayQuiz() {
 
+    if (cessQuizState && cessQuizState.mode === 'body') {
+        startBodyGame(cessQuizState.bodyTheme);
+        return;
+    }
+
     if (!cessQuizState) {
         return;
     }
@@ -894,4 +899,3 @@ function formatTime(seconds) {
     var secs = seconds % 60;
     return String(minutes).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
 }
-
