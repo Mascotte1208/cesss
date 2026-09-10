@@ -130,6 +130,7 @@ function ensureSubjectFlashcards() {
         FLASHCARDS_DATA[subject] = cards;
     });
 
+    if (FLASHCARDS_DATA.all && FLASHCARDS_DATA.all.length) return;
     FLASHCARDS_DATA.all = Object.keys(CESS_SUBJECTS).reduce(function (cards, subject) {
         return cards.concat((FLASHCARDS_DATA[subject] || []).map(function (card) {
             return { terme: card.terme, definition: card.definition, subject: subject };
@@ -157,6 +158,7 @@ function initFlashcards(subject) {
     flashcardSubject = subject || 'maths';
     flashcardIndex = 0;
     renderFlashcardSelector();
+    if (flashcardSubject === 'all') FLASHCARDS_DATA.all = shuffle(FLASHCARDS_DATA.all);
     renderFlashcard();
 }
 
@@ -298,6 +300,7 @@ function switchFlashcardSubject(subject) {
     flashcardSubject = subject;
     flashcardIndex = 0;
     renderFlashcardSelector();
+    if (flashcardSubject === 'all') FLASHCARDS_DATA.all = shuffle(FLASHCARDS_DATA.all);
     renderFlashcard();
 }
 
