@@ -66,7 +66,7 @@
     var ch=chapters.find(function(c){return c.titre.replace(/^\d+\.\s*/,'')===row[1];});
     if(!ch)return;
     ch.desc=row[2]; ch.cours=course(row); ch.exercices=exercises(row,index,allPairs);
-    ch.objectifs=['Expliquer les notions et le modèle','Résoudre un exercice avec unités','Analyser une expérience et ses limites'];
+    ch.objectifs=['Expliquer les notions et le modèle de « '+row[1]+' »','Résoudre un exercice de « '+row[1]+' » avec unités','Analyser une expérience liée à « '+row[1]+' » et ses limites'];
     ch.fiches=pairs(row).concat([{term:'Relation clé',definition:row[7],example:row[8]}]).map(function(f){return {term:f.term,definition:f.definition,example:f.example||row[8]};});
     ch.contentVersion=3;
   });
