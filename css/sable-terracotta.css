@@ -226,3 +226,14 @@ textarea {
 .history-table-wrap{max-width:100%;overflow-x:auto;margin:14px 0}.history-table-wrap table{width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:12px}.history-table-wrap th,.history-table-wrap td{padding:9px;border:1px solid var(--line);text-align:left}.history-table-wrap th{background:var(--paper-soft)}
 .history-related{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:22px;padding-top:14px;border-top:1px solid var(--line);font-family:Arial,sans-serif}.history-related strong{width:100%;font-size:11px}
 @media(max-width:600px){.history-tabs{flex-direction:column}.history-card-body{padding:8px 15px 20px}.history-revision-card>summary{grid-template-columns:34px minmax(0,1fr)}.history-revision-card>summary>span:last-child{display:none}}
+
+/* Dédoublonnage visuel : un thème annuel, cinq supports internes */
+.history-module{border:1px solid var(--line);border-radius:14px;background:var(--paper);overflow:hidden}
+.history-module>summary{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:11px;padding:17px;cursor:pointer;list-style:none}
+.history-module>summary::-webkit-details-marker{display:none}
+.history-module>summary>span:last-child{color:var(--primary-dark);font-size:10px;font-weight:850}
+.history-module-icon{display:grid;width:34px;height:34px;place-items:center;border-radius:10px;background:var(--primary-soft);color:var(--primary-dark);font-weight:900}
+.history-module-parts{display:flex;flex-direction:column;gap:7px;padding:10px;border-top:1px solid var(--line);background:var(--paper-soft)}
+.history-module-parts .history-revision-card{box-shadow:none}
+.history-module-parts .history-card-number{font-size:9px}
+@media(max-width:600px){.history-module>summary{grid-template-columns:34px minmax(0,1fr)}.history-module>summary>span:last-child{display:none}}
