@@ -63,7 +63,8 @@ function renderHome() {
     // Matières sur l'accueil
     var subjects = document.getElementById('homeSubjects');
     if (subjects) {
-        subjects.innerHTML = ['maths', 'geo', 'bio'].map(function(subject) {
+        var homeKeys = learningProfile().subjects.length ? learningProfile().subjects : Object.keys(CESS_SUBJECTS);
+        subjects.innerHTML = homeKeys.map(function(subject) {
             var pct = pctSubject(subject);
             var totalChaps = allChaps(subject).length;
             var done = 0;
@@ -71,12 +72,13 @@ function renderHome() {
             for (var i = 0; i < chaps.length; i++) {
                 if (getChapterProgress(chaps[i].id) >= 100) done++;
             }
-            var cardClass = subject === 'maths' ? 'maths-card' : (subject === 'geo' ? 'geo-card' : 'bio-card');
-            var icon = subject === 'maths' ? '📐' : (subject === 'geo' ? '🌍' : '🧬');
-            var label = subject === 'maths' ? 'Mathématiques' : (subject === 'geo' ? 'Géographie' : 'Biologie');
+            var info = CESS_SUBJECTS[subject] || {};
+            var cardClass = subject + '-card';
+            var icon = info.icon || '📘';
+            var label = info.label || subject;
 
             return `
-                <div class="subject-card ${cardClass}">
+                <div class="subject-card ${cardClass}" style="border-top:4px solid ${info.color || 'var(--primary)'}">
                     <div class="subject-card-top">
                         <div class="subject-icon">${icon}</div>
                         <span class="subject-arrow">→</span>
@@ -605,17 +607,8 @@ function renderProgress() {
     }
 
 
-    var maths =
-        allChaps('maths');
-
-    var geo =
-        allChaps('geo');
-
-    var bio =
-        allChaps('bio');
-
-    var all =
-        maths.concat(geo).concat(bio);
+    var subjectKeys = learningProfile().subjects.length ? learningProfile().subjects : Object.keys(CESS_SUBJECTS);
+    var all = subjectKeys.reduce(function(list,key){return list.concat(allChaps(key));},[]);
 
 
     var mastered =
@@ -713,59 +706,11 @@ function renderProgress() {
 
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-bottom:18px">
-
-            <div class="panel">
-
-                <h2>📐 Mathématiques</h2>
-
-                <div class="progress-row">
-                    <div class="progress-row-name">Progression</div>
-                    <div class="progress-row-bar"><span style="width:${pctSubject('maths')}%"></span></div>
-                    <div class="progress-row-value">${pctSubject('maths')}%</div>
-                </div>
-
-                <div style="margin-top:10px;font-size:11px;color:var(--text-soft)">
-                    ${maths.filter(function(c){return getChapterProgress(c.id)>=100}).length}/${maths.length} chapitres
-                </div>
-
-            </div>
-
-
-            <div class="panel">
-
-                <h2>🌍 Géographie</h2>
-
-                <div class="progress-row">
-                    <div class="progress-row-name">Progression</div>
-                    <div class="progress-row-bar"><span style="width:${pctSubject('geo')}%"></span></div>
-                    <div class="progress-row-value">${pctSubject('geo')}%</div>
-                </div>
-
-                <div style="margin-top:10px;font-size:11px;color:var(--text-soft)">
-                    ${geo.filter(function(c){return getChapterProgress(c.id)>=100}).length}/${geo.length} chapitres
-                </div>
-
-            </div>
-
-
-            <div class="panel">
-
-                <h2>🧬 Biologie</h2>
-
-                <div class="progress-row">
-                    <div class="progress-row-name">Progression</div>
-                    <div class="progress-row-bar"><span style="width:${pctSubject('bio')}%"></span></div>
-                    <div class="progress-row-value">${pctSubject('bio')}%</div>
-                </div>
-
-                <div style="margin-top:10px;font-size:11px;color:var(--text-soft)">
-                    ${bio.filter(function(c){return getChapterProgress(c.id)>=100}).length}/${bio.length} chapitres
-                </div>
-
-            </div>
-
+            ${subjectKeys.map(function(key){
+                var info=CESS_SUBJECTS[key]||{},chapters=allChaps(key),done=chapters.filter(function(ch){return getChapterProgress(ch.id)>=100;}).length,pct=pctSubject(key);
+                return '<div class="panel"><h2>'+(info.icon||'📘')+' '+escapeHtml(info.label||key)+'</h2><div class="progress-row"><div class="progress-row-name">Progression</div><div class="progress-row-bar"><span style="width:'+pct+'%"></span></div><div class="progress-row-value">'+pct+'%</div></div><div style="margin-top:10px;font-size:13px;color:var(--text-soft)">'+done+'/'+chapters.length+' chapitres</div></div>';
+            }).join('')}
         </div>
-
 
         <div class="panel">
 
@@ -949,26 +894,10 @@ function renderGamePanel() {
                 <strong>Mes erreurs</strong>
                 <small>${cessState.mistakes.length ? cessState.mistakes.length + ' question' + (cessState.mistakes.length > 1 ? 's' : '') + ' à revoir' : 'Aucune erreur à revoir'}</small>
             </button>
-            <button class="game-card" onclick="startQuiz('maths')">
-                <span>📐</span>
-                <strong>Défi Maths</strong>
-                <small>Questions de mathématiques</small>
-            </button>
-            <button class="game-card" onclick="startQuiz('geo')">
-                <span>🌍</span>
-                <strong>Défi Géo</strong>
-                <small>Questions de géographie</small>
-            </button>
-            <button class="game-card" onclick="startQuiz('bio')">
-                <span>🧬</span>
-                <strong>Défi Biologie</strong>
-                <small>Questions sur le vivant</small>
-            </button>
-            <button class="game-card" onclick="startQuiz('chimie')">
-                <span>⚗️</span>
-                <strong>Défi Chimie</strong>
-                <small>264 exercices issus des 24 chapitres</small>
-            </button>
+            ${Object.keys(CESS_SUBJECTS).filter(function(key){return allChaps(key).some(function(ch){return (ch.exercices||[]).length;});}).map(function(key){
+                var info=CESS_SUBJECTS[key],count=allChaps(key).reduce(function(n,ch){return n+(ch.exercices||[]).length;},0);
+                return '<button class="game-card" onclick="startQuiz(\''+key+'\')"><span>'+(info.icon||'📘')+'</span><strong>Défi '+escapeHtml(info.label)+'</strong><small>'+count+' questions disponibles</small></button>';
+            }).join('')}
             <button class="game-card" onclick="startChemistryGame('element')">
                 <span>⚛️</span>
                 <strong>Quel élément ?</strong>
