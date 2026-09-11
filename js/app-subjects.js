@@ -148,6 +148,7 @@ function renderSubject(subject) {
 
 
     contentElement.innerHTML = `
+        <div class="subject-exercise-launch"><button class="button primary" type="button" onclick="openSubjectExercises('${subject}')">✎ Exercices de la matière</button></div>
         <div class="chapter-list">
 
             ${chapters.map(function (chapter) {
@@ -253,9 +254,6 @@ function openChapterBplus(id) {
     var chips = coursSections.map(function (section, index) {
         return '<button type="button" data-index="' + index + '" onclick="jumpToCoursSection(this)">' + section.icon + ' ' + escapeHtml(section.title) + '</button>';
     }).join('');
-    if (exercices.length) {
-        chips += '<button type="button" data-index="exercises" onclick="jumpToCoursSection(this)">✎ Exercices</button>';
-    }
 
     var courseHtml = coursSections.length ? coursSections.map(function (section, index) {
         var open = index === 0;
@@ -265,10 +263,8 @@ function openChapterBplus(id) {
             '<div class="cours-section-body bplus-accordion-body" style="display:' + (open ? 'block' : 'none') + '">' + section.body + '</div></section>';
     }).join('') : '<section class="bplus-paper">' + (chapter.cours || '<p>Le cours sera bientôt disponible.</p>') + '</section>';
 
-    var exercisesHtml = exercices.length ? '<section class="cours-section bplus-accordion bplus-exercises" data-index="exercises">' +
-        '<button type="button" class="cours-section-header bplus-accordion-button" aria-expanded="false" onclick="toggleCoursSection(this)">' +
-        '<span class="bplus-section-number">' + (coursSections.length + 1) + '</span><span><small>✎ ENTRAÎNEMENT</small>Exercices du chapitre</span><span class="cours-chevron">▸</span></button>' +
-        '<div class="cours-section-body bplus-accordion-body" style="display:none">' + bplusExerciseHtml(chapter, exercices) + '</div></section>' : '';
+    var exercisesHtml = '';
+
 
     var content = document.createElement('div');
     content.className = 'detail bplus-detail bplus-' + subject;
@@ -276,14 +272,14 @@ function openChapterBplus(id) {
         '<header class="bplus-header">' +
           '<div class="bplus-badges"><span class="bplus-badge accent">' + escapeHtml(chapter.annee || '') + ' secondaire</span><span class="bplus-badge">' + escapeHtml(subjectInfo.label) + '</span><span class="bplus-badge warm">' + bplusDifficulty(chapter.annee) + '</span><span class="bplus-badge">≈ ' + minutes + ' min de lecture</span></div>' +
           '<div class="bplus-heading"><div class="bplus-icon">' + (chapter.icone || '📘') + '</div><div><p class="bplus-kicker">FICHE DE RÉVISION</p><h1>' + safeTitle + '</h1><p class="bplus-lead">' + escapeHtml(chapter.desc || '') + '</p></div></div>' +
-          '<div class="bplus-meta"><div><small>PARCOURS</small><strong>' + escapeHtml(chapter.annee || '') + ' · ' + escapeHtml(subjectInfo.label) + '</strong></div><div><small>OBJECTIFS</small><strong>' + escapeHtml(objectives.slice(0, 2).join(' · ') || 'Comprendre et appliquer le chapitre') + '</strong></div><div><small>FORMAT</small><strong>Cours · synthèse · exercices</strong></div></div>' +
+          '<div class="bplus-meta"><div><small>PARCOURS</small><strong>' + escapeHtml(chapter.annee || '') + ' · ' + escapeHtml(subjectInfo.label) + '</strong></div><div><small>OBJECTIFS</small><strong>' + escapeHtml(objectives.slice(0, 2).join(' · ') || 'Comprendre et appliquer le chapitre') + '</strong></div><div><small>FORMAT</small><strong>Cours · synthèse</strong></div></div>' +
         '</header>' +
         ((matieres.length || objectives.length) ? '<aside class="bplus-prerequisites"><span>✓</span><div><strong>Avant de commencer</strong><p>' + escapeHtml((matieres.slice(0, 4).concat(objectives.slice(0, 1))).join(' · ')) + '</p></div></aside>' : '') +
         '<nav class="bplus-chips" aria-label="Sommaire du chapitre"><span>Sommaire</span>' + chips + '</nav>' +
-        '<div class="bplus-layout"><main class="bplus-reading"><div class="bplus-intro"><p class="bplus-kicker">COURS STRUCTURÉ</p><h2>Comprendre, retenir, appliquer</h2><p>Ouvre une partie à la fois pour avancer sans surcharger la page. Lis les explications, travaille les exemples puis vérifie tes réponses.</p></div><div class="cours-sections">' + courseHtml + exercisesHtml + (typeof libraryActivityHtml === 'function' && subjectInfo.library && !chapter.contentVersion ? libraryActivityHtml(chapter, subject) : '') + '</div>' +
+        '<div class="bplus-layout"><main class="bplus-reading"><div class="bplus-intro"><p class="bplus-kicker">COURS STRUCTURÉ</p><h2>Comprendre et retenir</h2><p>Ouvre une partie à la fois pour avancer sans surcharger la page. Les exercices sont regroupés dans l’espace d’entraînement de la matière.</p></div><div class="cours-sections">' + courseHtml + '</div>' +
           '<div class="bplus-print"><button class="button primary" onclick="printChapter(\'' + chapter.id + '\')" type="button">🖨️ Imprimer ou enregistrer en PDF</button></div></main>' +
           '<aside class="bplus-rail"><section><small>PROGRESSION</small><strong class="bplus-score">' + progress + '%</strong><div class="progress-line"><span style="width:' + progress + '%"></span></div><button class="button primary" onclick="markDone(\'' + chapter.id + '\')">✓ Marquer comme lu</button></section>' +
-          (exercices.length ? '<section><small>QUIZ DU CHAPITRE</small><h3>' + exercices.length + ' exercices</h3><p>Vérifie ce que tu as retenu.</p><button class="button secondary" onclick="quizChapter(\'' + chapter.id + '\')">🎯 Lancer le quiz</button></section>' : '') + '</aside></div>';
+          '<section><small>ENTRAÎNEMENT</small><h3>Exercices de la matière</h3><p>Choisis une série par année, chapitre ou niveau.</p><button class="button secondary" onclick="openSubjectExercises(\'' + subject + '\')">✎ Ouvrir les exercices</button></section></aside></div>';
 
     var hosts = {maths:'mathContent', geo:'geoContent', bio:'bioContent'};
     var host = document.getElementById(subjectInfo.library ? 'libraryContent' : (hosts[subject] || 'mathContent'));
