@@ -39,6 +39,9 @@ function renderLibrarySubject(subject) {
     if(!root||!info)return;
     if(!info.library){showView(subject);return;}
     var p=learningProfile();
+    if(subject==='francais' && typeof renderFrenchMastery==='function'){
+        renderFrenchMastery(root,p);return;
+    }
     root.innerHTML='<div class="page-header"><h1>'+escapeHtml(info.label)+'</h1><button class="button secondary" onclick="renderLibrary()">← Catalogue</button></div>'+['3e','4e','5e','6e'].map(function(year){var chapters=allChaps(subject).filter(function(c){return c.annee===year;});return '<details class="memo-group"'+(p.year===year?' open':'')+'><summary><strong>'+year+' secondaire</strong><span>'+chapters.length+' chapitres</span></summary><div class="content-grid">'+chapters.map(chapterLink).join('')+'</div></details>';}).join('');
 }
 
@@ -69,4 +72,3 @@ function libraryActivityHtml(chapter, subject) {
 }
 
 registerLibrarySubjects();
-
