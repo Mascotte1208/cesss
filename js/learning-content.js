@@ -1395,5 +1395,5 @@ var applications=[
 ['francais',13,'Quel énoncé contient une métaphore ?',['Cette nouvelle est un rayon de soleil.','Cette nouvelle est agréable.','Cette nouvelle ressemble à une éclaircie.','Cette nouvelle est arrivée hier.'],0,'Le rapprochement avec un rayon de soleil se fait sans outil de comparaison explicite.'],
 ['francais',15,'Quel connecteur convient : Certes, ce choix est rapide ; ___, il coûte cher.',['donc','toutefois','par conséquent','ainsi'],1,'Toutefois introduit une limite après l’avantage concédé.']
 ];
-applications.forEach(function(row){var chapters=Object.values(CESS_LIBRARY_DATA[row[0]].data).flat(),c=chapters[row[1]];c.exercices.push({question:row[2],options:row[3],correct:row[4],correction:row[5],niveau:'Appliquer',contentVersion:2});});
+applications.forEach(function(row){var subject=CESS_LIBRARY_DATA[row[0]];if(!subject)return;var chapters=Object.values(subject.data).flat(),c=chapters[row[1]];if(!c)return;c.exercices.push({question:row[2],options:row[3],correct:row[4],correction:row[5],niveau:'Appliquer',contentVersion:2});});
 })();
