@@ -207,3 +207,22 @@ textarea {
 .bplus-francais blockquote{margin:14px 0;padding:18px;border-left:4px solid var(--green);background:var(--green-soft);color:#244b37}
 @media(max-width:1000px){.fr-route-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.fr-mastery-hero{padding:20px}.fr-route-grid{grid-template-columns:1fr}.fr-route-card{min-height:0}.fr-year-block{padding:5px 10px 15px}}
+
+/* Histoire : parcours existant + bibliothèque complémentaire de 100 fiches */
+.history-tabs{display:flex;gap:8px;margin:0 0 18px;padding:6px;border:1px solid var(--line);border-radius:14px;background:var(--paper-soft)}
+.history-tabs .memo-tab{flex:1;margin:0}
+.history-revision-intro,.history-course-intro{margin-bottom:18px;padding:24px;border:1px solid var(--line);border-radius:18px;background:var(--paper);box-shadow:var(--shadow-sm)}
+.history-revision-intro h2,.history-course-intro h2{margin:5px 0 8px}.history-revision-intro>p,.history-course-intro>p{color:var(--text-soft)}
+.history-result-count{margin:10px 0 0!important;color:var(--primary-dark)!important;font-weight:800}
+.history-card-list{display:flex;flex-direction:column;gap:8px;padding:14px}
+.history-revision-card{border:1px solid var(--line);border-radius:13px;background:var(--paper);overflow:hidden}
+.history-revision-card>summary{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;list-style:none}
+.history-revision-card>summary::-webkit-details-marker{display:none}.history-revision-card>summary>span:last-child{color:var(--primary-dark);font-size:10px;font-weight:800}
+.history-card-number{display:grid;width:32px;height:32px;place-items:center;border-radius:9px;background:var(--primary-soft);color:var(--primary-dark);font-weight:900}
+.history-card-body{padding:8px 22px 24px 64px;border-top:1px solid var(--line);font-family:Georgia,'Times New Roman',serif;line-height:1.68}
+.history-card-body h4{margin:20px 0 8px;color:var(--primary-dark);font-family:Arial,sans-serif}.history-card-body li{margin:6px 0}
+.history-keywords{padding:10px 12px;border-radius:9px;background:var(--paper-soft)}
+.history-retain{margin:18px 0!important;padding:14px 16px;border-left:4px solid var(--green);border-radius:4px 10px 10px 4px;background:var(--green-soft);color:#244b37}
+.history-table-wrap{max-width:100%;overflow-x:auto;margin:14px 0}.history-table-wrap table{width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:12px}.history-table-wrap th,.history-table-wrap td{padding:9px;border:1px solid var(--line);text-align:left}.history-table-wrap th{background:var(--paper-soft)}
+.history-related{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:22px;padding-top:14px;border-top:1px solid var(--line);font-family:Arial,sans-serif}.history-related strong{width:100%;font-size:11px}
+@media(max-width:600px){.history-tabs{flex-direction:column}.history-card-body{padding:8px 15px 20px}.history-revision-card>summary{grid-template-columns:34px minmax(0,1fr)}.history-revision-card>summary>span:last-child{display:none}}
