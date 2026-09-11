@@ -69,18 +69,25 @@ var M=[
 ['6e','Méthode CESS','Critiquer un document historique','méthode transversale','critique externe, interne, contexte, pertinence','La critique externe identifie nature, auteur, date, lieu et destinataire|La critique interne examine intention, argument, vocabulaire et silences|La contextualisation relie le document aux connaissances utiles|La fiabilité se juge pour une question précise, jamais absolument','nécessité de transformer une trace en preuve|pluralité des points de vue','questionnement puis confrontation','réponse prudente|limites explicites','Choisis un discours politique et applique identité, intention, informations, silences, contexte et confrontation','Comment une source partiale peut-elle être utile ?','Elle peut prouver un point de vue ou une stratégie si l’on ne la traite pas comme description neutre.'],
 ['6e','Méthode CESS','Construire une synthèse argumentée','méthode transversale','problématique, axes, causalité, citation','Le verbe de consigne fixe l’opération intellectuelle attendue|Une problématique transforme le thème en question directrice|Les axes organisent documents et connaissances, non des résumés successifs|Chaque citation ou donnée doit être courte, attribuée et expliquée','dispersion des informations|besoin de hiérarchisation','brouillon, plan, rédaction et relecture','réponse démontrée|nuance finale','À partir de trois documents, crée un tableau idées-preuves-limites avant de rédiger','Comment éviter la juxtaposition de documents ?','Organise par idées et relations : causes, oppositions, évolutions, conséquences et limites.']
 ];
-function card(year,theme,num,title,type,markdown){return{id:'histoire_'+year+'_'+String(num).padStart(3,'0'),number:year+'-'+String(num).padStart(3,'0'),year:year,theme:year+' · '+theme,title:type+' — '+title,section:'Révisions '+year,type:type,markdown:markdown};}
 function bullets(text){return text.split('|').map(function(x){return'- '+x;}).join('\n');}
 M=M.filter(function(m){return !(m[0]==='6e'&&(m[2]==='Le monde et les institutions après 1945'||m[2]==='Information, propagande et désinformation'));});
 var out=[],count={'4e':0,'5e':0,'6e':0};
-M.forEach(function(m){var y=m[0],theme=m[1],title=m[2],period=m[3],keywords=m[4],facts=m[5],causes=m[6],process=m[7],effects=m[8],source=m[9],prompt=m[10],retain=m[11],n=count[y];var common='**Période :** '+period+'\n\n**Mots-clés :** '+keywords+'\n\n';
-out.push(card(y,theme,n+1,title,'Cours essentiel',common+'**Contenu :**\n\n'+bullets(facts)+'\n\n**À retenir pour le CESS :** '+retain));
-out.push(card(y,theme,n+2,title,'Repères',common+'**Repères à mémoriser :**\n\n'+bullets(facts)+'\n\n**Question flash :** Replace les faits dans l’ordre et attribue-les aux bons acteurs.\n\n**À retenir pour le CESS :** Une date sert à situer une transformation ; elle ne remplace pas son explication.'));
-out.push(card(y,theme,n+3,title,'Schéma causes → conséquences',common+'**Causes :**\n\n'+bullets(causes)+'\n\n**Processus central :** '+process+'\n\n**Conséquences :**\n\n'+bullets(effects)+'\n\n**À retenir pour le CESS :** '+retain));
-out.push(card(y,theme,n+4,title,'Analyse de document',common+'**Source conseillée :** '+source+'\n\n**Méthode :**\n\n- Identifie nature, auteur, date et destinataire.\n- Relève deux informations précises.\n- Explique l’intention ou le point de vue.\n- Confronte au contexte et formule une limite.\n\n**À retenir pour le CESS :** Une source devient une preuve seulement lorsqu’elle répond à une question et qu’elle est critiquée.'));
-out.push(card(y,theme,n+5,title,'Atelier CESS',common+'**Problématique :** '+prompt+'\n\n**Plan de travail :**\n\n1. Présente le contexte et définis les termes.\n2. Explique les causes : '+causes.replace(/\|/g,', ')+'.\n3. Analyse le processus : '+process+'.\n4. Évalue les conséquences : '+effects.replace(/\|/g,', ')+'.\n5. Conclus avec une nuance.\n\n**Critère de réussite :** deux connaissances précises, une source critiquée et une réponse explicite.\n\n**À retenir pour le CESS :** '+retain));
-count[y]+=5;});
-if(count['4e']!==100||count['5e']!==100||count['6e']!==100)throw Error('Comptage annuel incorrect');
+M.forEach(function(m){
+ var y=m[0],theme=m[1],title=m[2],period=m[3],keywords=m[4],facts=m[5],causes=m[6],process=m[7],effects=m[8],source=m[9],prompt=m[10],retain=m[11],num=++count[y];
+ var markdown='**Période :** '+period+'\n\n**Mots-clés :** '+keywords+
+ '\n\n#### Cours essentiel\n\n'+bullets(facts)+
+ '\n\n#### Schéma : causes → processus → conséquences\n\n**Causes :**\n\n'+bullets(causes)+
+ '\n\n**Processus central :** '+process+
+ '\n\n**Conséquences :**\n\n'+bullets(effects)+
+ '\n\n#### Analyse de document\n\n**Source conseillée :** '+source+
+ '\n\n**Questions à appliquer :**\n\n- Qui produit le document, quand et pour quel destinataire ?\n- Quelles informations précises apporte-t-il ?\n- Quel point de vue, quelle intention ou quel silence faut-il relever ?\n- Avec quelle autre source ou connaissance faut-il le confronter ?'+
+ '\n\n#### Atelier CESS\n\n**Problématique :** '+prompt+
+ '\n\n**Plan conseillé :**\n\n1. Présente le contexte et définis les termes.\n2. Explique les causes.\n3. Analyse le processus et ses acteurs.\n4. Évalue les conséquences.\n5. Conclus avec une réponse nuancée.'+
+ '\n\n**Critère de réussite :** utilise au moins deux connaissances précises, critique une source et réponds explicitement à la problématique.'+
+ '\n\n**À retenir pour le CESS :** '+retain;
+ out.push({id:'histoire_'+y+'_'+String(num).padStart(2,'0'),number:y+'-'+String(num).padStart(2,'0'),year:y,theme:y+' · '+theme,title:title,section:'Révisions '+y,type:'Fiche complète',markdown:markdown});
+});
+if(count['4e']!==20||count['5e']!==20||count['6e']!==20)throw Error('Comptage annuel incorrect');
 window.HISTORY_ADVANCED_DATA=out;
 Array.prototype.push.apply(HISTORY_REVISION_DATA,out);
 })();
