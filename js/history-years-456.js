@@ -71,6 +71,7 @@ var M=[
 ];
 function card(year,theme,num,title,type,markdown){return{id:'histoire_'+year+'_'+String(num).padStart(3,'0'),number:year+'-'+String(num).padStart(3,'0'),year:year,theme:year+' · '+theme,title:type+' — '+title,section:'Révisions '+year,type:type,markdown:markdown};}
 function bullets(text){return text.split('|').map(function(x){return'- '+x;}).join('\n');}
+M=M.filter(function(m){return !(m[0]==='6e'&&(m[2]==='Le monde et les institutions après 1945'||m[2]==='Information, propagande et désinformation'));});
 var out=[],count={'4e':0,'5e':0,'6e':0};
 M.forEach(function(m){var y=m[0],theme=m[1],title=m[2],period=m[3],keywords=m[4],facts=m[5],causes=m[6],process=m[7],effects=m[8],source=m[9],prompt=m[10],retain=m[11],n=count[y];var common='**Période :** '+period+'\n\n**Mots-clés :** '+keywords+'\n\n';
 out.push(card(y,theme,n+1,title,'Cours essentiel',common+'**Contenu :**\n\n'+bullets(facts)+'\n\n**À retenir pour le CESS :** '+retain));
