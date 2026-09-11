@@ -50,13 +50,13 @@ function answerMini(i){
  if(s.mode==='sprint'&&Date.now()>=s.deadline)return finishMiniGame();
  var q=s.cards[s.index];if(!q.choices[i])return;s.answered=true;var good=q.choices[i].correct;if(good)s.score++;
  document.querySelectorAll('#gamePanel .quiz-option').forEach(function(b,j){b.disabled=true;if(q.choices[j].correct)b.classList.add('correct');else if(j===i)b.classList.add('wrong');});
- document.getElementById('miniFeedback').innerHTML='<div class="quiz-feedback"><strong>'+(good?'Bonne réponse':'À revoir')+'</strong><p>'+escapeHtml(q.explanation)+'</p><button class="button primary" onclick="nextMiniGame()">Continuer →</button></div>';
+ document.getElementById('miniFeedback').innerHTML=feedbackMarkup(good,q.explanation,'Continuer →','nextMiniGame()',s);
 }
 function nextMiniGame(){if(!cessMiniGame||!cessMiniGame.answered||cessMiniGame.finished)return;cessMiniGame.index++;renderMini();}
 function finishMiniGame(){
  var s=cessMiniGame;if(!s||s.finished)return;s.finished=true;stopMiniGame();var total=s.mode==='sprint'?Math.min(s.cards.length,s.index+(s.answered?1:0)):s.cards.length;var pct=total?Math.round(s.score/total*100):0;
  cessState.results.push({contentVersion:2,date:new Date().toISOString(),mode:MINI_LABELS[s.mode],score:s.score,total:total,percentage:pct});cessSave();
- document.getElementById('gamePanel').innerHTML='<div class="quiz-result"><h2>'+s.score+' bonne(s) réponse(s)</h2><p>'+total+' question(s) traitée(s) · '+pct+' % de réussite</p><button class="button primary" onclick="startMini(\''+s.mode+'\')">Rejouer</button> <button class="button secondary" onclick="renderGamePanel()">Tous les jeux</button></div>';
+ document.getElementById('gamePanel').innerHTML=rewardBanner(s.score,total)+'<div class="quiz-result"><h2>'+s.score+' bonne(s) réponse(s)</h2><p>'+total+' question(s) traitée(s) · '+pct+' % de réussite</p><button class="button primary" onclick="startMini(\''+s.mode+'\')">Rejouer</button> <button class="button secondary" onclick="renderGamePanel()">Tous les jeux</button></div>';
 }
 function startSprintGame(){startMini('sprint');}
 function startAssociationGame(){startMini('association');}
@@ -72,7 +72,7 @@ function startMatchingGame(){
 }
 function renderMatchingGame(){
     var s=matchingState,root=document.getElementById('gamePanel');if(!s||!root)return;
-    root.innerHTML='<button class="button secondary" onclick="renderGamePanel()">← Jeux</button><h2>Relier les notions</h2><p>Choisis un terme, puis sa définition. '+s.matched.length+' / '+s.cards.length+' paires trouvées.</p>'+(s.cards.length?'<div class="content-grid"><section aria-label="Termes">'+s.cards.map(function(f,i){return '<button class="content-card" '+(s.matched.includes(i)?'disabled':'')+' aria-pressed="'+(s.selected===i)+'" onclick="chooseMatchingTerm('+i+')">'+escapeHtml(f.term)+'<small>'+escapeHtml(CESS_SUBJECTS[f.subject].label)+'</small>'+(s.matched.includes(i)?' ✓':'')+'</button>';}).join('')+'</section><section aria-label="Définitions">'+s.order.map(function(i){return '<button class="content-card" '+(s.matched.includes(i)?'disabled':'')+' onclick="chooseMatchingDefinition('+i+')">'+escapeHtml(s.cards[i].definition)+(s.matched.includes(i)?' ✓':'')+'</button>';}).join('')+'</section></div><p id="matchingFeedback" role="status"></p>':'<p>Aucune fiche de notions dans ce parcours. Les autres jeux restent disponibles.</p>');
+    root.innerHTML='<button class="button secondary" onclick="renderGamePanel()">← Jeux</button><h2>Relier les notions</h2><p>Choisis un terme, puis sa définition. '+s.matched.length+' / '+s.cards.length+' paires trouvées.</p>'+(s.cards.length?'<div class="content-grid"><section aria-label="Termes">'+s.cards.map(function(f,i){return '<button class="content-card '+(s.matched.includes(i)?'matched':'')+'" '+(s.matched.includes(i)?'disabled':'')+' aria-pressed="'+(s.selected===i)+'" onclick="chooseMatchingTerm('+i+')">'+escapeHtml(f.term)+'<small>'+escapeHtml(CESS_SUBJECTS[f.subject].label)+'</small>'+(s.matched.includes(i)?' ✓':'')+'</button>';}).join('')+'</section><section aria-label="Définitions">'+s.order.map(function(i){return '<button class="content-card" '+(s.matched.includes(i)?'disabled':'')+' onclick="chooseMatchingDefinition('+i+')">'+escapeHtml(s.cards[i].definition)+(s.matched.includes(i)?' ✓':'')+'</button>';}).join('')+'</section></div><p id="matchingFeedback" role="status"></p>':'<p>Aucune fiche de notions dans ce parcours. Les autres jeux restent disponibles.</p>');
     if(s.finished)root.innerHTML+='<div class="panel"><h3>Série terminée</h3><p>'+s.cards.length+' paires trouvées en '+s.attempts+' tentative(s).</p><button class="button primary" onclick="startMatchingGame()">Nouvelle série</button></div>';
 }
 function chooseMatchingTerm(i){var s=matchingState;if(!s||s.finished||s.matched.includes(i))return;s.selected=i;renderMatchingGame();}
@@ -81,5 +81,5 @@ function chooseMatchingDefinition(i){
     s.attempts++;var good=s.selected===i;
     if(good)s.matched.push(i);s.selected=null;
     if(s.matched.length===s.cards.length){s.finished=true;cessState.results.push({contentVersion:2,date:new Date().toISOString(),mode:'Relier les notions',score:s.cards.length,total:s.attempts,percentage:Math.round(s.cards.length/s.attempts*100)});cessSave();}
-    renderMatchingGame();document.getElementById('matchingFeedback').textContent=good?'Bonne association.':'Pas cette définition. Relis les deux propositions puis réessaie.';
+    renderMatchingGame();var feedback=document.getElementById('matchingFeedback');feedback.className=good?'feedback-success':'feedback-retry';feedback.textContent=good?'✓ Bonne association !':'↺ À revoir : relis les deux propositions puis réessaie.';
 }

@@ -1,0 +1,59 @@
+/* Palette Carnet CESS : navigation indigo, réussite émeraude, reprise ambre. */
+:root,body,body.dark {
+ --green:#6ee7b7;--green-soft:#11382b;
+ --red:#ffd08a;--red-soft:#3d2b16;
+ --orange:#ffd08a;--orange-soft:#3d2b16;
+ --primary:#a5b4fc;--primary-dark:#c7d2fe;--primary-soft:#252e50;
+ --text:#f1f5fc;--text-soft:#bcc9da;--text-light:#a1b2c9;
+ --reward:#ddd6fe;--reward-soft:#322650;
+ --success-fill:#166b45;--success-text:#f0fff6;
+ --line:#344661;
+}
+body,body.dark{background:#101827}
+.sidebar{background:linear-gradient(180deg,#111a2a,#101725)}
+.eyebrow,.welcome-main h1 em,.subject-card-footer button,.text-button,.simple-list-action{color:var(--primary)}
+.brand-icon,.subject-icon,.geo-card .subject-icon,.bio-card .subject-icon,.games-card .subject-icon,.daily-icon{background:var(--primary-soft);color:var(--primary);border-color:#485680}
+.nav-item.active{background:var(--primary-soft);border-color:#6575b5;color:#dbe3ff}
+.nav-item{color:#b9c8dd}
+.brand-text small,.games-card .game-note{color:var(--text-light)}
+.button.primary{background:var(--primary);border-color:var(--primary);color:#111b30}
+.button.primary:hover{background:#c7d2fe}
+.home-stat,.subject-card,.panel,.content-card{background:#172337;border-color:var(--line)}
+.welcome-main{background:linear-gradient(125deg,#19263f,#152236);border-color:var(--line)}
+.daily-card{background:#1b2942;border-color:var(--line)}
+.subject-card:hover,.home-stat:hover{border-color:#9caaf4}
+.progress-line span,.geo-card .progress-line span,.bio-card .progress-line span{background:var(--green)}
+.quiz-option,.exercise-option{border:1px solid var(--line)}
+.quiz-option.correct,.exercise-option.correct{
+ background:var(--success-fill)!important;border:2px solid var(--green)!important;
+ color:var(--success-text)!important;opacity:1!important;box-shadow:0 0 0 3px #6ee7b718;
+}
+.quiz-option.correct::after,.exercise-option.correct::after{content:" ✓";font-weight:900;margin-left:8px}
+.quiz-option.wrong,.exercise-option.wrong{
+ background:var(--orange-soft)!important;border:2px solid var(--orange)!important;
+ color:var(--orange)!important;opacity:1!important;
+}
+.quiz-option.wrong::after,.exercise-option.wrong::after{content:" ↺";font-weight:900;margin-left:8px}
+.quiz-option.selected{border:2px solid var(--primary);background:var(--primary-soft);color:var(--text);opacity:1}
+.feedback-box{margin-top:16px;padding:18px 20px;border:2px solid;border-radius:14px;animation:feedback-enter .22s ease-out}
+.feedback-box strong{display:block;font-size:18px;line-height:1.4}
+.feedback-box p{margin:10px 0;line-height:1.6}
+.feedback-box .button{margin-top:12px}
+.feedback-success{background:var(--green-soft)!important;border-color:var(--green)!important;color:var(--green)!important}
+.feedback-retry{background:var(--orange-soft)!important;border-color:var(--orange)!important;color:var(--orange)!important}
+.feedback-success p,.feedback-retry p{color:var(--text)!important}
+.reward-banner{margin:16px 0;padding:24px;border:2px solid;border-radius:18px;text-align:center;animation:feedback-enter .3s ease-out}
+.reward-banner strong{display:block;font-size:22px;margin-bottom:8px}
+.reward-perfect{background:var(--reward-soft);color:var(--reward);border-color:var(--reward)}
+.reward-success{background:var(--green-soft);color:var(--green);border-color:var(--green)}
+.reward-complete{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+.reward-banner p{color:var(--text);margin:8px 0 0}
+.flash-rating-success{border-color:var(--green)!important;background:var(--success-fill)!important;color:var(--success-text)!important}
+.flash-rating-retry{border-color:var(--orange)!important;background:var(--orange-soft)!important;color:var(--orange)!important}
+#flashNotice:empty{display:none}
+#matchingFeedback:not(:empty){padding:14px;border-radius:12px;margin-top:16px}
+#gamePanel .content-card[aria-pressed="true"]{border:2px solid var(--primary);background:var(--primary-soft)}
+#gamePanel .content-card.matched{border:2px solid var(--green);background:var(--green-soft);color:var(--green);opacity:1}
+@keyframes feedback-enter{from{opacity:.6;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.feedback-box,.reward-banner{animation:none}.quiz-option,.exercise-option{transition:none}}
+@media(max-width:600px){.feedback-box{padding:16px}.reward-banner{padding:18px}.reward-banner strong{font-size:20px}}

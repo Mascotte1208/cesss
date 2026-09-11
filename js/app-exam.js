@@ -24,14 +24,23 @@ function renderExamQuestion(){
 function answerExam(index){
     var s=cessExamState;if(!s||s.finished||s.answered)return;if(s.deadline&&Date.now()>=s.deadline){finishExam();return;}var q=s.questions[s.index];if(!Number.isInteger(index)||index<0||index>=q.options.length)return;
     s.answered=true;s.responses[s.index]=index;if(index===q.correct)s.score++;
-    document.querySelectorAll('#examPanel .quiz-option').forEach(function(b){b.disabled=true;});
-    var explanation=s.mode==='training'?'<p>'+(index===q.correct?'Bonne réponse.':'Réponse attendue : '+escapeHtml(q.options[q.correct]))+'</p><p>'+escapeHtml(q.correction)+'</p>':'';
-    document.getElementById('examFeedback').innerHTML=explanation+'<button class="button primary" onclick="nextExamQuestion()">'+(s.index+1===s.questions.length?'Terminer':'Question suivante →')+'</button>';
+    document.querySelectorAll('#examPanel .quiz-option').forEach(function(b,i){
+        b.disabled=true;
+        if(s.mode==='training'){
+            if(i===q.correct)b.classList.add('correct');
+            else if(i===index)b.classList.add('wrong');
+        } else if(i===index)b.classList.add('selected');
+    });
+    var label=s.index+1===s.questions.length?'Terminer':'Question suivante →';
+    document.getElementById('examFeedback').innerHTML=s.mode==='training'
+      ? feedbackMarkup(index===q.correct,(index===q.correct?'':'Réponse attendue : '+q.options[q.correct]+'. ')+q.correction,label,'nextExamQuestion()',s)
+      : '<p>Réponse enregistrée.</p><button class="button primary" onclick="nextExamQuestion()">'+label+'</button>';
+
 }
 function nextExamQuestion(){var s=cessExamState;if(!s||!s.answered||s.finished)return;s.index++;s.answered=false;renderExamQuestion();}
 function finishExam(){
     var s=cessExamState;if(!s||s.finished)return;s.finished=true;stopExamTimer();noteQuizAttempts(s);
     s.questions.forEach(function(q,i){if(s.responses[i]!==undefined&&s.responses[i]!==q.correct&&cessState.mistakes.indexOf(q.id)<0)cessState.mistakes.push(q.id);});
     var pct=Math.round(s.score/s.questions.length*100);cessState.results.push({date:new Date().toISOString(),mode:'exam-'+s.subject,score:s.score,total:s.questions.length,percentage:pct,contentVersion:2,year:s.year});cessSave();
-    document.getElementById('examPanel').innerHTML='<div class="panel"><h2>Session terminée</h2><strong>'+s.score+' / '+s.questions.length+' · '+pct+' %</strong><p>Les questions sans réponse comptent dans le total.</p><button class="button primary" onclick="renderExamPanel()">Nouvelle session</button> <button class="button secondary" onclick="showView(\'progress\')">Mon suivi</button></div>'+s.questions.map(function(q,i){var response=s.responses[i];return '<details class="memo-group"><summary>'+ (response===q.correct?'✓':'À revoir')+' · Question '+(i+1)+'</summary><div class="panel"><h3>'+escapeHtml(q.question)+'</h3><p>Ta réponse : '+(response===undefined?'Non répondue':escapeHtml(q.options[response]))+'</p><p>Réponse attendue : '+escapeHtml(q.options[q.correct])+'</p><p>'+escapeHtml(q.correction)+'</p><button class="button secondary" onclick="openStudyChapter(\''+q.chapterId+'\')">Revoir le cours</button></div></details>';}).join('');
+    document.getElementById('examPanel').innerHTML=rewardBanner(s.score,s.questions.length)+'<div class="panel"><h2>Session terminée</h2><strong>'+s.score+' / '+s.questions.length+' · '+pct+' %</strong><p>Les questions sans réponse comptent dans le total.</p><button class="button primary" onclick="renderExamPanel()">Nouvelle session</button> <button class="button secondary" onclick="showView(\'progress\')">Mon suivi</button></div>'+s.questions.map(function(q,i){var response=s.responses[i];return '<details class="memo-group '+(response===q.correct?'feedback-success':'feedback-retry')+'"><summary>'+ (response===q.correct?'✓':'À revoir')+' · Question '+(i+1)+'</summary><div class="panel"><h3>'+escapeHtml(q.question)+'</h3><p>Ta réponse : '+(response===undefined?'Non répondue':escapeHtml(q.options[response]))+'</p><p>Réponse attendue : '+escapeHtml(q.options[q.correct])+'</p><p>'+escapeHtml(q.correction)+'</p><button class="button secondary" onclick="openStudyChapter(\''+q.chapterId+'\')">Revoir le cours</button></div></details>';}).join('');
 }

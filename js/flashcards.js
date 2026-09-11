@@ -128,7 +128,7 @@ function renderFlashcardSetup(){
     var root=document.getElementById('flashcardContainer');if(!root)return;
     var chapters=flashcardSubject==='all'?personalChapters():allChaps(flashcardSubject);
     chapters=chapters.filter(function(c){return (c.fiches||[]).length;});
-    root.innerHTML='<div class="session-controls"><label>Année<select id="flashYear" onchange="flashcardYear=this.value;flashcardChapter=\'all\';renderFlashcardSetup()">'+['all','3e','4e','5e','6e'].map(function(y){return '<option value="'+y+'"'+(y===flashcardYear?' selected':'')+'>'+(y==='all'?'Toutes les années':y)+'</option>';}).join('')+'</select></label><label>Dossier<select id="flashChapter"><option value="all">Tous les dossiers</option>'+chapters.filter(function(c){return flashcardYear==='all'||c.annee===flashcardYear;}).map(function(c){return '<option value="'+c.id+'">'+escapeHtml(CESS_SUBJECTS[c.matiere].label+' · '+c.titre)+'</option>';}).join('')+'</select></label><label>Série<select id="flashCount"><option>10</option><option>20</option><option>30</option></select></label><button class="button primary" onclick="startFlashcardSession()">Commencer</button></div><p>Les cartes difficiles et arrivées à échéance sont prioritaires. Les repères transversaux de Maths, Géo et Bio restent disponibles quelle que soit l’année.</p><div id="flashSession"></div>';
+    root.innerHTML='<div class="session-controls"><label>Année<select id="flashYear" onchange="flashcardYear=this.value;flashcardChapter=\'all\';renderFlashcardSetup()">'+['all','3e','4e','5e','6e'].map(function(y){return '<option value="'+y+'"'+(y===flashcardYear?' selected':'')+'>'+(y==='all'?'Toutes les années':y)+'</option>';}).join('')+'</select></label><label>Dossier<select id="flashChapter"><option value="all">Tous les dossiers</option>'+chapters.filter(function(c){return flashcardYear==='all'||c.annee===flashcardYear;}).map(function(c){return '<option value="'+c.id+'">'+escapeHtml(CESS_SUBJECTS[c.matiere].label+' · '+c.titre)+'</option>';}).join('')+'</select></label><label>Série<select id="flashCount"><option>10</option><option>20</option><option>30</option></select></label><button class="button primary" onclick="startFlashcardSession()">Commencer</button></div><p>Les cartes difficiles et arrivées à échéance sont prioritaires. Les repères transversaux de Maths, Géo et Bio restent disponibles quelle que soit l’année.</p><div id="flashNotice" role="status"></div><div id="flashSession"></div>';
 }
 function startFlashcardSession(){
     flashcardYear=document.getElementById('flashYear').value;flashcardChapter=document.getElementById('flashChapter').value;flashcardCount=Number(document.getElementById('flashCount').value);
@@ -137,7 +137,7 @@ function startFlashcardSession(){
     var buckets={};pool.forEach(function(f){(buckets[f.subject]||(buckets[f.subject]=[])).push(f);});
     var subjects=shuffle(Object.keys(buckets));flashcardDeck=[];
     while(flashcardDeck.length<flashcardCount&&subjects.length){subjects.forEach(function(k){if(flashcardDeck.length<flashcardCount&&buckets[k].length)flashcardDeck.push(buckets[k].shift());});subjects=subjects.filter(function(k){return buckets[k].length;});}
-    flashcardIndex=0;renderFlashcard();
+    flashcardIndex=0;var notice=document.getElementById('flashNotice');if(notice){notice.textContent='';notice.className='';}renderFlashcard();
 }
 function renderFlashcard(){
     var root=document.getElementById('flashSession');if(!root)return;flashcardRevealed=false;
@@ -146,11 +146,13 @@ function renderFlashcard(){
 }
 function flipFlashcard(){
     var f=flashcardDeck[flashcardIndex];if(!f||flashcardRevealed)return;flashcardRevealed=true;
-    document.getElementById('flashAnswer').innerHTML='<div class="panel"><h3>'+escapeHtml(flashcardMode==='def-term'?f.terme:f.definition)+'</h3><p>'+escapeHtml(f.exemple||'')+'</p>'+(f.chapterId?'<button class="button secondary" onclick="openStudyChapter(\''+f.chapterId+'\')">Revoir le cours</button>':'')+'<div class="session-controls"><button class="button secondary" onclick="rateFlashcard(false)">À revoir</button><button class="button primary" onclick="rateFlashcard(true)">Je savais</button></div></div>';
+    document.getElementById('flashAnswer').innerHTML='<div class="panel"><h3>'+escapeHtml(flashcardMode==='def-term'?f.terme:f.definition)+'</h3><p>'+escapeHtml(f.exemple||'')+'</p>'+(f.chapterId?'<button class="button secondary" onclick="openStudyChapter(\''+f.chapterId+'\')">Revoir le cours</button>':'')+'<div class="session-controls"><button class="button secondary flash-rating-retry" onclick="rateFlashcard(false)">À revoir</button><button class="button primary flash-rating-success" onclick="rateFlashcard(true)">Je savais</button></div></div>';
 }
 function rateFlashcard(known){
     if(!flashcardRevealed)return;flashcardRevealed=false;var f=flashcardDeck[flashcardIndex];cessState.flashLearning=cessState.flashLearning||{};var previous=cessState.flashLearning[f.id]||{},streak=known?(previous.streak||0)+1:0;
     cessState.flashLearning[f.id]={streak:streak,due:Date.now()+(known?Math.min(30,Math.pow(2,streak-1))*86400000:600000)};cessSave();flashcardIndex++;renderFlashcard();
+    var notice=document.getElementById('flashNotice');
+    if(notice){notice.className='feedback-box '+(known?'feedback-success':'feedback-retry');notice.textContent=known?'✓ Carte notée comme connue.':'↺ Carte à revoir : elle sera prioritaire lors des prochaines révisions.';}
 }
 function toggleFlashcardMode(){flashcardMode=flashcardMode==='def-term'?'term-def':'def-term';renderFlashcard();}
 function selectFlashcardSubject(subject){flashcardSubject=subject;flashcardChapter='all';renderFlashcardSetup();}

@@ -946,42 +946,13 @@ function answerChapterExercise(
     var good =
         optionIndex === correct;
 
-    if (good) {
-
-        button.classList.add('correct');
-
-        feedback.innerHTML =
-            '<div class="correction" style="border-color:var(--green);background:var(--green-soft);color:var(--green)">✓ Bonne réponse !' +
-            (
-                exercise.correction
-                    ? '<p style="margin-top:5px;color:var(--text-soft)">' +
-                        exercise.correction +
-                      '</p>'
-                    : ''
-            ) +
-            '</div>';
-
-    } else {
-
+    if (good) button.classList.add('correct');
+    else {
         button.classList.add('wrong');
-
-        if (buttons[correct]) {
-            buttons[correct].classList.add(
-                'correct'
-            );
-        }
-
-        feedback.innerHTML =
-            '<div class="correction" style="border-color:var(--red);background:var(--red-soft);color:var(--red)">✗ Pas tout à fait.' +
-            (
-                exercise.correction
-                    ? '<p style="margin-top:5px;color:var(--text-soft)">' +
-                        exercise.correction +
-                      '</p>'
-                    : ''
-            ) +
-            '</div>';
+        if (buttons[correct]) buttons[correct].classList.add('correct');
     }
+    if (feedback) feedback.innerHTML = feedbackMarkup(good, exercise.correction, '', '', null);
+
 }
 
 

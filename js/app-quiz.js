@@ -500,50 +500,9 @@ function answerQuiz(optionIndex) {
         );
 
     if (feedback) {
-
-        feedback.innerHTML = `
-
-            <div style="
-                margin-top:15px;
-                padding:15px;
-                border-radius:10px;
-                background:${good ? 'var(--green-soft)' : 'var(--red-soft)'};
-                border:1px solid ${good ? 'var(--green)' : 'var(--red)'};
-            ">
-
-                <strong style="color:${good ? 'var(--green)' : 'var(--red)'}">
-                    ${good ? '✓ Bonne réponse !' : '✗ Mauvaise réponse'}
-                </strong>
-
-                ${
-                    q.correction
-                        ? `
-                            <p style="margin-top:8px;color:var(--text-soft)">
-                                ${escapeHtml(
-                                    q.correction
-                                )}
-                            </p>
-                        `
-                        : ''
-                }
-
-                <button
-                    class="button primary"
-                    style="margin-top:12px"
-                    onclick="nextQuizQuestion()">
-
-                    ${
-                        state.index + 1 >=
-                        state.questions.length
-                            ? 'Voir le résultat'
-                            : 'Question suivante →'
-                    }
-
-                </button>
-
-            </div>
-
-        `;
+        feedback.innerHTML = feedbackMarkup(good, q.correction,
+            state.index + 1 >= state.questions.length ? 'Voir le résultat' : 'Question suivante →',
+            'nextQuizQuestion()', state);
     }
 
     cessSave();
@@ -643,7 +602,7 @@ function finishQuiz() {
     panel.innerHTML = `
 
         <div class="quiz-result">
-
+            ${rewardBanner(score,total)}
             <div class="result-circle">
                 ${percentage}%
             </div>
