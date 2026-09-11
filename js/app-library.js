@@ -45,6 +45,9 @@ function renderLibrarySubject(subject) {
     if(subject==='histoire' && typeof renderHistoryHub==='function'){
         renderHistoryHub(root,p);return;
     }
+    if(subject==='chimie' && typeof renderChemistryHub==='function'){
+        renderChemistryHub(root,p);return;
+    }
     root.innerHTML='<div class="page-header"><h1>'+escapeHtml(info.label)+'</h1><button class="button secondary" onclick="renderLibrary()">← Catalogue</button></div>'+['3e','4e','5e','6e'].map(function(year){var chapters=allChaps(subject).filter(function(c){return c.annee===year;});return '<details class="memo-group"'+(p.year===year?' open':'')+'><summary><strong>'+year+' secondaire</strong><span>'+chapters.length+' chapitres</span></summary><div class="content-grid">'+chapters.map(chapterLink).join('')+'</div></details>';}).join('');
 }
 
