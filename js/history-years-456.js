@@ -1,4 +1,4 @@
-/* Histoire 4e-6e — 20 modules par année, cinq formats par module = 100 ressources/niveau. */
+/* Histoire 4e-6e — 20 fiches complètes et uniques par année. */
 (function(){
 if(!Array.isArray(window.HISTORY_REVISION_DATA))return;
 HISTORY_REVISION_DATA=HISTORY_REVISION_DATA.filter(function(c){return !c.year||c.year==='socle';});
