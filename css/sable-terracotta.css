@@ -185,3 +185,25 @@ textarea {
 @media (max-width: 760px) {
   .sidebar { background: #faf6f0; }
 }
+
+/* Tableau de maîtrise du français */
+.fr-mastery-hero{margin-bottom:22px;padding:30px;border:1px solid var(--line);border-radius:20px;background:#fffdf9;box-shadow:var(--shadow-sm)}
+.fr-mastery-hero h1{margin:5px 0 8px;font-size:clamp(28px,4vw,44px)}
+.fr-mastery-hero>p{max-width:760px;color:var(--text-soft);line-height:1.65}
+.fr-route-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:24px}
+.fr-route-card{display:flex;min-height:190px;flex-direction:column;align-items:flex-start;gap:9px;padding:20px;border:1px solid var(--line);border-radius:15px;background:var(--paper);color:var(--text);text-align:left;cursor:pointer;transition:.18s ease}
+.fr-route-card:hover{border-color:#c98a76;box-shadow:var(--shadow);transform:translateY(-2px)}
+.fr-route-card>span{display:grid;width:40px;height:40px;place-items:center;border-radius:11px;background:var(--primary-soft);font-size:20px}
+.fr-route-card strong{font-family:Georgia,'Times New Roman',serif;font-size:18px}
+.fr-route-card small{flex:1;color:var(--text-soft);line-height:1.5}
+.fr-route-card b{color:var(--primary-dark);font-size:11px}
+.fr-route-section{scroll-margin-top:18px}
+.fr-year-block{padding:8px 18px 20px}.fr-year-block h3{margin:15px 0 10px;color:var(--primary-dark);font-size:15px}
+.fr-mastery-note{margin:12px 0;padding:15px 17px;border:1px solid var(--line);border-radius:12px;background:var(--paper-soft)}
+.fr-mastery-note h5{margin:0 0 6px!important;color:var(--primary-dark)}
+.fr-mastery-note p{margin:5px 0}
+.fr-workshop{margin:14px 0;padding:18px;border-left:4px solid var(--primary);border-radius:4px 12px 12px 4px;background:var(--primary-soft);color:var(--text)}
+.bplus-francais{--bplus-accent:var(--primary-dark);--bplus-soft:var(--primary-soft)}
+.bplus-francais blockquote{margin:14px 0;padding:18px;border-left:4px solid var(--green);background:var(--green-soft);color:#244b37}
+@media(max-width:1000px){.fr-route-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.fr-mastery-hero{padding:20px}.fr-route-grid{grid-template-columns:1fr}.fr-route-card{min-height:0}.fr-year-block{padding:5px 10px 15px}}
