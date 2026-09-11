@@ -964,6 +964,21 @@ function renderGamePanel() {
                 <strong>Défi Biologie</strong>
                 <small>Questions sur le vivant</small>
             </button>
+            <button class="game-card" onclick="startQuiz('chimie')">
+                <span>⚗️</span>
+                <strong>Défi Chimie</strong>
+                <small>264 exercices issus des 24 chapitres</small>
+            </button>
+            <button class="game-card" onclick="startChemistryGame('element')">
+                <span>⚛️</span>
+                <strong>Quel élément ?</strong>
+                <small>Symboles et noms du tableau périodique</small>
+            </button>
+            <button class="game-card" onclick="startChemistryGame('family')">
+                <span>🧪</span>
+                <strong>Familles chimiques</strong>
+                <small>Classe les éléments par famille</small>
+            </button>
         </div>
     `;
 }
