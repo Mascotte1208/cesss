@@ -1,0 +1,40 @@
+{
+  "name": "Carnet CESS — Révision",
+  "short_name": "Carnet CESS",
+  "description": "Cours, fiches, exercices, flashcards et jeux pour préparer le CESS.",
+  "lang": "fr-BE",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5efe7",
+  "theme_color": "#a94f39",
+  "categories": [
+    "education"
+  ],
+  "icons": [
+    {
+      "src": "icons/carnet-cess.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mes matières",
+      "short_name": "Matières",
+      "url": "./index.html#library"
+    },
+    {
+      "name": "Jeux & quiz",
+      "short_name": "Jeux",
+      "url": "./index.html#games"
+    },
+    {
+      "name": "Ma progression",
+      "short_name": "Suivi",
+      "url": "./index.html#progress"
+    }
+  ]
+}

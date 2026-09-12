@@ -79,7 +79,7 @@
     'Cs|Césium|132.905|1|6','Ba|Baryum|137.327|2|6','La|Lanthane|138.905|3|8','Ce|Cérium|140.116|4|8','Pr|Praséodyme|140.908|5|8','Nd|Néodyme|144.242|6|8','Pm|Prométhium|145|7|8','Sm|Samarium|150.36|8|8','Eu|Europium|151.964|9|8','Gd|Gadolinium|157.25|10|8','Tb|Terbium|158.925|11|8','Dy|Dysprosium|162.500|12|8','Ho|Holmium|164.930|13|8','Er|Erbium|167.259|14|8','Tm|Thulium|168.934|15|8','Yb|Ytterbium|173.045|16|8','Lu|Lutécium|174.967|17|8',
     'Hf|Hafnium|178.49|4|6','Ta|Tantale|180.948|5|6','W|Tungstène|183.84|6|6','Re|Rhénium|186.207|7|6','Os|Osmium|190.23|8|6','Ir|Iridium|192.217|9|6','Pt|Platine|195.084|10|6','Au|Or|196.967|11|6','Hg|Mercure|200.592|12|6','Tl|Thallium|204.38|13|6','Pb|Plomb|207.2|14|6','Bi|Bismuth|208.980|15|6','Po|Polonium|209|16|6','At|Astate|210|17|6','Rn|Radon|222|18|6',
     'Fr|Francium|223|1|7','Ra|Radium|226|2|7','Ac|Actinium|227|3|9','Th|Thorium|232.038|4|9','Pa|Protactinium|231.036|5|9','U|Uranium|238.029|6|9','Np|Neptunium|237|7|9','Pu|Plutonium|244|8|9','Am|Américium|243|9|9','Cm|Curium|247|10|9','Bk|Berkélium|247|11|9','Cf|Californium|251|12|9','Es|Einsteinium|252|13|9','Fm|Fermium|257|14|9','Md|Mendélévium|258|15|9','No|Nobélium|259|16|9','Lr|Lawrencium|266|17|9',
-    'Rf|Rutherfordium|267|4|7','Db|Dubnium|268|5|7','Sg|Seaborgium|269|6|7','Bh|Bohrium|270|7|7','Hs|Hassium|269|8|7','Mt|Meitnérium|278|9|7','Ds|Darmstadtium|281|10|7','Rg|Roentgenium|282|11|7','Cn|Copernicium|285|12|7','Nh|Nihonium|286|13|7','Fl|Flérovium|289|14|7','Mc|Moscovium|290|15|7','Lv|Livermorium|293|16|7','Ts|Tennesse|294|17|7','Og|Oganesson|294|18|7'
+    'Rf|Rutherfordium|267|4|7','Db|Dubnium|268|5|7','Sg|Seaborgium|269|6|7','Bh|Bohrium|270|7|7','Hs|Hassium|269|8|7','Mt|Meitnérium|278|9|7','Ds|Darmstadtium|281|10|7','Rg|Roentgenium|282|11|7','Cn|Copernicium|285|12|7','Nh|Nihonium|286|13|7','Fl|Flérovium|289|14|7','Mc|Moscovium|290|15|7','Lv|Livermorium|293|16|7','Ts|Tennessine|294|17|7','Og|Oganesson|294|18|7'
   ].map(function(s,i){var p=s.split('|');return {z:i+1,s:p[0],n:p[1],m:p[2],g:+p[3],p:+p[4]};});
   window.CHEM_ELEMENTS=ELEMENTS;
   function family(e){
@@ -101,8 +101,8 @@
     var grid=document.getElementById('periodicGrid'); if(grid)grid.innerHTML=html;
   };
   window.showElement=function(z){
-    var e=ELEMENTS[z-1], electrons=e.z, neutrons=Math.max(0,Math.round(parseFloat(e.m))-e.z);
-    document.getElementById('elementDetail').innerHTML='<button class="chem-close" onclick="closeElementDetail()">×</button><span class="chem-big-symbol">'+e.s+'</span><div><h3>'+esc(e.n)+'</h3><p><strong>Z = '+e.z+'</strong> · masse atomique ≈ '+e.m+' u</p><p>'+familyLabels[e.f]+' · période '+(e.p>7?(e.p===8?'lanthanides':'actinides'):e.p)+' · groupe '+e.g+'</p><p>Atome neutre : '+e.z+' protons, '+electrons+' électrons et environ '+neutrons+' neutrons pour l’isotope de masse arrondie.</p></div>';
+    var e=ELEMENTS[z-1],electrons=e.z,approxA=Math.round(parseFloat(e.m)),approxNeutrons=Math.max(0,approxA-e.z);
+    document.getElementById('elementDetail').innerHTML='<button class="chem-close" type="button" onclick="closeElementDetail()" aria-label="Fermer la fiche">×</button><span class="chem-big-symbol">'+e.s+'</span><div><h3>'+esc(e.n)+'</h3><p><strong>Z = '+e.z+'</strong> · masse atomique moyenne ≈ '+e.m+' u</p><p>'+familyLabels[e.f]+' · période '+(e.p>7?(e.p===8?'lanthanides':'actinides'):e.p)+' · groupe '+e.g+'</p><p>Atome neutre : '+e.z+' protons et '+electrons+' électrons. Le nombre de neutrons dépend de l’isotope.</p><p><small>Estimation pédagogique : avec A ≈ '+approxA+', on obtient environ '+approxNeutrons+' neutrons (A − Z). Cette valeur arrondie ne décrit pas tous les isotopes.</small></p></div>';
   };
   window.closeElementDetail=function(){document.getElementById('elementDetail').innerHTML='';};
   function chaptersHtml(p){
@@ -122,11 +122,11 @@
       if(mode==='family')return {q:'À quelle famille appartient '+e.n+' ('+e.s+') ?',answer:familyLabels[e.f],opts:shuffle([familyLabels[e.f]].concat(others.map(function(x){return familyLabels[x.f];}))).filter(function(x,i,a){return a.indexOf(x)===i;})};
       return {q:'Quel élément possède le symbole '+e.s+' ?',answer:e.n,opts:shuffle([e.n].concat(others.map(function(x){return x.n;})))};
     });
-    window.chemGame={cards:cards,index:0,score:0}; renderChemistryGame();
+    window.chemGame={cards:cards,index:0,score:0,mode:mode,saved:false}; renderChemistryGame();
   };
   window.renderChemistryGame=function(){
     var s=window.chemGame,p=document.getElementById('gamePanel'),c=s.cards[s.index];
-    if(!c){p.innerHTML='<div class="quiz-result"><h2>'+s.score+' / '+s.cards.length+'</h2><p>Série de chimie terminée.</p><button class="button primary" onclick="startChemistryGame(\'element\')">Rejouer</button> <button class="button secondary" onclick="renderGamePanel()">Tous les jeux</button></div>';return;}
+    if(!c){if(!s.saved){s.saved=true;var pct=Math.round(s.score/s.cards.length*100);cessState.results.push({contentVersion:2,date:new Date().toISOString(),mode:s.mode==='family'?'Familles chimiques':'Tableau périodique',score:s.score,total:s.cards.length,percentage:pct,subject:'chimie'});cessSave();}p.innerHTML=(typeof rewardBanner==='function'?rewardBanner(s.score,s.cards.length):'')+'<div class="quiz-result"><h2>'+s.score+' / '+s.cards.length+'</h2><p>Série de chimie enregistrée dans ta progression.</p><button class="button primary" onclick="startChemistryGame(\''+s.mode+'\')">Rejouer</button> <button class="button secondary" onclick="renderGamePanel()">Tous les jeux</button></div>';return;}
     p.innerHTML='<button class="button secondary" onclick="renderGamePanel()">← Jeux</button><h2>Défi tableau périodique</h2><p>Question '+(s.index+1)+' / '+s.cards.length+'</p><h3>'+esc(c.q)+'</h3><div class="quiz-options">'+c.opts.map(function(o){return '<button class="quiz-option" data-answer="'+esc(o)+'" onclick="answerChemistryGame(this,this.dataset.answer)">'+esc(o)+'</button>';}).join('')+'</div><div id="chemGameFeedback"></div>';
   };
   window.answerChemistryGame=function(btn,value){

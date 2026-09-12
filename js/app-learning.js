@@ -66,7 +66,7 @@ function saveLearningProfile(event) {
     cessState.profile = {year:data.get('year'),subjects:selected};cessSave();
     if(document.getElementById('progress').classList.contains('active')) renderProgress();else renderHome();
 }
-function openStudyChapter(id) {var c=findChapter(id);if(!c)return;showView(c.matiere);openChapterBplus(id);}
+function openStudyChapter(id) {var c=findChapter(id);if(!c)return;showView(c.matiere);openChapter(id);}
 function resultLabel(r) {
     var key = String(r.mode || '').replace(/^exam-/, '');
     return (r.contentVersion === 2 ? '' : 'Historique antérieur · ') + (CESS_SUBJECTS[key] ? CESS_SUBJECTS[key].label : ({chapter:'Quiz de chapitre',all:'Série mixte',mistakes:'Révision des erreurs',simulation:'Simulation'}[key] || key || 'Entraînement'));

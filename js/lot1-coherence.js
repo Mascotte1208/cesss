@@ -83,7 +83,7 @@
       active.sort(function (a, b) { return b.progress - a.progress; });
       priorities.innerHTML = active.length ? '<div class="simple-list">' + active.slice(0, 4).map(function (item) {
         var info = CESS_SUBJECTS[item.subject] || {};
-        return '<div class="simple-list-item"><div class="simple-list-icon" aria-hidden="true">' + esc(info.icon || item.chapter.icone || '📘') + '</div><div class="simple-list-main"><strong>' + esc(item.chapter.titre || 'Chapitre') + '</strong><small>' + esc(info.label || item.subject) + ' · ' + item.progress + '% parcouru</small></div><button class="simple-list-action" type="button" onclick="openChapter(\'' + esc(item.chapter.id) + '\')">Reprendre</button></div>';
+        return '<div class="simple-list-item"><div class="simple-list-icon" aria-hidden="true">' + esc(info.icon || item.chapter.icone || '📘') + '</div><div class="simple-list-main"><strong>' + esc(item.chapter.titre || 'Chapitre') + '</strong><small>' + esc(info.label || item.subject) + ' · ' + item.progress + '% parcouru</small></div><button class="simple-list-action" type="button" onclick="openStudyChapter(\'' + esc(item.chapter.id) + '\')">Reprendre</button></div>';
       }).join('') + '</div>' : '<div class="empty-state"><strong>Aucune révision en cours.</strong><br>Ouvre une matière principale pour commencer.</div>';
     }
 
