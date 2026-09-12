@@ -92,3 +92,14 @@
 .bio-skills li::marker{color:var(--sheet-sage)}
 @media(max-width:850px){.bio-pathway{grid-template-columns:1fr 1fr}.bio-pathway li:not(:last-child):after{display:none}.bio-check{grid-template-columns:1fr}}
 @media(max-width:520px){.bio-pathway{grid-template-columns:1fr}.bio-pathway li{min-height:auto}}
+
+/* Histoire — dossiers fusionnés et provenance visible */
+.history-source{display:flex;align-items:center;gap:10px;margin:8px 0 20px!important;padding:10px 12px;border:1px solid #e2d8cc;border-radius:10px;background:#faf6f0;color:#65574b;font-family:Arial,sans-serif;font-size:12px}
+.history-source span{padding:4px 7px;border-radius:6px;background:var(--sheet-accent);color:#fff;font-size:9px;font-weight:900;letter-spacing:.08em}
+.history-revision-card>summary strong{line-height:1.35}
+.history-revision-card[open]{border-color:#ccb7a7;box-shadow:0 10px 30px rgba(71,49,35,.08)}
+.history-theme>summary span{white-space:nowrap}
+.history-card-body>h4:first-of-type{margin-top:10px}
+.history-card-body>ul{padding-left:22px}
+.history-card-body>p+ul{margin-top:8px}
+@media(max-width:600px){.history-source{align-items:flex-start;flex-direction:column}.history-theme>summary span{white-space:normal}}
