@@ -22,3 +22,7 @@
 .learning-steps b{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--primary);color:#fff}
 @media(max-width:850px){.progress-overview{grid-template-columns:repeat(2,1fr)}.learning-steps{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.progress-subject-list{grid-template-columns:1fr}.progress-legend-note{display:block}.progress-legend-note span{display:block;margin-top:5px}.other-subjects>.subject-cards{padding:0 10px 10px}}
+.session-guide{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.session-guide span{padding:10px 12px;border-radius:10px;background:var(--paper-soft);border:1px solid var(--line);font-size:.8rem;color:var(--text-soft)}
+.session-guide strong{display:block;color:var(--text);margin-bottom:2px}
+@media(max-width:680px){.session-guide{grid-template-columns:1fr}}
