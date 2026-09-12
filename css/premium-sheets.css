@@ -71,3 +71,24 @@
 @media(max-width:700px){.bplus-heading h1{font-size:37px}.bplus-lead{font-size:15px!important}.bplus-meta{grid-template-columns:1fr}.bplus-meta>div{padding:9px 0;border-right:0;border-bottom:1px solid var(--line)}.premium-sheet-tab{padding:13px 12px}.bplus-prerequisites{padding:17px}.bplus-chips{display:none}.bplus-accordion-body{padding:18px 17px 24px!important;font-size:15px}.bplus-rail{grid-template-columns:1fr}.history-card-body{font-size:15px}}
 @media print{.premium-sheet-tabs{display:none!important}.bplus-header{padding-top:0}.bplus-heading h1{font-size:42px}.bplus-prerequisites{break-inside:avoid}}
 .premium-sheet-tab:focus-visible{outline:3px solid var(--sheet-sage);outline-offset:2px}.subject-self-assess{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}@media(max-width:700px){.bplus-badge,.bplus-kicker{font-size:12px!important}.subject-self-assess .button{width:100%}}@media print{body{background:#fff!important}.sidebar,.mobile-nav,.bplus-breadcrumb,.bplus-print,.bplus-rail,.premium-sheet-tabs{display:none!important}.main-content{padding:0!important}.bplus-layout{display:block!important}.bplus-detail{max-width:none;margin:0}.cours-section.bplus-accordion{break-inside:avoid}.bplus-accordion-body{display:block!important}}
+
+/* Biologie — fiches structurées et lisibles */
+.bio-program{margin:8px 0 22px;padding:16px 18px;border-left:4px solid var(--sheet-sage);border-radius:0 12px 12px 0;background:linear-gradient(90deg,var(--sheet-sage-soft),rgba(237,244,236,.28))}
+.bio-program span{display:block;margin-bottom:5px;color:var(--sheet-sage);font-size:11px;font-weight:900;letter-spacing:.1em}
+.bio-program strong{display:block;font-family:Georgia,serif;font-size:18px;color:var(--sheet-ink)}
+.bio-program p{margin:6px 0 0;color:#657064;font-size:13px}
+.bio-pathway{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 24px;padding:0;list-style:none;counter-reset:none}
+.bio-pathway li{position:relative;min-height:76px;padding:14px 12px 12px 46px;border:1px solid #d9e3d7;border-radius:12px;background:#f9fbf7;box-shadow:0 5px 18px rgba(35,66,46,.06)}
+.bio-pathway li:not(:last-child):after{content:'→';position:absolute;z-index:2;right:-17px;top:26px;width:24px;color:var(--sheet-sage);font-size:20px;font-weight:900;text-align:center}
+.bio-step-number{position:absolute;left:12px;top:13px;display:grid;width:25px;height:25px;place-items:center;border-radius:50%;background:var(--sheet-sage);color:#fff;font-size:12px;font-weight:900}
+.bio-pathway strong{font-size:14px;line-height:1.35}
+.bio-reading,.bio-analysis,.bio-warning,.bio-check{margin:10px 0 22px;padding:16px 18px;border-radius:12px}
+.bio-reading{border:1px solid #e7ddd1;background:var(--sheet-ivory)}
+.bio-analysis{border-left:4px solid #6b7f91;background:#f2f5f7}
+.bio-warning{border-left:4px solid var(--sheet-accent);background:#fbf0eb}
+.bio-check{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:var(--sheet-sand)}
+.bio-reading p,.bio-analysis p,.bio-warning p,.bio-check p{margin:0;line-height:1.7}
+.bio-skills{margin-bottom:24px}
+.bio-skills li::marker{color:var(--sheet-sage)}
+@media(max-width:850px){.bio-pathway{grid-template-columns:1fr 1fr}.bio-pathway li:not(:last-child):after{display:none}.bio-check{grid-template-columns:1fr}}
+@media(max-width:520px){.bio-pathway{grid-template-columns:1fr}.bio-pathway li{min-height:auto}}
