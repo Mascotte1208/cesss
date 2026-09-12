@@ -1,0 +1,24 @@
+/* Lot 1 — hiérarchie, lisibilité et états de progression */
+.lot1-subject-card{border-top:4px solid var(--subject-color,var(--primary));position:relative}
+.status-pill,.result-pill{display:inline-flex;align-items:center;border-radius:999px;padding:.3rem .62rem;font-size:.76rem;font-weight:800;background:var(--paper-soft);color:var(--text-soft);border:1px solid var(--line)}
+.result-pill.success{background:#e8f5ec;color:#246b3a;border-color:#acd6b8}
+.result-pill.review{background:#fff1e8;color:#9b452f;border-color:#e7b7a8}
+.other-subjects{grid-column:1/-1;margin-top:10px;border:1px solid var(--line);border-radius:16px;background:var(--paper-soft)}
+.other-subjects>summary{cursor:pointer;padding:16px 18px;font-weight:850;color:var(--text);list-style:none;display:flex;justify-content:space-between}
+.other-subjects>summary::-webkit-details-marker{display:none}
+.other-subjects>summary span{background:var(--primary);color:#fff;border-radius:999px;padding:2px 9px;font-size:.75rem}
+.other-subjects>.subject-cards{padding:0 16px 16px}
+.progress-legend-note{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:14px 18px;margin-bottom:18px;border:1px solid #e2b19f;border-left:5px solid var(--primary);border-radius:12px;background:#fff7f2}
+.progress-legend-note span{color:var(--text-soft)}
+.progress-overview{grid-template-columns:repeat(4,minmax(0,1fr))}
+.progress-subject-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:18px}
+.progress-subject-card>div:first-child{display:flex;align-items:center;gap:12px}
+.progress-subject-card h2{margin:0;font-size:1.05rem}
+.progress-subject-card p{margin:4px 0 0;color:var(--text-soft);font-size:.84rem}
+.progress-subject-card .progress-line{margin:16px 0 12px}
+.progress-subject-card .button{width:100%}
+.learning-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+.learning-steps span{display:flex;align-items:center;gap:7px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--paper-soft);font-weight:750}
+.learning-steps b{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--primary);color:#fff}
+@media(max-width:850px){.progress-overview{grid-template-columns:repeat(2,1fr)}.learning-steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.progress-subject-list{grid-template-columns:1fr}.progress-legend-note{display:block}.progress-legend-note span{display:block;margin-top:5px}.other-subjects>.subject-cards{padding:0 10px 10px}}
