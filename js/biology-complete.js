@@ -34,15 +34,87 @@
     bio6_sante:['6e — physiologie intégrée et lecture critique','L’homéostasie résulte de boucles nerveuses, hormonales, immunitaires, respiratoires, circulatoires et rénales. Une maladie peut perturber plusieurs niveaux à la fois. La santé dépend aussi d’exposition, comportements, conditions sociales, environnement et accès aux soins.','Incidence = nouveaux cas durant une période ; prévalence = personnes atteintes à un moment ou sur une période. Risque relatif, risque absolu, sensibilité, spécificité et valeur prédictive répondent à des questions différentes. Randomisation et groupe témoin limitent certains biais.','Corrélation ne prouve pas causalité. Toujours vérifier population étudiée, taille, durée, pertes de suivi, facteur de confusion, ampleur de l’effet et intervalle d’incertitude. Une fiche scolaire informe mais ne remplace jamais un diagnostic médical.']
   };
 
+  var PATHS = {
+    bio3_cellule:'Préparer la lame|Régler le microscope|Observer|Dessiner et légender',
+    bio3_organisation:'Cellule spécialisée|Tissu|Organe|Système',
+    bio3_nutrition:'Aliment|Digestion|Nutriment|Absorption vers le sang',
+    bio3_respiration:'Ventilation|Alvéoles|Transport sanguin|Respiration cellulaire',
+    bio3_circulation:'Cœur|Artères|Capillaires|Veines',
+    bio3_photosynthese:'CO₂ + eau|Lumière et chlorophylle|Glucose|Biomasse + O₂',
+    bio3_ecosysteme:'Producteur|Consommateur|Décomposeur|Matière recyclée',
+    bio4_biodiversite:'Caractères observés|Matrice|Groupes emboîtés|Parentés',
+    bio4_reproduction:'Méiose|Gamètes|Fécondation|Développement',
+    bio4_sexualite:'Information fiable|Consentement|Prévention|Dépistage et soins',
+    bio4_division:'Réplication de l’ADN|Chromosomes doubles|Séparation|Cellules filles',
+    bio4_genetique:'ADN|Gène et allèle|Protéine|Phénotype + environnement',
+    bio4_nerveux:'Stimulus|Récepteur|Centre nerveux|Effecteur',
+    bio4_hormones:'Variation|Capteur et glande|Hormone|Rétrocontrôle',
+    bio5_adn:'Ouverture de l’ADN|Complémentarité|Polymérisation|Deux molécules d’ADN',
+    bio5_proteines:'ADN|ARN messager|Ribosome|Protéine',
+    bio5_mendel:'Parents|Gamètes|Croisement|Probabilités',
+    bio5_mutations:'Mutation de l’ADN|Codon modifié|Protéine|Phénotype éventuel',
+    bio5_metabolisme:'Substrat|Enzyme|Produit|Enzyme disponible',
+    bio5_immunite:'Antigène|Sélection lymphocytaire|Effecteurs|Mémoire',
+    bio5_microbes:'Agent infectieux|Transmission|Hôte|Prévention ou traitement',
+    bio6_evolution:'Variation héréditaire|Pression du milieu|Succès reproducteur|Fréquences',
+    bio6_population:'Forces évolutives|Fréquences alléliques|Isolement|Spéciation',
+    bio6_ecologie:'Entrées|Population|Ressources et interactions|Sorties',
+    bio6_cycles:'Réservoir|Flux|Transformation|Nouveau réservoir',
+    bio6_impacts:'Pression humaine|Milieu perturbé|Indicateur|Prévention ou restauration',
+    bio6_biotech:'Question|Technique|Résultat|Bénéfices et risques',
+    bio6_sante:'Population|Exposition|Comparaison|Conclusion prudente'
+  };
+
+  var CONTRASTS = {
+    bio3_cellule:'grossissement et résolution', bio3_organisation:'organe et système',
+    bio3_nutrition:'aliment et nutriment', bio3_respiration:'ventilation et respiration cellulaire',
+    bio3_circulation:'artère et veine', bio3_photosynthese:'photosynthèse et respiration',
+    bio3_ecosysteme:'matière et énergie', bio4_biodiversite:'ressemblance et parenté',
+    bio4_reproduction:'mitose et méiose', bio4_sexualite:'contraception et protection contre les IST',
+    bio4_division:'chromosome simple et chromosome double', bio4_genetique:'génotype et phénotype',
+    bio4_nerveux:'message nerveux et hormone', bio4_hormones:'cause et simple corrélation',
+    bio5_adn:'brin matrice et brin nouveau', bio5_proteines:'transcription et traduction',
+    bio5_mendel:'dominant et fréquent', bio5_mutations:'mutation et maladie',
+    bio5_metabolisme:'enzyme et substrat', bio5_immunite:'réponse innée et réponse adaptative',
+    bio5_microbes:'virus et bactérie', bio6_evolution:'adaptation et intention',
+    bio6_population:'dérive et sélection', bio6_ecologie:'effectif et densité',
+    bio6_cycles:'réservoir et flux', bio6_impacts:'préservation et restauration',
+    bio6_biotech:'fait scientifique et choix éthique', bio6_sante:'incidence et prévalence'
+  };
+
   function esc(s) { return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
+  function firstSentence(s) {
+    var m=String(s).match(/^.*?[.!?](?:\s|$)/);
+    return (m?m[0]:String(s)).trim();
+  }
   function enrich(ch) {
-    var p=P[ch.id]; if(!p) return;
-    var html='<h4>🧭 Repère dans le programme belge</h4><p>'+esc(p[0])+'</p>'+
-      '<h4>🔬 Mécanismes à comprendre</h4><p>'+esc(p[1])+'</p>'+
-      '<h4>🧪 Observer, expérimenter et raisonner</h4><p>'+esc(p[2])+'</p>'+
-      '<h4>🎓 Niveau examen : précision et pièges</h4><div class="piege"><p>'+esc(p[3])+'</p></div>'+
-      '<h4>📝 Questions de synthèse</h4><ol><li>Explique le mécanisme avec un schéma fonctionnel légendé.</li><li>Analyse une expérience en identifiant variable, témoin, résultat et conclusion.</li><li>Relie ce chapitre à deux autres niveaux d’organisation du vivant.</li></ol>';
-    ch.cours = html + ch.cours;
+    var p=P[ch.id], path=PATHS[ch.id]&&PATHS[ch.id].split('|');
+    if(!p||!path) return;
+    var contrast=CONTRASTS[ch.id]||'observation et interprétation';
+    var pathway=path.map(function(v,i){
+      return '<li><span class="bio-step-number">'+(i+1)+'</span><strong>'+esc(v)+'</strong></li>';
+    }).join('');
+    ch.curriculum={uaa:p[0],source:'Référentiels de sciences — Fédération Wallonie-Bruxelles'};
+    ch.objectifs=[
+      'Expliquer la chaîne fonctionnelle du chapitre sans apprendre un paragraphe par cœur',
+      'Analyser un document ou une expérience avec données, témoin et conclusion',
+      'Distinguer '+contrast
+    ];
+    ch.fiches=[
+      {term:'Chaîne fonctionnelle',definition:path.join(' → ')},
+      {term:'Mécanisme central',definition:firstSentence(p[1])},
+      {term:'Méthode d’analyse',definition:firstSentence(p[2])},
+      {term:'Point de vigilance',definition:firstSentence(p[3])}
+    ];
+    ch.cours=
+      '<div class="bio-program"><span>REPÈRE DU PROGRAMME</span><strong>'+esc(p[0])+'</strong><p>La répartition précise peut varier selon le réseau et le volume horaire.</p></div>'+
+      '<h4>Le mécanisme en un coup d’œil</h4><ol class="bio-pathway">'+pathway+'</ol>'+
+      '<h4>Comprendre le mécanisme</h4><div class="bio-reading"><p>'+esc(p[1])+'</p></div>'+
+      '<h4>Observer, expérimenter, raisonner</h4><div class="bio-analysis"><p>'+esc(p[2])+'</p></div>'+
+      '<h4>Ce que tu dois savoir faire</h4><ul class="bio-skills"><li>Expliquer chaque flèche de la chaîne fonctionnelle.</li><li>Extraire les données utiles d’un document et formuler une conclusion justifiée.</li><li>Distinguer clairement '+esc(contrast)+'.</li></ul>'+
+      '<h4>Point de vigilance</h4><div class="bio-warning"><p>'+esc(p[3])+'</p></div>'+
+      '<h4>Auto-contrôle</h4><div class="bio-check"><p>□ Je peux refaire le schéma sans regarder.</p><p>□ Je peux citer une observation qui soutient le modèle.</p><p>□ Je peux expliquer la limite d’une expérience ou d’un document.</p></div>';
+    ch.contentVersion=5;
   }
   Object.keys(BIO_CHAPITRES).forEach(function(y){ BIO_CHAPITRES[y].forEach(enrich); });
 })();
