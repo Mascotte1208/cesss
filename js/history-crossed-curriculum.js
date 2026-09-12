@@ -20,4 +20,16 @@ annual.forEach(function(c){
  window.HISTORY_FLASHCARDS.push({terme:base,definition:p[0],exemple:c.theme,chapterId:'',annee:c.year,subject:'histoire',id:'histoire|'+c.id+'|essentiel'});
  window.HISTORY_FLASHCARDS.push({terme:'Repère — '+base,definition:p[1],exemple:'Replace ce repère dans son contexte et explique son importance.',chapterId:'',annee:c.year,subject:'histoire',id:'histoire|'+c.id+'|repere'});
 });
+window.HISTORY_EXERCISE_COUNT=0;
+if(window.CESS_LIBRARY_DATA&&window.CESS_LIBRARY_DATA.histoire){
+ function historyTokens(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().split(/[^a-z0-9]+/).filter(function(x){return x.length>3;});}
+ annual.forEach(function(c){
+  var chapters=window.CESS_LIBRARY_DATA.histoire.data[c.year]||[],wanted=historyTokens(c.title+' '+c.theme),best=chapters[0],bestScore=-1;
+  chapters.forEach(function(ch){var hay=historyTokens(ch.titre+' '+(ch.matieres||[]).join(' ')),score=wanted.reduce(function(n,t){return n+(hay.indexOf(t)>=0?1:0);},0);if(score>bestScore){bestScore=score;best=ch;}});
+  if(!best)return;var p=flashPoints(c.markdown);best.exercices=best.exercices||[];
+  best.exercices.push({question:'Présente « '+c.title+' » et explique son importance historique.',options:[],correct:0,correction:p[0],niveau:'Comprendre',contentVersion:5,sourceDossier:c.id});
+  best.exercices.push({question:'Construis une relation de cause à conséquence pour « '+c.title+' ».',options:[],correct:0,correction:p[1],niveau:'Analyser',contentVersion:5,sourceDossier:c.id});
+  window.HISTORY_EXERCISE_COUNT+=2;
+ });
+}
 })();
