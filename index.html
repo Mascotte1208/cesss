@@ -7,14 +7,19 @@
 <meta name="description" content="Carnet CESS — révision par matière et par année, fiches, exercices et jeux">
 <title>Carnet CESS — Révision</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50' font-size='50'%3E🎓%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/carnet-cess.svg">
 <link rel="stylesheet" href="css/style.css?v=learning-2">
 <link rel="stylesheet" href="css/academic-dark.css?v=1">
 <link rel="stylesheet" href="css/learning-colors.css?v=feedback-1">
 <link rel="stylesheet" href="css/sable-terracotta.css?v=2">
 <link rel="stylesheet" href="css/chemistry-mastery.css?v=1">
-<link rel="stylesheet" href="css/subject-exercises.css?v=1">\n<link rel="stylesheet" href="css/lot1-coherence.css?v=1">
+<link rel="stylesheet" href="css/subject-exercises.css?v=1">
+<link rel="stylesheet" href="css/lot1-coherence.css?v=1">
+<link rel="stylesheet" href="css/premium-sheets.css?v=1">
 </head>
 <body>
+<a class="skip-link" href="#mainContent">Aller au contenu principal</a>
 <div class="app-shell">
 <aside class="sidebar">
 <button class="brand" onclick="showView('home')" type="button"><span class="brand-icon">🎓</span><span class="brand-text"><strong>Carnet CESS</strong><small>Réviser · comprendre · réussir</small></span></button>
@@ -29,7 +34,7 @@
 </nav>
 <div class="sidebar-bottom"><div class="sidebar-tip"><span>💡</span><div><strong>Conseil</strong><small>Travaille un peu chaque jour et reviens sur tes erreurs.</small></div></div><button id="themeButton" class="theme-button" onclick="toggleTheme()" type="button">🌙 <span>Mode sombre</span></button></div>
 </aside>
-<main class="main-content">
+<main class="main-content" id="mainContent" tabindex="-1">
 <section id="home" class="view active">
 <div class="welcome"><div class="welcome-main"><span class="eyebrow">CESS · ESPACE DE RÉVISION</span><h1>Ton espace de révision, <br><em>enfin bien organisé.</em></h1><p>Retrouve tes cours, objectifs, exercices, formules, vocabulaire, quiz et examens blancs dans une seule interface.</p><div class="welcome-actions"><button class="button primary" onclick="showView('library')" type="button">Choisir mes matières</button><button class="button secondary" onclick="showView('progress')" type="button">Mon parcours</button></div></div><div class="daily-card"><div class="daily-icon">⚡</div><span class="eyebrow">Révision rapide</span><h3>Une petite session ?</h3><p id="dailyText">Prépare une série de questions en quelques secondes.</p><button class="text-button" onclick="quickRevision()" type="button">Lancer une session →</button></div></div>
 <div id="homeStats" class="home-stats"></div>
@@ -54,5 +59,8 @@
 <script src="js/history-revision-data.js?v=1"></script>
 <script src="js/history-years-456.js?v=3"></script>
 <script src="js/history-revision-ui.js?v=7"></script>
-<script src="js/lot1-coherence.js?v=1"></script>\n</body>
+<script src="js/lot1-coherence.js?v=1"></script>
+<script src="js/premium-sheets.js?v=2"></script>
+<script src="js/pwa.js?v=1"></script>
+</body>
 </html>

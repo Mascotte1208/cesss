@@ -962,7 +962,7 @@ function markDone(id) {
     cessState.readChapters = cessState.readChapters || {};
     cessState.readChapters[id] = true;
     cessSave();
-    openChapterBplus(id);
+    openChapter(id);
 }
 
 function flattenQuestions(filter) {
@@ -1084,48 +1084,9 @@ function flattenQuestions(filter) {
    ========================================================= */
 
 function printChapter(id) {
-    var chapter = findChapter(id);
-    if (!chapter) {
-        alert('Chapitre introuvable.');
-        return;
-    }
-
-    var content = `
-        <html>
-        <head>
-            <title>${chapter.titre} - CESS</title>
-            <style>
-                body { font-family: Arial, sans-serif; padding: 40px; max-width: 800px; margin: auto; line-height: 1.6; }
-                h1 { color: #1a3a5c; }
-                h2 { color: #2a5f8f; margin-top: 25px; }
-                .formule { background: #f0f4ff; padding: 10px; border-left: 4px solid #315bea; margin: 10px 0; }
-                .astuce { background: #fff8e1; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
-                .piege { background: #fce4ec; padding: 10px; border-left: 4px solid #d32f2f; margin: 10px 0; }
-                .checklist { background: #e8f5e9; padding: 10px; border-left: 4px solid #2e7d32; margin: 10px 0; }
-                ul, ol { padding-left: 20px; }
-                table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                th { background: #f0f4ff; }
-                .footer { margin-top: 30px; border-top: 2px solid #ddd; padding-top: 10px; font-size: 12px; color: #999; text-align: center; }
-            </style>
-        </head>
-        <body>
-            <h1>${chapter.titre}</h1>
-            <p><strong>Année :</strong> ${chapter.annee || ''}</p>
-            <p><strong>Description :</strong> ${chapter.desc || ''}</p>
-
-            ${chapter.cours || ''}
-
-            <div class="footer">
-                Fiche générée depuis le Carnet CESS — Mathématiques, Géographie & Biologie
-            </div>
-        </body>
-        </html>
-    `;
-
-    var win = window.open('', '_blank');
-    win.document.write(content);
-    win.document.close();
-    win.print();
+ var chapter=findChapter(id);if(!chapter){alert('Chapitre introuvable.');return;}
+ var subject=chapter.matiere||'maths',info=CESS_SUBJECTS[subject]||{},title=escapeHtml(chapter.titre||'Chapitre'),description=escapeHtml(chapter.desc||'');
+ var content='<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>'+title+' - Carnet CESS</title><style>@page{margin:18mm}body{font-family:Georgia,serif;color:#17233a;max-width:820px;margin:auto;line-height:1.65;font-size:12pt}h1{font-size:30pt;line-height:1.08;margin:0 0 10px;border-bottom:2px solid #a94f39;padding-bottom:12px}h2,h3{color:#17233a;break-after:avoid}.meta{font-family:Arial,sans-serif;color:#6d625a;margin-bottom:24px}.formule,.astuce,.piege,.checklist,.retenir,.important,blockquote{padding:12px 15px;margin:14px 0;border-left:4px solid #a94f39;background:#fbede6;break-inside:avoid}.exemple,.example,.checklist{border-color:#477358;background:#edf4ec}.piege,.warning,.erreur{border-color:#a64035;background:#fbefec}table{width:100%;border-collapse:collapse;margin:14px 0}th,td{border:1px solid #d8cec5;padding:8px;text-align:left}th{background:#f5efe7}img,svg{max-width:100%}.footer{margin-top:30px;border-top:1px solid #d8cec5;padding-top:10px;font:10pt Arial,sans-serif;color:#746b65;text-align:center}</style></head><body><h1>'+title+'</h1><div class="meta"><strong>'+escapeHtml(info.label||subject)+'</strong> · '+escapeHtml(chapter.annee||'')+(description?' · '+description:'')+'</div>'+(chapter.cours||'<p>Contenu indisponible.</p>')+'<div class="footer">Fiche générée depuis Carnet CESS · '+escapeHtml(info.label||subject)+'</div></body></html>';
+ var win=window.open('','_blank');if(!win){alert('Autorise les fenêtres contextuelles pour imprimer cette fiche.');return;}win.document.write(content);win.document.close();win.focus();win.print();
 }
 

@@ -1,0 +1,73 @@
+/* Fiches premium — direction éditoriale sable & terracotta */
+:root{--sheet-ink:#17233a;--sheet-accent:#a94f39;--sheet-accent-dark:#833b2c;--sheet-ivory:#fffdf9;--sheet-sand:#f5efe7;--sheet-sage:#477358;--sheet-sage-soft:#edf4ec;--sheet-danger:#a64035}
+.bplus-detail{max-width:1480px;margin:0 auto 72px;color:var(--sheet-ink)}
+.bplus-breadcrumb{margin:4px 0 18px;padding:0 2px;color:#596070;font-size:13px}
+.bplus-breadcrumb button{padding:8px 12px;border:1px solid var(--line);border-radius:9px;background:var(--sheet-ivory);color:var(--sheet-ink);font-weight:750}
+.bplus-header{position:relative;padding:18px 2px 22px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.bplus-header:after{display:none}
+.bplus-badges{margin-bottom:15px}
+.bplus-badge{padding:6px 10px;border-radius:999px;background:var(--sheet-sand);border-color:var(--line);color:#695d54;font-size:11px;letter-spacing:.02em}
+.bplus-badge.accent{background:var(--sheet-accent);border-color:var(--sheet-accent);color:white}
+.bplus-badge.warm{background:#f4e6dc;color:var(--sheet-accent-dark);border-color:#e8c8b8}
+.bplus-heading{align-items:flex-start;gap:16px}
+.bplus-icon{display:none}
+.bplus-kicker{color:var(--sheet-accent)!important;font-family:Arial,sans-serif;font-size:11px!important;font-weight:850;letter-spacing:.12em}
+.bplus-heading h1{max-width:980px;margin:4px 0 8px;color:var(--sheet-ink);font-family:Georgia,'Times New Roman',serif;font-size:clamp(38px,5vw,66px);font-weight:700;letter-spacing:-.035em;line-height:1.03}
+.bplus-lead{max-width:800px;color:#485165!important;font-size:17px!important;line-height:1.6}
+.bplus-meta{margin-top:22px;padding:14px 0 0;border-top:1px solid var(--line);background:transparent}
+.bplus-meta>div{padding:0 18px 0 0;border-right:1px solid var(--line)}
+.bplus-meta>div:last-child{border:0}
+.bplus-meta small{color:#887b70}
+.bplus-meta strong{color:var(--sheet-ink);font-size:12px}
+.premium-sheet-tabs{display:flex;align-items:center;gap:4px;margin:0 0 24px;border-bottom:1px solid var(--line);overflow-x:auto}
+.premium-sheet-tab{display:flex;align-items:center;gap:8px;min-width:max-content;padding:15px 18px 13px;border:0;border-bottom:3px solid transparent;background:transparent;color:#465066;font:750 14px Arial,sans-serif;cursor:pointer}
+.premium-sheet-tab:hover{color:var(--sheet-accent)}
+.premium-sheet-tab.active{border-bottom-color:var(--sheet-accent);color:var(--sheet-accent-dark)}
+.bplus-prerequisites{margin:24px 0;padding:20px 24px;border:1px solid #ded4ca;border-left:5px solid var(--sheet-accent);border-radius:13px;background:rgba(255,253,249,.84);box-shadow:0 6px 20px rgba(50,35,25,.035)}
+.bplus-prerequisites>span{display:grid;width:42px;height:42px;place-items:center;border-radius:50%;background:#f1dfd5;color:var(--sheet-accent);font-size:20px}
+.bplus-prerequisites strong{color:var(--sheet-ink);font-family:Georgia,'Times New Roman',serif;font-size:18px}
+.bplus-prerequisites p{color:#4c5567!important;font-size:14px!important}
+.bplus-chips{margin:0 0 20px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--sheet-ivory);box-shadow:none}
+.bplus-chips>span{color:#8c7c70;letter-spacing:.1em}
+.bplus-chips button{border:1px solid transparent;background:transparent;color:#586074}
+.bplus-chips button:hover{border-color:#dfc2b5;background:#f7eae3;color:var(--sheet-accent-dark)}
+.bplus-layout{grid-template-columns:minmax(0,1.72fr) minmax(290px,.88fr);gap:36px;align-items:start}
+.bplus-reading{border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.bplus-intro{padding:10px 0 22px;border-bottom:1px solid var(--line);background:transparent}
+.bplus-intro h2{color:var(--sheet-ink);font-family:Georgia,'Times New Roman',serif;font-size:29px}
+.bplus-intro p{max-width:740px;color:#596174;font-size:14px;line-height:1.65}
+.cours-sections{display:flex;flex-direction:column;gap:14px;margin-top:18px}
+.cours-section.bplus-accordion{border:1px solid #ded5cc;border-radius:13px;background:var(--sheet-ivory);box-shadow:0 5px 18px rgba(55,38,28,.035);overflow:hidden}
+.bplus-accordion-button{padding:18px 20px;background:var(--sheet-ivory)}
+.bplus-accordion.open .bplus-accordion-button{background:#faf4ed;border-bottom:1px solid #e8ddd3}
+.bplus-section-number{background:#f0dfd6;color:var(--sheet-accent-dark);font-family:Arial,sans-serif}
+.bplus-accordion-button>span:nth-child(2){color:var(--sheet-ink);font-family:Georgia,'Times New Roman',serif;font-size:17px}
+.bplus-accordion-button small{color:var(--sheet-accent);font-family:Arial,sans-serif}
+.bplus-accordion-body{padding:24px 28px 30px!important;color:#2f384c;font-family:Georgia,'Times New Roman',serif;font-size:16px;line-height:1.76}
+.bplus-accordion-body h2,.bplus-accordion-body h3,.bplus-accordion-body h4{color:var(--sheet-ink)}
+.bplus-accordion-body h3{margin-top:26px;font-size:21px}
+.bplus-accordion-body li{margin:8px 0}
+.bplus-accordion-body .retenir,.bplus-accordion-body .important,.bplus-accordion-body blockquote{margin:22px 0;padding:18px 20px;border:1px solid #dfb19f;border-left:5px solid var(--sheet-accent);border-radius:10px;background:#fbede6;color:#593126}
+.bplus-accordion-body .exemple,.bplus-accordion-body .example{margin:22px 0;padding:18px 20px;border:1px solid #b9d0be;border-left:5px solid var(--sheet-sage);border-radius:10px;background:var(--sheet-sage-soft);color:#284b35}
+.bplus-accordion-body .piege,.bplus-accordion-body .warning,.bplus-accordion-body .erreur{margin:22px 0;padding:18px 20px;border:1px solid #e4b7b0;border-left:5px solid var(--sheet-danger);border-radius:10px;background:#fbefec;color:#6e2b25}
+.bplus-rail{top:24px;gap:18px}
+.bplus-rail section{padding:22px;border:1px solid #dfd5cc;border-radius:13px;background:var(--sheet-ivory);box-shadow:0 7px 22px rgba(55,38,28,.045)}
+.bplus-rail section:first-child{border-top:5px solid var(--sheet-accent)}
+.bplus-rail section:nth-child(2){border-top:5px solid var(--sheet-sage)}
+.bplus-rail small{color:#8c766b;font-weight:850;letter-spacing:.11em}
+.bplus-rail h3{color:var(--sheet-ink);font-family:Georgia,'Times New Roman',serif;font-size:19px}
+.bplus-rail p{font-size:13px;line-height:1.55}
+.bplus-score{color:var(--sheet-accent-dark);font-size:40px}
+.bplus-rail .button{min-height:45px}
+.bplus-print{padding:24px 0;text-align:left}
+.bplus-print .button{background:transparent!important;color:var(--sheet-ink)!important;border-color:#cfc3b8!important}
+/* Les grandes bibliothèques d’histoire héritent de la même finition. */
+.history-revision-card,.history-module{border-color:#ded5cc;border-radius:13px;box-shadow:0 4px 15px rgba(55,38,28,.035)}
+.history-revision-card>summary,.history-module>summary{background:var(--sheet-ivory)}
+.history-card-number,.history-module-icon{background:#f0dfd6;color:var(--sheet-accent-dark)}
+.history-card-body{color:#30394c;font-size:16px;line-height:1.76}
+.history-retain{border-color:var(--sheet-accent)!important;background:#fbede6!important;color:#593126!important}
+@media(max-width:1050px){.bplus-layout{grid-template-columns:1fr}.bplus-rail{position:static;grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.bplus-heading h1{font-size:37px}.bplus-lead{font-size:15px!important}.bplus-meta{grid-template-columns:1fr}.bplus-meta>div{padding:9px 0;border-right:0;border-bottom:1px solid var(--line)}.premium-sheet-tab{padding:13px 12px}.bplus-prerequisites{padding:17px}.bplus-chips{display:none}.bplus-accordion-body{padding:18px 17px 24px!important;font-size:15px}.bplus-rail{grid-template-columns:1fr}.history-card-body{font-size:15px}}
+@media print{.premium-sheet-tabs{display:none!important}.bplus-header{padding-top:0}.bplus-heading h1{font-size:42px}.bplus-prerequisites{break-inside:avoid}}
+.premium-sheet-tab:focus-visible{outline:3px solid var(--sheet-sage);outline-offset:2px}.subject-self-assess{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}@media(max-width:700px){.bplus-badge,.bplus-kicker{font-size:12px!important}.subject-self-assess .button{width:100%}}@media print{body{background:#fff!important}.sidebar,.mobile-nav,.bplus-breadcrumb,.bplus-print,.bplus-rail,.premium-sheet-tabs{display:none!important}.main-content{padding:0!important}.bplus-layout{display:block!important}.bplus-detail{max-width:none;margin:0}.cours-section.bplus-accordion{break-inside:avoid}.bplus-accordion-body{display:block!important}}
