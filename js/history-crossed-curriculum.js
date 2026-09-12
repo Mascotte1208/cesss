@@ -7,4 +7,17 @@ HISTORY_REVISION_DATA.forEach(function(c){c.year='socle';});
 Array.prototype.push.apply(HISTORY_REVISION_DATA,annual);
 window.HISTORY_ADVANCED_DATA=annual;
 window.HISTORY_CURRICULUM_COUNTS={socle:100,'4e':31,'5e':22,'6e':25,annual:78,total:178};
+function flashClean(s){return String(s||'').replace(/^#+\s*/,'').replace(/\*\*/g,'').replace(/^[-*]\s*/,'').replace(/\s+/g,' ').trim();}
+function flashPoints(md){
+ var blocks=String(md||'').split(/\n\s*\n/).map(flashClean).filter(function(s){return s&&s.length>28&&!/^Repère du dossier/i.test(s)&&!/^Cours structuré$/i.test(s)&&!/^Cours essentiel$/i.test(s)&&!/^Complément croisé/i.test(s);});
+ var summary=blocks.filter(function(s){return !/^Période\s*:/i.test(s)&&!/^Mots-clés\s*:/i.test(s);})[0]||blocks[0]||'';
+ var key=blocks.filter(function(s){return s!==summary&&!/^Période\s*:/i.test(s)&&!/^Mots-clés\s*:/i.test(s);})[0]||summary;
+ return[summary.slice(0,420),key.slice(0,420)];
+}
+window.HISTORY_FLASHCARDS=[];
+annual.forEach(function(c){
+ var p=flashPoints(c.markdown),base=c.year+' · '+c.title;
+ window.HISTORY_FLASHCARDS.push({terme:base,definition:p[0],exemple:c.theme,chapterId:'',annee:c.year,subject:'histoire',id:'histoire|'+c.id+'|essentiel'});
+ window.HISTORY_FLASHCARDS.push({terme:'Repère — '+base,definition:p[1],exemple:'Replace ce repère dans son contexte et explique son importance.',chapterId:'',annee:c.year,subject:'histoire',id:'histoire|'+c.id+'|repere'});
+});
 })();
