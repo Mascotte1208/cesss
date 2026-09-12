@@ -112,6 +112,7 @@ var flashcardDeck=[],flashcardRevealed=false,flashcardCount=10,flashcardYear='al
 function ensureSubjectFlashcards(){
     Object.keys(CESS_SUBJECTS).forEach(function(k){
         var lessons=[];allChaps(k).forEach(function(c){(c.fiches||[]).forEach(function(f){lessons.push({terme:f.term,definition:f.definition,exemple:f.example,chapterId:c.id,annee:c.annee,subject:k,id:c.id+'|'+f.term});});});
+        if(k==='histoire'&&Array.isArray(window.HISTORY_FLASHCARDS))lessons=lessons.concat(window.HISTORY_FLASHCARDS);
         if(lessons.length)FLASHCARDS_DATA[k]=lessons;
         else FLASHCARDS_DATA[k]=(FLASHCARDS_DATA[k]||[]).map(function(f){return Object.assign({},f,{subject:k,id:k+'|'+f.terme,annee:'',chapterId:''});});
     });
