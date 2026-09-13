@@ -154,7 +154,7 @@ function parseCoursSections(cours) {
 /* Regroupe les nombreux petits panneaux historiques en grands chapitres
    de lecture. Le contenu source reste intact : seuls les titres et leur
    présentation sont réorganisés. */
-function groupCoursSections(sections) {
+function groupCoursSections(sections, subject) {
     if (!Array.isArray(sections) || !sections.length) {
         return [];
     }
@@ -183,11 +183,20 @@ function groupCoursSections(sections) {
         target.items.push(section);
     });
 
+    var subjectLabels = {
+        histoire: ['Notions et acteurs', 'Contexte et évolutions', 'Repères et documents', 'Méthode historique', 'Pièges à éviter', 'Synthèse CESS'],
+        francais: ['Notions essentielles', 'Textes et procédés', 'Exemples et outils', 'Méthode de français', 'Pièges à éviter', 'Synthèse CESS'],
+        geo: ['Notions essentielles', 'Comprendre le territoire', 'Repères, cartes et applications', 'Méthode géographique', 'Pièges à éviter', 'Synthèse CESS'],
+        bio: ['Notions essentielles', 'Mécanismes du vivant', 'Schémas et applications', 'Démarche scientifique', 'Pièges à éviter', 'Synthèse CESS']
+    };
+    var labels = subjectLabels[subject] || null;
+
     return groups.filter(function (group) {
         return group.items.length;
     }).map(function (group) {
+        var originalIndex = groups.indexOf(group);
         return {
-            title: group.title,
+            title: labels ? labels[originalIndex] : group.title,
             icon: group.icon,
             body: group.items.map(function (item) {
                 return '<section class="bplus-subsection"><h4>' + item.title + '</h4>' + item.body + '</section>';
