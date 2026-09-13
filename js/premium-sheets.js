@@ -52,18 +52,45 @@
     })[subject] || fallback || '◇';
   }
 
-  function keepOneSectionOpen(detail) {
+  function expandEditorialSections(detail) {
     var sections = detail.querySelectorAll('.bplus-accordion');
     Array.prototype.forEach.call(sections, function (section, index) {
       var button = section.querySelector('.bplus-accordion-button');
       var body = section.querySelector('.bplus-accordion-body');
-      var chevron = section.querySelector('.cours-chevron');
-      var open = index === 0;
-      section.classList.toggle('open', open);
-      if (button) button.setAttribute('aria-expanded', String(open));
-      if (body) body.style.display = open ? 'block' : 'none';
-      if (chevron) chevron.textContent = open ? '▾' : '▸';
+      if (button) {
+        var title = button.querySelector('span:nth-child(2)');
+        var heading = document.createElement('h2');
+        heading.className = 'editorial-section-title';
+        heading.innerHTML = '<span>' + (index + 1) + '.</span>' + (title ? title.innerHTML.replace(/<small>[\s\S]*?<\/small>/, '') : 'Cours');
+        button.replaceWith(heading);
+      }
+      section.classList.add('editorial-section');
+      section.classList.remove('open');
+      if (body) body.style.display = 'block';
     });
+  }
+
+  function firstExercise(chapter) {
+    return Array.isArray(chapter.exercices) && chapter.exercices.length ? chapter.exercices[0] : null;
+  }
+
+  function vigilance(subject) {
+    return ({
+      histoire: 'Distingue toujours le fait, sa date, ses causes et ses conséquences.',
+      francais: 'Justifie chaque interprétation par un élément précis du texte.',
+      maths: 'Écris les étapes du raisonnement et vérifie les conditions d’application.',
+      geo: 'Nomme l’échelle, localise le phénomène et cite les indicateurs utilisés.',
+      bio: 'Relie chaque structure à sa fonction et emploie le vocabulaire scientifique exact.',
+      chimie: 'Vérifie les symboles, les unités et l’équilibrage avant de conclure.',
+      physique: 'Note les données, les unités et la loi utilisée avant le calcul.',
+      anglais: 'Réponds avec une phrase complète et réutilise le vocabulaire du chapitre.',
+      neerlandais: 'Controleer de woordvolgorde en het werkwoord voordat je antwoordt.',
+      latin: 'Identifie d’abord les formes et les fonctions avant de traduire.',
+      numerique: 'Explique le fonctionnement, les données utilisées et les risques associés.',
+      sciences_sociales: 'Sépare les observations, les hypothèses et les interprétations.',
+      sciences_economiques: 'Définis les acteurs, le mécanisme et les effets attendus.',
+      epc: 'Distingue les faits, les valeurs et les arguments.'
+    })[subject] || 'Vérifie le vocabulaire, les étapes et la conclusion.';
   }
 
   function enhancePremiumSheet(id) {
@@ -80,6 +107,7 @@
     var chips = detail.querySelector('.bplus-chips');
     var intro = detail.querySelector('.bplus-intro');
     var items = essentialItems(chapter, detail);
+    var exercise = firstExercise(chapter);
 
     detail.dataset.simpleSheet = '1';
     detail.dataset.subjectLabel = esc(info.label || subject);
@@ -99,17 +127,15 @@
       var meta = header.querySelector('.bplus-meta');
       if (meta) meta.remove();
 
-      var essential = document.createElement('section');
-      essential.className = 'simple-essential';
-      essential.setAttribute('aria-labelledby', 'simpleEssentialTitle');
-      essential.innerHTML =
-        '<h2 id="simpleEssentialTitle">L’essentiel</h2>' +
-        '<div class="simple-essential-grid">' +
-        items.map(function (item, index) {
-          return '<article><span aria-hidden="true">' + (index + 1) + '</span><p>' + esc(item) + '</p></article>';
-        }).join('') +
-        '</div>';
-      header.insertAdjacentElement('afterend', essential);
+      var tabsBar = document.createElement('nav');
+      tabsBar.className = 'editorial-tabs';
+      tabsBar.setAttribute('aria-label', 'Ressources du chapitre');
+      tabsBar.innerHTML =
+        '<button class="active" type="button"><span>▤</span>Cours</button>' +
+        '<button type="button" onclick="showView(\'memo\')"><span>▧</span>Mémo</button>' +
+        '<button type="button" onclick="showView(\'flashcards\');selectFlashcardSubject(\'' + esc(subject) + '\')"><span>▦</span>Flashcards</button>' +
+        '<button type="button" onclick="openSubjectExercises(\'' + esc(subject) + '\')"><span>✎</span>Exercices</button>';
+      header.insertAdjacentElement('afterend', tabsBar);
     }
 
     if (intro) {
@@ -121,16 +147,27 @@
       if (text) text.remove();
     }
 
-    keepOneSectionOpen(detail);
+    var reading = detail.querySelector('.bplus-reading');
+    if (reading) {
+      var objective = document.createElement('section');
+      objective.className = 'editorial-objective';
+      objective.innerHTML = '<span aria-hidden="true">◎</span><div><h2>Objectif d’apprentissage</h2><p>' + esc((Array.isArray(chapter.objectifs) && chapter.objectifs[0]) || chapter.desc || 'Comprendre et maîtriser les notions essentielles de ce chapitre.') + '</p></div>';
+      reading.insertBefore(objective, reading.firstChild);
+    }
 
-    var progressLabel = detail.querySelector('.bplus-rail section:first-child>small');
-    if (progressLabel) progressLabel.textContent = 'PROGRESSION';
-    var markButton = detail.querySelector('.bplus-rail section:first-child .button');
-    if (markButton) markButton.textContent = '✓ Marquer comme consulté';
-    var exerciseTitle = detail.querySelector('.bplus-rail section:nth-child(2) h3');
-    if (exerciseTitle) exerciseTitle.textContent = 'Exercices de ' + (info.label || 'la matière');
-    var exerciseText = detail.querySelector('.bplus-rail section:nth-child(2) p');
-    if (exerciseText) exerciseText.textContent = 'Entraîne-toi sur l’ensemble de la matière et retrouve ce chapitre dans les filtres.';
+    expandEditorialSections(detail);
+
+    var rail = detail.querySelector('.bplus-rail');
+    if (rail) {
+      rail.innerHTML =
+        '<section class="editorial-card retain"><h2><span>♢</span>À retenir</h2><ul>' + items.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join('') + '</ul></section>' +
+        (exercise ? '<section class="editorial-card example"><h2><span>✓</span>Exemple guidé</h2><h3>' + esc(exercise.question || 'Application') + '</h3><p>' + esc(exercise.correction || 'Retrouve la démarche dans le cours puis vérifie chaque étape.') + '</p></section>' : '') +
+        '<section class="editorial-card warning"><h2><span>!</span>Point de vigilance</h2><p>' + esc(vigilance(subject)) + '</p></section>' +
+        '<button class="button primary editorial-practice" onclick="openSubjectExercises(\'' + esc(subject) + '\')" type="button">S’entraîner dans cette matière →</button>';
+    }
+
+    var printZone = detail.querySelector('.bplus-print');
+    if (printZone) printZone.insertAdjacentHTML('afterbegin', '<button class="button secondary editorial-done" onclick="markDone(\'' + esc(chapter.id) + '\')" type="button">✓ Marquer comme consulté</button>');
   }
 
   window.enhancePremiumSheet = enhancePremiumSheet;
