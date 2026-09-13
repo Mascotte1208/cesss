@@ -187,9 +187,29 @@ function groupCoursSections(sections, subject) {
         histoire: ['Notions et acteurs', 'Contexte et évolutions', 'Repères et documents', 'Méthode historique', 'Pièges à éviter', 'Synthèse CESS'],
         francais: ['Notions essentielles', 'Textes et procédés', 'Exemples et outils', 'Méthode de français', 'Pièges à éviter', 'Synthèse CESS'],
         geo: ['Notions essentielles', 'Comprendre le territoire', 'Repères, cartes et applications', 'Méthode géographique', 'Pièges à éviter', 'Synthèse CESS'],
-        bio: ['Notions essentielles', 'Mécanismes du vivant', 'Schémas et applications', 'Démarche scientifique', 'Pièges à éviter', 'Synthèse CESS']
+        bio: ['Notions essentielles', 'Mécanismes du vivant', 'Schémas et applications', 'Démarche scientifique', 'Pièges à éviter', 'Synthèse CESS'],
+        chimie: ['Notions essentielles', 'Comprendre la transformation', 'Relations et applications', 'Démarche expérimentale', 'Pièges à éviter', 'Synthèse CESS'],
+        physique: ['Notions essentielles', 'Comprendre le phénomène', 'Lois et applications', 'Démarche scientifique', 'Pièges à éviter', 'Synthèse CESS'],
+        maths: ['Notions essentielles', 'Comprendre la méthode', 'Formules et applications', 'Raisonnement pas à pas', 'Pièges à éviter', 'Synthèse CESS'],
+        anglais: ['Key vocabulary', 'Understand the context', 'Examples and language tools', 'Communication method', 'Common mistakes', 'Key takeaways'],
+        neerlandais: ['Kernwoorden', 'Context begrijpen', 'Voorbeelden en taalhulpen', 'Communicatiemethode', 'Veelgemaakte fouten', 'Samenvatting'],
+        latin: ['Notions et vocabulaire', 'Comprendre le texte', 'Formes et traductions', 'Méthode de version', 'Pièges à éviter', 'Synthèse'],
+        numerique: ['Notions numériques', 'Comprendre le système', 'Outils et applications', 'Méthode de projet', 'Risques à éviter', 'Synthèse'],
+        sciences_sociales: ['Notions et acteurs', 'Comprendre la société', 'Données et situations', 'Méthode d’analyse', 'Biais à éviter', 'Synthèse CESS'],
+        sciences_economiques: ['Notions et acteurs', 'Comprendre le mécanisme', 'Données et applications', 'Méthode économique', 'Pièges à éviter', 'Synthèse CESS'],
+        epc: ['Notions et valeurs', 'Comprendre le débat', 'Arguments et situations', 'Méthode de réflexion', 'Biais à éviter', 'Synthèse citoyenne']
+    };
+    var subjectIcons = {
+        histoire: ['♜', '⌛', '▧', '⌕', '!', '✓'], francais: ['Aa', '❝', '✦', '✎', '!', '✓'],
+        maths: ['◇', 'ƒ', '∑', '→', '!', '✓'], geo: ['◎', '⌖', '▦', '↗', '!', '✓'],
+        bio: ['◉', '♧', '⌬', '⚗', '!', '✓'], chimie: ['⚛', '⚗', '∑', '⌁', '!', '✓'],
+        physique: ['●', 'ϟ', '∑', '→', '!', '✓'], anglais: ['A', '◌', '❝', '↗', '!', '✓'],
+        neerlandais: ['N', '◌', '❝', '↗', '!', '✓'], latin: ['L', '❦', 'Aa', '✎', '!', '✓'],
+        numerique: ['01', '⌘', '{}', '→', '!', '✓'], sciences_sociales: ['◉', '♙', '▥', '⌕', '!', '✓'],
+        sciences_economiques: ['€', '↗', '▥', '⌕', '!', '✓'], epc: ['⚖', '◈', '❝', '⌕', '!', '✓']
     };
     var labels = subjectLabels[subject] || null;
+    var icons = subjectIcons[subject] || subjectIcons.maths;
 
     return groups.filter(function (group) {
         return group.items.length;
@@ -197,7 +217,7 @@ function groupCoursSections(sections, subject) {
         var originalIndex = groups.indexOf(group);
         return {
             title: labels ? labels[originalIndex] : group.title,
-            icon: group.icon,
+            icon: icons[originalIndex] || group.icon,
             body: group.items.map(function (item) {
                 return '<section class="bplus-subsection"><h4>' + item.title + '</h4>' + item.body + '</section>';
             }).join('')
