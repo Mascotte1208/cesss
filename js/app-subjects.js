@@ -286,7 +286,6 @@ function openChapterBplus(id) {
     if (!host) return;
     var previous = host.querySelector('.detail');
     if (previous) previous.remove();
-    host.classList.add('chapter-host-focus');
     host.prepend(content);
     if (typeof window.enhancePremiumSheet === 'function') {
         window.enhancePremiumSheet(id);
