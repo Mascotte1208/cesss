@@ -256,6 +256,11 @@ function openChapterBplus(id) {
     }).join('');
 
     var courseHtml = coursSections.length ? coursSections.map(function (section, index) {
+        if (subject === 'histoire') {
+            return '<section class="cours-section bplus-accordion open editorial-section" data-index="' + index + '">' +
+                '<h2 class="editorial-section-title"><span>' + (index + 1) + '.</span>' + escapeHtml(section.title) + '</h2>' +
+                '<div class="cours-section-body bplus-accordion-body" style="display:block">' + section.body + '</div></section>';
+        }
         var open = index === 0;
         return '<section class="cours-section bplus-accordion' + (open ? ' open' : '') + '" data-index="' + index + '">' +
             '<button type="button" class="cours-section-header bplus-accordion-button" aria-expanded="' + open + '" onclick="toggleCoursSection(this)">' +
