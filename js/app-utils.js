@@ -159,6 +159,32 @@ function groupCoursSections(sections, subject) {
         return [];
     }
 
+    /* Les chapitres d'Histoire approfondis possèdent déjà les six parties
+       éditoriales validées. Elles restent distinctes et dans l'ordre prévu. */
+    if (subject === 'histoire') {
+        var historyOrder = [
+            { match: /^Notions et acteurs$/i, icon: '♜' },
+            { match: /^Contexte et évolutions$/i, icon: '⌛' },
+            { match: /^Repères et documents$/i, icon: '▧' },
+            { match: /^Méthode historique$/i, icon: '⌕' },
+            { match: /^Pièges à éviter$/i, icon: '!' },
+            { match: /^Synthèse CESS$/i, icon: '✓' }
+        ];
+        var canonicalHistory = historyOrder.every(function (expected) {
+            return sections.some(function (section) {
+                return expected.match.test(String(section.title || '').replace(/<[^>]*>/g, ' ').trim());
+            });
+        });
+        if (canonicalHistory) {
+            return historyOrder.map(function (expected) {
+                var section = sections.find(function (candidate) {
+                    return expected.match.test(String(candidate.title || '').replace(/<[^>]*>/g, ' ').trim());
+                });
+                return { title: String(section.title || '').replace(/<[^>]*>/g, ' ').trim(), icon: expected.icon, body: section.body };
+            });
+        }
+    }
+
     var groups = [
         { title: 'Notions essentielles', icon: '◆', match: /essentiel|d[eé]finition|vocabulaire|rep[eè]re|th[eé]or[eè]me|c.est quoi|notion|introduction/i, items: [] },
         { title: 'Comprendre le cours', icon: '◎', match: /comprendre|m[eé]canisme|fonctionnement|principe|explication|le cours|propri[eé]t[eé]/i, items: [] },
