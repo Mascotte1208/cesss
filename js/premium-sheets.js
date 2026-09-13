@@ -1,6 +1,138 @@
-/* Fiches premium — amélioration progressive du modèle commun. */
-(function(){
-function esc(v){return typeof escapeHtml==='function'?escapeHtml(String(v==null?'':v)):String(v||'');}
-function enhancePremiumSheet(id){var detail=document.querySelector('.bplus-detail');if(!detail||detail.dataset.premium==='1')return;var chapter=typeof findChapter==='function'?findChapter(id):null;if(!chapter)return;detail.dataset.premium='1';var subject=chapter.matiere||'maths',info=(typeof CESS_SUBJECTS!=='undefined'&&CESS_SUBJECTS[subject])||{},header=detail.querySelector('.bplus-header');if(header){var tabs=document.createElement('nav');tabs.className='premium-sheet-tabs';tabs.setAttribute('aria-label','Outils de la fiche');tabs.innerHTML='<button class="premium-sheet-tab active" type="button" data-premium-action="course">▣ Cours</button><button class="premium-sheet-tab" type="button" data-premium-action="memo">▤ Mémo</button><button class="premium-sheet-tab" type="button" data-premium-action="flash">▧ Flashcards</button><button class="premium-sheet-tab" type="button" data-premium-action="exercise">✎ Exercices</button>';header.insertAdjacentElement('afterend',tabs);tabs.addEventListener('click',function(event){var button=event.target.closest('[data-premium-action]');if(!button)return;var action=button.dataset.premiumAction;if(action==='course'){var reading=detail.querySelector('.bplus-reading');if(reading)reading.scrollIntoView({behavior:'smooth',block:'start'});}else if(action==='memo'){if(typeof showView==='function')showView('memo');}else if(action==='flash'){if(typeof showView==='function')showView('flashcards');if(typeof selectFlashcardSubject==='function')setTimeout(function(){selectFlashcardSubject(subject);},0);}else if(action==='exercise'&&typeof openSubjectExercises==='function')openSubjectExercises(subject);});}var objective=detail.querySelector('.bplus-prerequisites strong');if(objective)objective.textContent="Objectif d’apprentissage";var oi=detail.querySelector('.bplus-prerequisites>span');if(oi)oi.textContent='◎';var rt=detail.querySelector('.bplus-intro h2');if(rt)rt.textContent='Comprendre l’essentiel';var rp=detail.querySelector('.bplus-intro p');if(rp)rp.textContent='Avance partie par partie. Les exemples, points essentiels et erreurs fréquentes sont mis en évidence pour faciliter la lecture.';var pl=detail.querySelector('.bplus-rail section:first-child>small');if(pl)pl.textContent='FICHE CONSULTÉE';var mb=detail.querySelector('.bplus-rail section:first-child .button');if(mb)mb.innerHTML='✓ Marquer comme consulté';detail.setAttribute('data-subject-label',esc(info.label||subject));}
-window.enhancePremiumSheet=enhancePremiumSheet;var originalBplus=window.openChapterBplus;if(typeof originalBplus==='function')window.openChapterBplus=function(id){var result=originalBplus.apply(this,arguments);enhancePremiumSheet(id);return result;};
+/* Fiches de chapitre — structure simple commune à toutes les matières. */
+(function () {
+  function esc(value) {
+    return typeof escapeHtml === 'function'
+      ? escapeHtml(String(value == null ? '' : value))
+      : String(value || '');
+  }
+
+  function unique(values) {
+    var seen = {};
+    return values.filter(function (value) {
+      var key = String(value || '').trim().toLowerCase();
+      if (!key || seen[key]) return false;
+      seen[key] = true;
+      return true;
+    });
+  }
+
+  function essentialItems(chapter, detail) {
+    var knowledge = Array.isArray(chapter.matieres) ? chapter.matieres : [];
+    var objectives = Array.isArray(chapter.objectifs) ? chapter.objectifs : [];
+    var cards = Array.isArray(chapter.fiches) ? chapter.fiches.map(function (card) {
+      return card.definition || card.term || card.terme || '';
+    }) : [];
+    var headings = Array.prototype.map.call(
+      detail.querySelectorAll('.bplus-accordion-button>span:nth-child(2)'),
+      function (node) {
+        var clone = node.cloneNode(true);
+        Array.prototype.forEach.call(clone.querySelectorAll('small'), function (small) { small.remove(); });
+        return clone.textContent.trim();
+      }
+    );
+    return unique(knowledge.concat(objectives, cards, headings)).slice(0, 4);
+  }
+
+  function subjectSymbol(subject, fallback) {
+    return ({
+      francais: '▤',
+      maths: '∑',
+      bio: '♧',
+      histoire: '▥',
+      chimie: '⚗',
+      geo: '◎',
+      physique: 'ϟ'
+    })[subject] || fallback || '◇';
+  }
+
+  function keepOneSectionOpen(detail) {
+    var sections = detail.querySelectorAll('.bplus-accordion');
+    Array.prototype.forEach.call(sections, function (section, index) {
+      var button = section.querySelector('.bplus-accordion-button');
+      var body = section.querySelector('.bplus-accordion-body');
+      var chevron = section.querySelector('.cours-chevron');
+      var open = index === 0;
+      section.classList.toggle('open', open);
+      if (button) button.setAttribute('aria-expanded', String(open));
+      if (body) body.style.display = open ? 'block' : 'none';
+      if (chevron) chevron.textContent = open ? '▾' : '▸';
+    });
+  }
+
+  function enhancePremiumSheet(id) {
+    var detail = document.querySelector('.bplus-detail');
+    if (!detail || detail.dataset.simpleSheet === '1') return;
+    var chapter = typeof findChapter === 'function' ? findChapter(id) : null;
+    if (!chapter) return;
+
+    var subject = chapter.matiere || 'maths';
+    var info = (typeof CESS_SUBJECTS !== 'undefined' && CESS_SUBJECTS[subject]) || {};
+    var header = detail.querySelector('.bplus-header');
+    var tabs = detail.querySelector('.premium-sheet-tabs');
+    var prerequisites = detail.querySelector('.bplus-prerequisites');
+    var chips = detail.querySelector('.bplus-chips');
+    var intro = detail.querySelector('.bplus-intro');
+    var items = essentialItems(chapter, detail);
+
+    detail.dataset.simpleSheet = '1';
+    detail.dataset.subjectLabel = esc(info.label || subject);
+
+    if (tabs) tabs.remove();
+    if (prerequisites) prerequisites.remove();
+    if (chips) chips.remove();
+
+    if (header) {
+      var icon = header.querySelector('.bplus-icon');
+      if (icon) {
+        icon.style.display = '';
+        icon.textContent = subjectSymbol(subject, info.icon);
+      }
+      var kicker = header.querySelector('.bplus-kicker');
+      if (kicker) kicker.textContent = info.label || 'Matière';
+      var meta = header.querySelector('.bplus-meta');
+      if (meta) meta.remove();
+
+      var essential = document.createElement('section');
+      essential.className = 'simple-essential';
+      essential.setAttribute('aria-labelledby', 'simpleEssentialTitle');
+      essential.innerHTML =
+        '<h2 id="simpleEssentialTitle">L’essentiel</h2>' +
+        '<div class="simple-essential-grid">' +
+        items.map(function (item, index) {
+          return '<article><span aria-hidden="true">' + (index + 1) + '</span><p>' + esc(item) + '</p></article>';
+        }).join('') +
+        '</div>';
+      header.insertAdjacentElement('afterend', essential);
+    }
+
+    if (intro) {
+      var title = intro.querySelector('h2');
+      var label = intro.querySelector('.bplus-kicker');
+      var text = intro.querySelector('p:not(.bplus-kicker)');
+      if (title) title.textContent = 'Le cours';
+      if (label) label.remove();
+      if (text) text.remove();
+    }
+
+    keepOneSectionOpen(detail);
+
+    var progressLabel = detail.querySelector('.bplus-rail section:first-child>small');
+    if (progressLabel) progressLabel.textContent = 'PROGRESSION';
+    var markButton = detail.querySelector('.bplus-rail section:first-child .button');
+    if (markButton) markButton.textContent = '✓ Marquer comme consulté';
+    var exerciseTitle = detail.querySelector('.bplus-rail section:nth-child(2) h3');
+    if (exerciseTitle) exerciseTitle.textContent = 'Exercices de ' + (info.label || 'la matière');
+    var exerciseText = detail.querySelector('.bplus-rail section:nth-child(2) p');
+    if (exerciseText) exerciseText.textContent = 'Entraîne-toi sur l’ensemble de la matière et retrouve ce chapitre dans les filtres.';
+  }
+
+  window.enhancePremiumSheet = enhancePremiumSheet;
+  var originalBplus = window.openChapterBplus;
+  if (typeof originalBplus === 'function') {
+    window.openChapterBplus = function (id) {
+      var result = originalBplus.apply(this, arguments);
+      enhancePremiumSheet(id);
+      return result;
+    };
+  }
 })();
