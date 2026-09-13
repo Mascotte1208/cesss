@@ -246,7 +246,7 @@ function openChapterBplus(id) {
     var exercices = Array.isArray(chapter.exercices) ? chapter.exercices : [];
     var progress = getChapterProgress(chapter.id);
     var rawSections = parseCoursSections(chapter.cours);
-    var coursSections = groupCoursSections(rawSections);
+    var coursSections = groupCoursSections(rawSections, subject);
     var words = String(chapter.cours || '').replace(/<[^>]*>/g, ' ').trim().split(/\s+/).length;
     var minutes = Math.max(1, Math.ceil(words / 180));
     var safeTitle = escapeHtml(chapter.titre || 'Chapitre');
@@ -286,6 +286,7 @@ function openChapterBplus(id) {
     if (!host) return;
     var previous = host.querySelector('.detail');
     if (previous) previous.remove();
+    host.classList.add('chapter-host-focus');
     host.prepend(content);
     if (typeof window.enhancePremiumSheet === 'function') {
         window.enhancePremiumSheet(id);
