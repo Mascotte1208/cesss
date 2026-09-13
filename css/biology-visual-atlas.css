@@ -1,0 +1,10 @@
+.bio-visual-atlas{margin:18px 0 24px;padding:20px;border:1px solid color-mix(in srgb,var(--chapter-accent) 25%,#d9d4cc);border-radius:14px;background:linear-gradient(145deg,#fff,var(--chapter-soft));box-shadow:0 8px 24px rgba(16,32,58,.06)}
+.bio-visual-atlas figcaption{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;color:#10203a;font-family:Georgia,serif}
+.bio-visual-atlas figcaption span{padding:4px 8px;border-radius:999px;background:var(--chapter-accent);color:#fff;font:700 11px Arial,sans-serif;text-transform:uppercase}
+.bio-visual-atlas figcaption strong{font-size:20px}
+.bio-visual-atlas svg{display:block;width:100%;max-height:350px;border-radius:10px;background:rgba(255,255,255,.72)}
+.bio-visual-atlas svg path,.bio-visual-atlas svg line,.bio-visual-atlas svg ellipse,.bio-visual-atlas svg circle,.bio-visual-atlas svg rect{fill:color-mix(in srgb,var(--chapter-soft) 75%,#fff);stroke:var(--chapter-accent);stroke-width:3}
+.bio-visual-atlas svg path{fill:none}.bio-visual-atlas svg .dash{stroke-dasharray:7 7}
+.bio-visual-atlas svg text{fill:#26354b;font:600 11px Arial,sans-serif;text-anchor:middle}
+.bio-visual-atlas>p{margin:10px 0 0;padding:10px 13px;border-left:3px solid var(--chapter-accent);background:rgba(255,255,255,.58);font-size:14px}
+@media(max-width:700px){.bio-visual-atlas{padding:14px}.bio-visual-atlas figcaption{align-items:flex-start;flex-direction:column}.bio-visual-atlas svg{min-height:240px}}
