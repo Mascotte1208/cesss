@@ -41,7 +41,14 @@
       histoire: '▥',
       chimie: '⚗',
       geo: '◎',
-      physique: 'ϟ'
+      physique: 'ϟ',
+      anglais: 'A',
+      neerlandais: 'N',
+      latin: 'L',
+      numerique: '01',
+      sciences_sociales: '◉',
+      sciences_economiques: '€',
+      epc: '⚖'
     })[subject] || fallback || '◇';
   }
 
