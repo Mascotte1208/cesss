@@ -56,6 +56,11 @@ function renderLibrarySubject(subject) {
 }
 
 function returnToSubject(subject) {
+    Array.prototype.forEach.call(document.querySelectorAll('.chapter-host-focus'), function (host) {
+        host.classList.remove('chapter-host-focus');
+        var detail = host.querySelector('.bplus-detail');
+        if (detail) detail.remove();
+    });
     if (CESS_SUBJECTS[subject] && CESS_SUBJECTS[subject].library) {
         showView('library');
         renderLibrarySubject(subject);
