@@ -69,3 +69,21 @@
   .bplus-rail{grid-template-columns:1fr}
 }
 @media print{.simple-essential{break-inside:avoid}.bplus-rail,.bplus-print{display:none!important}.bplus-accordion-body{display:block!important}}
+
+/* Identité éditoriale réelle par matière */
+.bplus-accordion-button{position:relative;overflow:hidden}
+.bplus-accordion-button::before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--chapter-accent)}
+.bplus-section-number{width:38px;height:38px;flex:0 0 38px;border-radius:11px;font-size:17px;box-shadow:0 5px 12px color-mix(in srgb,var(--chapter-accent) 24%,transparent)}
+.bplus-accordion-button>span:nth-child(2){display:flex;flex-direction:column;gap:2px}
+.bplus-accordion-button>span:nth-child(2)>small{color:var(--chapter-accent);font-size:10px;line-height:1.2;letter-spacing:.16em;font-weight:900}
+.bplus-subsection{margin:0 0 18px;padding:18px 20px;border:1px solid var(--chapter-line);border-left:4px solid var(--chapter-accent);border-radius:10px;background:linear-gradient(135deg,#fff,var(--chapter-soft))}
+.bplus-subsection:last-child{margin-bottom:0}
+.bplus-subsection>h4{display:flex;align-items:center;gap:8px;margin:0 0 12px!important;color:var(--chapter-dark)!important;font-size:18px}
+.bplus-histoire .simple-essential{background:linear-gradient(135deg,#fbf4e7,#fffdf9)}
+.bplus-histoire .bplus-subsection{background-image:linear-gradient(90deg,rgba(184,123,31,.08),transparent 45%)}
+.bplus-francais .bplus-subsection{background-image:linear-gradient(90deg,rgba(189,71,76,.07),transparent 45%)}
+.bplus-bio .bplus-subsection{background-image:linear-gradient(90deg,rgba(45,139,96,.07),transparent 45%)}
+.bplus-chimie .bplus-subsection{background-image:linear-gradient(90deg,rgba(116,69,164,.07),transparent 45%)}
+.bplus-maths .bplus-subsection{background-image:linear-gradient(90deg,rgba(36,107,197,.07),transparent 45%)}
+.bplus-geo .bplus-subsection{background-image:linear-gradient(90deg,rgba(22,122,118,.07),transparent 45%)}
+.bplus-physique .bplus-subsection{background-image:linear-gradient(90deg,rgba(50,110,147,.07),transparent 45%)}
