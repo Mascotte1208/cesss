@@ -31,7 +31,7 @@
   };
 
   function esc(value) {
-    return String(valueString(value == null ? '' : value).replace(/[&<>"]/g, function (char) {
+    return String(value == null ? '' : value).replace(/[&<>"]/g, function (char) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char];
     });
   }
