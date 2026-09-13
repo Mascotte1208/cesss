@@ -1,0 +1,71 @@
+/* Carnet CESS — structure légère et commune des chapitres */
+.bplus-detail{
+  --chapter-accent:#145c70;
+  --chapter-dark:#0b4455;
+  --chapter-soft:#e8f2f4;
+  --chapter-line:#cfe0e4;
+  max-width:1380px;
+}
+.bplus-maths{--chapter-accent:#246bc5;--chapter-dark:#174f98;--chapter-soft:#edf5ff;--chapter-line:#cbdff3}
+.bplus-geo{--chapter-accent:#167a76;--chapter-dark:#0f5d59;--chapter-soft:#e8f5f3;--chapter-line:#c9e2de}
+.bplus-bio{--chapter-accent:#2d8b60;--chapter-dark:#206947;--chapter-soft:#edf7f1;--chapter-line:#cfe6d9}
+.bplus-francais{--chapter-accent:#bd474c;--chapter-dark:#923438;--chapter-soft:#fdf0f1;--chapter-line:#efd5d8}
+.bplus-histoire{--chapter-accent:#b87b1f;--chapter-dark:#895a15;--chapter-soft:#fbf4e7;--chapter-line:#ead9b7}
+.bplus-chimie{--chapter-accent:#7445a4;--chapter-dark:#57317f;--chapter-soft:#f3edfa;--chapter-line:#dfd2ee}
+.bplus-physique{--chapter-accent:#326e93;--chapter-dark:#24516d;--chapter-soft:#eaf3f8;--chapter-line:#cfe0e9}
+
+.bplus-header{padding:12px 0 22px}
+.bplus-heading{align-items:center}
+.bplus-icon{display:grid!important;width:50px;height:50px;flex:0 0 50px;border-radius:50%;background:var(--chapter-soft);color:var(--chapter-dark);font-size:25px}
+.bplus-kicker{color:var(--chapter-dark)!important}
+.bplus-heading h1{font-size:clamp(38px,4.7vw,62px)}
+.bplus-lead{max-width:900px}
+.bplus-badge.accent{background:var(--chapter-accent);border-color:var(--chapter-accent)}
+.bplus-badge.warm{background:var(--chapter-soft);border-color:var(--chapter-line);color:var(--chapter-dark)}
+
+.simple-essential{margin:24px 0 28px;padding:22px 24px;border:1px solid var(--chapter-line);border-radius:15px;background:linear-gradient(135deg,var(--chapter-soft),#fffdf9 72%)}
+.simple-essential h2{margin:0 0 16px;font-size:28px}
+.simple-essential-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.simple-essential article{display:flex;align-items:flex-start;gap:12px;min-width:0;padding:4px 20px;border-right:1px solid var(--chapter-line)}
+.simple-essential article:first-child{padding-left:0}.simple-essential article:last-child{padding-right:0;border-right:0}
+.simple-essential article>span{display:grid;width:30px;height:30px;place-items:center;flex:0 0 30px;border-radius:50%;background:var(--chapter-accent);color:#fff;font-size:12px;font-weight:900}
+.simple-essential p{margin:3px 0 0;color:#314158;font-size:14px;line-height:1.55}
+
+.bplus-layout{grid-template-columns:minmax(0,1fr) 260px;gap:28px}
+.bplus-intro{padding:0 0 14px;border:0;background:transparent}
+.bplus-intro h2{font-size:30px}
+.cours-sections{gap:8px;margin-top:0}
+.cours-section.bplus-accordion{border:1px solid #d8dde2;border-radius:12px;box-shadow:0 4px 14px rgba(26,47,66,.04)}
+.bplus-accordion-button{min-height:60px;padding:15px 18px}
+.bplus-accordion.open{border-color:var(--chapter-line)}
+.bplus-accordion.open .bplus-accordion-button{background:var(--chapter-soft);border-bottom:1px solid var(--chapter-line)}
+.bplus-section-number{background:var(--chapter-accent);color:#fff}
+.bplus-accordion-button>span:nth-child(2){font-size:18px}
+.bplus-accordion-body{padding:24px 28px 30px!important;color:#2b3850;font-size:16px;line-height:1.76}
+.bplus-accordion-body p{margin:12px 0}
+.bplus-accordion-body li{margin:8px 0}
+.bplus-accordion-body h3,.bplus-accordion-body h4{margin:24px 0 10px;color:#17233a}
+.bplus-accordion-body .retenir,.bplus-accordion-body .important,.bplus-accordion-body blockquote{border-color:var(--chapter-line);border-left-color:var(--chapter-accent);background:var(--chapter-soft);color:var(--chapter-dark)}
+.bplus-rail{top:84px;gap:14px}
+.bplus-rail section{padding:20px;background:#fffdf9}
+.bplus-rail section:first-child{border-top-color:var(--chapter-accent)}
+.bplus-rail section:nth-child(2){border-top-color:var(--chapter-accent)}
+.bplus-score{color:var(--chapter-dark)}
+.bplus-rail .button{width:100%}
+.bplus-rail .button.primary{background:var(--chapter-accent);border-color:var(--chapter-accent)}
+.bplus-print{padding-top:18px}
+.premium-sheet-tabs,.bplus-prerequisites,.bplus-chips,.bplus-meta{display:none!important}
+
+@media(max-width:1050px){
+  .simple-essential-grid{grid-template-columns:1fr 1fr;gap:14px}
+  .simple-essential article{padding:3px 12px;border-right:0}
+  .bplus-layout{grid-template-columns:1fr}
+  .bplus-rail{position:static;display:grid;grid-template-columns:1fr 1fr}
+}
+@media(max-width:700px){
+  .bplus-header{padding-top:6px}.bplus-heading h1{font-size:36px}.bplus-icon{width:44px;height:44px;flex-basis:44px}
+  .simple-essential{padding:18px}.simple-essential-grid{grid-template-columns:1fr}.simple-essential article{padding:7px 0;border-bottom:1px solid var(--chapter-line)}.simple-essential article:last-child{border-bottom:0}
+  .bplus-accordion-body{padding:19px 17px 24px!important;font-size:15px}
+  .bplus-rail{grid-template-columns:1fr}
+}
+@media print{.simple-essential{break-inside:avoid}.bplus-rail,.bplus-print{display:none!important}.bplus-accordion-body{display:block!important}}
