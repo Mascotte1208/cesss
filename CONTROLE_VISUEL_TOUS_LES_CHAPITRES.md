@@ -1,6 +1,6 @@
 # Contrôle visuel exhaustif — Carnet CESS
 
-**14 matières · 365 chapitres · 178 dossiers complémentaires d’histoire**
+**14 matières · 380 chapitres · 178 dossiers complémentaires d’histoire**
 
 Le modèle commun est appliqué par le moteur central à chaque chapitre ci-dessous. Les données pédagogiques ne sont ni supprimées ni raccourcies.
 
@@ -276,7 +276,7 @@ Le modèle commun est appliqué par le moteur central à chaque chapitre ci-dess
 - [x] 6e — 5. Actualiteit — **fait**
 - [x] 6e — 6. CESS-gerichte taken — **fait**
 
-## Physique — 24 chapitres
+## Physique — 39 chapitres
 
 - [x] 3e — 1. Mesures et démarche expérimentale — **fait**
 - [x] 3e — 2. Cinématique — **fait**
@@ -284,24 +284,39 @@ Le modèle commun est appliqué par le moteur central à chaque chapitre ci-dess
 - [x] 3e — 4. Pression et fluides — **fait**
 - [x] 3e — 5. Énergie — **fait**
 - [x] 3e — 6. Chaleur et température — **fait**
+- [x] 3e — 7. La lumière : propagation et réflexion — **fait**
+- [x] 3e — 8. Les lentilles et la dispersion — **fait**
+- [x] 3e — 9. Les circuits électriques — **fait**
 - [x] 4e — 1. Électricité continue — **fait**
 - [x] 4e — 2. Circuits électriques — **fait**
 - [x] 4e — 3. Magnétisme — **fait**
 - [x] 4e — 4. Ondes — **fait**
 - [x] 4e — 5. Son — **fait**
 - [x] 4e — 6. Optique géométrique — **fait**
+- [x] 4e — 7. Travail, énergie et puissance — **fait**
+- [x] 4e — 8. Température, chaleur et changements d'état — **fait**
+- [x] 4e — 9. Puissance électrique, énergie et effets du courant — **fait**
 - [x] 5e — 1. Cinématique vectorielle — **fait**
 - [x] 5e — 2. Dynamique de Newton — **fait**
 - [x] 5e — 3. Quantité de mouvement — **fait**
 - [x] 5e — 4. Gravitation — **fait**
 - [x] 5e — 5. Énergie mécanique — **fait**
 - [x] 5e — 6. Électrostatique — **fait**
+- [x] 5e — 7. Pression et hydrostatique — **fait**
+- [x] 5e — 8. Nature ondulatoire de la lumière — **fait**
+- [x] 5e — 9. Courant alternatif et signaux périodiques — **fait**
+- [x] 5e — 10. Rotation, moment de force et énergie de rotation — **fait**
 - [x] 6e — 1. Électromagnétisme — **fait**
 - [x] 6e — 2. Oscillations — **fait**
 - [x] 6e — 3. Ondes avancées — **fait**
 - [x] 6e — 4. Optique ondulatoire — **fait**
 - [x] 6e — 5. Physique moderne — **fait**
 - [x] 6e — 6. Atelier CESS : résolution intégrée — **fait**
+- [x] 6e — 7. La structure du noyau et la radioactivité — **fait**
+- [x] 6e — 8. Fission, fusion et énergie nucléaire — **fait**
+- [x] 6e — 9. La théorie de la relativité d'Einstein — **fait**
+- [x] 6e — 10. Introduction à la physique quantique — **fait**
+- [x] 6e — 11. L'Univers : des étoiles au Big Bang — **fait**
 
 ## Sciences sociales — 24 chapitres
 
