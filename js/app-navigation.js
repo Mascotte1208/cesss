@@ -30,7 +30,7 @@ function showView(id) {
     if (typeof quizTimer !== 'undefined' && quizTimer) { clearInterval(quizTimer); quizTimer = null; }
 
     var navButtons =
-        document.querySelectorAll('.nav-item, .mobile-nav button');
+        document.querySelectorAll('.nav-item, .mobile-nav button, .topbar-nav button');
 
     for (var n = 0; n < navButtons.length; n++) {
         navButtons[n].classList.remove('active');
@@ -115,5 +115,4 @@ function applyTheme() {
         document.body.classList.remove('dark');
     }
 }
-
 
