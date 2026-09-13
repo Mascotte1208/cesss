@@ -13,6 +13,13 @@
 .bplus-histoire{--chapter-accent:#b87b1f;--chapter-dark:#895a15;--chapter-soft:#fbf4e7;--chapter-line:#ead9b7}
 .bplus-chimie{--chapter-accent:#7445a4;--chapter-dark:#57317f;--chapter-soft:#f3edfa;--chapter-line:#dfd2ee}
 .bplus-physique{--chapter-accent:#326e93;--chapter-dark:#24516d;--chapter-soft:#eaf3f8;--chapter-line:#cfe0e9}
+.bplus-anglais{--chapter-accent:#2d6fa8;--chapter-dark:#214f78;--chapter-soft:#edf5fb;--chapter-line:#cfe0ee}
+.bplus-neerlandais{--chapter-accent:#d06b2c;--chapter-dark:#93491e;--chapter-soft:#fff2e9;--chapter-line:#f0d6c5}
+.bplus-latin{--chapter-accent:#8b6546;--chapter-dark:#65472f;--chapter-soft:#f7f0e8;--chapter-line:#e3d3c2}
+.bplus-numerique{--chapter-accent:#297b86;--chapter-dark:#1d5961;--chapter-soft:#eaf6f7;--chapter-line:#cce5e8}
+.bplus-sciences_sociales{--chapter-accent:#a14d75;--chapter-dark:#743653;--chapter-soft:#faeef4;--chapter-line:#ead0dc}
+.bplus-sciences_economiques{--chapter-accent:#397a4d;--chapter-dark:#285838;--chapter-soft:#edf7f0;--chapter-line:#cfe4d5}
+.bplus-epc{--chapter-accent:#6453a7;--chapter-dark:#493c7d;--chapter-soft:#f1effa;--chapter-line:#dcd6ef}
 
 .bplus-header{padding:12px 0 22px}
 .bplus-heading{align-items:center}
@@ -87,3 +94,10 @@
 .bplus-maths .bplus-subsection{background-image:linear-gradient(90deg,rgba(36,107,197,.07),transparent 45%)}
 .bplus-geo .bplus-subsection{background-image:linear-gradient(90deg,rgba(22,122,118,.07),transparent 45%)}
 .bplus-physique .bplus-subsection{background-image:linear-gradient(90deg,rgba(50,110,147,.07),transparent 45%)}
+.bplus-anglais .bplus-subsection{background-image:linear-gradient(90deg,rgba(45,111,168,.07),transparent 45%)}
+.bplus-neerlandais .bplus-subsection{background-image:linear-gradient(90deg,rgba(208,107,44,.07),transparent 45%)}
+.bplus-latin .bplus-subsection{background-image:linear-gradient(90deg,rgba(139,101,70,.07),transparent 45%)}
+.bplus-numerique .bplus-subsection{background-image:linear-gradient(90deg,rgba(41,123,134,.07),transparent 45%)}
+.bplus-sciences_sociales .bplus-subsection{background-image:linear-gradient(90deg,rgba(161,77,117,.07),transparent 45%)}
+.bplus-sciences_economiques .bplus-subsection{background-image:linear-gradient(90deg,rgba(57,122,77,.07),transparent 45%)}
+.bplus-epc .bplus-subsection{background-image:linear-gradient(90deg,rgba(100,83,167,.07),transparent 45%)}
