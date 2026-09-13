@@ -69,3 +69,7 @@
   .bplus-rail{grid-template-columns:1fr}
 }
 @media print{.simple-essential{break-inside:avoid}.bplus-rail,.bplus-print{display:none!important}.bplus-accordion-body{display:block!important}}
+
+/* Une fiche ouverte devient une vraie page : le catalogue reste masqué jusqu’au retour. */
+.chapter-host-focus > :not(.bplus-detail){display:none!important}
+.chapter-host-focus > .bplus-detail{display:block!important}
