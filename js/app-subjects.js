@@ -287,6 +287,9 @@ function openChapterBplus(id) {
     var previous = host.querySelector('.detail');
     if (previous) previous.remove();
     host.prepend(content);
+    if (typeof window.enhancePremiumSheet === 'function') {
+        window.enhancePremiumSheet(id);
+    }
     try { content.scrollIntoView({behavior:'smooth', block:'start'}); } catch (error) { content.scrollIntoView(); }
 }
 
