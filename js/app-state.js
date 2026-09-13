@@ -95,6 +95,7 @@ function applyMigrations(data) {
                 cessState = {
                     progress: parsed.progress || {},
                     profile: parsed.profile || null,
+                    weeklyGoal: parsed.weeklyGoal || 5,
                     legacyMistakes: parsed.legacyMistakes || [],
                     readChapters: parsed.readChapters || {},
                     mastery: parsed.mastery || {},

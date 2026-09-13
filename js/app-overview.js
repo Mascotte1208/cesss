@@ -6,45 +6,67 @@ function recentResults(limit) {
     var rows=(cessState.results||[]).slice(-limit).reverse();
     return rows.length ? '<div class="simple-list">'+rows.map(function(r){return '<div class="simple-list-item"><div class="simple-list-main"><strong>'+escapeHtml(resultLabel(r))+'</strong><small>'+new Date(r.date).toLocaleDateString('fr-BE')+'</small></div><span>'+Number(r.score)+' / '+Number(r.total)+'</span></div>';}).join('')+'</div>' : '<p class="empty-state">Tes prochaines sessions apparaîtront ici.</p>';
 }
-function homeSubjectClass(key) {
-    return ({francais:'francais',maths:'maths',bio:'bio',histoire:'histoire',chimie:'chimie'})[key] || 'default';
+function homeResultPassed(r) {
+    return Number(r.total)>0 && Number(r.score)/Number(r.total)>=.8;
 }
-function homeSubjectCard(key, chapters) {
-    var info=CESS_SUBJECTS[key], list=chapters.filter(function(c){return c.matiere===key;}), total=0;
-    list.forEach(function(c){total+=getChapterProgress(c.id);});
-    var percent=list.length?Math.round(total/list.length):0;
-    var current=list.find(function(c){return getChapterProgress(c.id)>0&&getChapterProgress(c.id)<100;}) || list[0];
-    return '<button class="home-subject-card subject-'+homeSubjectClass(key)+'" type="button" onclick="showView(\''+key+'\')">'+
-        '<div class="home-subject-title"><span>'+(info.icon||'📘')+'</span><h3>'+escapeHtml(info.label)+'</h3></div>'+
-        '<div class="progress-line"><span style="width:'+percent+'%"></span></div>'+
-        '<div class="home-subject-progress"><span>Progression</span><strong>'+percent+' %</strong></div>'+
-        '<small>'+(current?'À poursuivre · '+escapeHtml(current.titre):list.length+' chapitres disponibles')+'</small>'+
-        '<b><span>Continuer</span><span>→</span></b></button>';
+function homeWeekCount(now) {
+    var start=new Date(now); start.setHours(0,0,0,0);
+    start.setDate(start.getDate()-(start.getDay()+6)%7);
+    return (cessState.results||[]).filter(function(r){
+        var date=new Date(r.date);
+        return Number(r.total)>0 && date>=start && date<=now;
+    }).length;
+}
+function setHomeGoal(value) {
+    var goal=Number(value);
+    if([3,5,7,10].indexOf(goal)<0)return;
+    cessState.weeklyGoal=goal;cessSave();renderHome();
+}
+function homeSearch() {
+    showView('library');
+    var input=document.getElementById('librarySearch');
+    if(input)input.focus();
+}
+function homeProgress(chapters) {
+    var read=chapters.filter(function(c){return getChapterProgress(c.id)>0;}).length;
+    return read+' / '+chapters.length+' cours consultés';
 }
 function renderHome() {
-    var ch=personalChapters(), p=learningProfile(), passed=ch.filter(function(c){return getChapterProgress(c.id)>=100;}).length;
-    var ongoing=ch.filter(function(c){return getChapterProgress(c.id)>0 && getChapterProgress(c.id)<100;});
-    var current=ongoing[0] || ch.find(function(c){return getChapterProgress(c.id)<100;}) || ch[0];
-    var weeklyTarget=Math.min(12,Math.max(3,ch.length));
-    var weeklyDone=Math.min(passed,weeklyTarget);
-    var weeklyPercent=Math.round(weeklyDone/weeklyTarget*100);
-    var stats=document.getElementById('homeStats');
-    if(stats) stats.innerHTML=
-        '<section class="focus-card focus-mission"><div class="focus-card-head"><span>◎</span><div><h2>Mission du jour</h2><p>'+(current?'Avance sur '+escapeHtml(current.titre)+' ('+escapeHtml(current.annee)+').':'Choisis une matière pour démarrer ton parcours.')+'</p></div></div><div class="focus-meta"><span>Lire le cours · faire les exercices · valider le quiz</span><strong>'+passed+' réussi'+(passed>1?'s':'')+'</strong></div><button class="button" type="button" '+(current?'onclick="openStudyChapter(\''+current.id+'\')"':'onclick="showView(\'library\')"')+'>'+(current?'Commencer maintenant':'Choisir une matière')+' →</button></section>'+
-        '<section class="focus-card focus-series"><div class="focus-card-head"><span>▮▮</span><div><h2>Série en cours</h2><p>'+(current?escapeHtml(CESS_SUBJECTS[current.matiere].label)+' · '+escapeHtml(current.annee):'Ton parcours CESS')+'</p></div></div><strong>'+(current?escapeHtml(current.titre):'Aucun chapitre commencé')+'</strong><div class="progress-line"><span style="width:'+(current?getChapterProgress(current.id):0)+'%"></span></div><div class="focus-meta"><span>Progression</span><strong>'+(current?getChapterProgress(current.id):0)+' %</strong></div><button class="button" type="button" '+(current?'onclick="openStudyChapter(\''+current.id+'\')"':'onclick="showView(\'library\')"')+'>Continuer →</button></section>'+
-        '<section class="focus-card focus-week"><div class="focus-card-head"><span>▥</span><div><h2>Objectif hebdo</h2><p>'+p.subjects.length+' matières · '+weeklyTarget+' étapes</p></div></div><div class="progress-line"><span style="width:'+weeklyPercent+'%"></span></div><div class="focus-meta"><span>Bonne progression</span><strong>'+weeklyDone+' / '+weeklyTarget+'</strong></div><button class="button" type="button" onclick="showView(\'progress\')">Voir mon parcours →</button></section>';
-    var streak=document.getElementById('homeStreak');
-    if(streak) streak.innerHTML='🔥 <span>'+studyStreak()+' jour'+(studyStreak()>1?'s':'')+' consécutif'+(studyStreak()>1?'s':'')+' !</span>';
-    var root=document.getElementById('homeSubjects');
-    if(root) {
-        var preferred=['francais','maths','bio','histoire','chimie'];
-        var visible=preferred.filter(function(k){return p.subjects.indexOf(k)>=0&&CESS_SUBJECTS[k];});
-        p.subjects.forEach(function(k){if(visible.length<5&&visible.indexOf(k)<0)visible.push(k);});
-        root.innerHTML=visible.slice(0,5).map(function(k){return homeSubjectCard(k,ch);}).join('');
+    var chapters=personalChapters(), profile=learningProfile();
+    var ongoing=chapters.filter(function(c){var p=getChapterProgress(c.id);return p>0&&p<100;});
+    ongoing.sort(function(a,b){
+        return new Date(((cessState.mastery||{})[b.id]||{}).date||0)-new Date(((cessState.mastery||{})[a.id]||{}).date||0);
+    });
+    var current=ongoing[0];
+    var suggestion=chapters.find(function(c){return getChapterProgress(c.id)===0;});
+    var goal=[3,5,7,10].indexOf(Number(cessState.weeklyGoal))>=0?Number(cessState.weeklyGoal):5;
+    var done=homeWeekCount(new Date());
+    function openButton(c,label) {
+        return c?'<button class="button" type="button" onclick="openStudyChapter(\''+c.id+'\')">'+label+' →</button>':
+            '<button class="button" type="button" onclick="showView(\'library\')">Explorer les cours →</button>';
     }
-    var priorities=document.getElementById('homePriorities');
-    if(priorities){var next=ongoing.length?ongoing:ch.filter(function(c){return getChapterProgress(c.id)<100;});priorities.innerHTML=next.length?next.slice(0,4).map(chapterLink).join(''):'<p class="empty-state">Tout est à jour : beau travail !</p>';}
-    var activity=document.getElementById('homeActivity');if(activity)activity.innerHTML=recentResults(5);
+    document.getElementById('homeStats').innerHTML=
+        '<section class="focus-card focus-mission"><h2>À découvrir</h2><p>'+(suggestion?escapeHtml(suggestion.titre):'Choisis un cours à revoir dans le catalogue.')+'</p>'+openButton(suggestion,'Découvrir')+'</section>'+
+        '<section class="focus-card focus-series"><h2>Reprendre un cours</h2><p>'+(current?escapeHtml(current.titre):'Aucun cours en cours dans ton parcours.')+'</p>'+(current?'<small>'+escapeHtml(chapterStatus(current.id))+'</small>':'')+openButton(current,'Reprendre')+'</section>'+
+        '<section class="focus-card focus-week"><h2>Objectif de la semaine</h2><p>'+done+' session(s) terminée(s) depuis lundi</p><label>Objectif <select aria-label="Objectif hebdomadaire" onchange="setHomeGoal(this.value)">'+[3,5,7,10].map(function(n){return '<option value="'+n+'"'+(n===goal?' selected':'')+'>'+n+' sessions</option>';}).join('')+'</select></label><div class="progress-line"><span style="width:'+Math.min(100,done/goal*100)+'%"></span></div><p>'+done+' / '+goal+' sessions'+(done>=goal?' · Objectif atteint ✓':'')+'</p></section>';
+    var streak=studyStreak();
+    document.getElementById('homeStreak').textContent=streak?streak+' jour(s) de suite':'Ta première session t’attend';
+    var preferred=['francais','maths','bio','histoire','chimie'];
+    var keys=preferred.filter(function(k){return profile.subjects.indexOf(k)>=0;});
+    profile.subjects.forEach(function(k){if(keys.indexOf(k)<0)keys.push(k);});
+    document.getElementById('homeSubjects').innerHTML=keys.slice(0,5).map(function(k){
+        var list=chapters.filter(function(c){return c.matiere===k;});
+        var next=ongoing.find(function(c){return c.matiere===k;})||list.find(function(c){return getChapterProgress(c.id)===0;});
+        var passed=list.filter(function(c){return getChapterProgress(c.id)>=100;}).length;
+        return '<article class="home-subject-card subject-'+(preferred.indexOf(k)>=0?k:'default')+'"><div class="home-subject-title"><h3>'+escapeHtml(CESS_SUBJECTS[k].label)+'</h3></div><p>'+homeProgress(list)+'</p><p>'+passed+' / '+list.length+' chapitres : exercices réussis</p><small>'+(next?escapeHtml(next.titre):'Aucun cours à reprendre pour cette année.')+'</small>'+openButton(next,'Ouvrir le cours')+'</article>';
+    }).join('');
+    var next=ongoing.length?ongoing:chapters.filter(function(c){return getChapterProgress(c.id)===0;});
+    document.getElementById('homePriorities').innerHTML=next.slice(0,4).map(chapterLink).join('')||'<p>Aucun cours à reprendre dans ce parcours.</p>';
+    var results=(cessState.results||[]).slice(-5).reverse();
+    document.getElementById('homeActivity').innerHTML=results.length?'<div class="simple-list">'+results.map(function(r){
+        var valid=Number(r.total)>0, passed=valid&&homeResultPassed(r);
+        return '<div class="simple-list-item '+(passed?'result-success':'result-review')+'"><div class="simple-list-main"><strong>'+escapeHtml(resultLabel(r))+'</strong><small>'+Number(r.score||0)+' / '+Number(r.total||0)+'</small></div><span>'+(passed?'Réussi ✓':valid?'À revoir':'Session terminée')+'</span></div>';
+    }).join('')+'</div>':'<p>Les résultats de tes prochaines sessions apparaîtront ici.</p>';
 }
 function renderProgress() {
     var root=document.getElementById('progressContent');if(!root)return;

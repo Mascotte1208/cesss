@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="css/subject-exercises.css?v=1">
 <link rel="stylesheet" href="css/lot1-coherence.css?v=1">
 <link rel="stylesheet" href="css/premium-sheets.css?v=5">
-<link rel="stylesheet" href="css/dashboard-v2.css?v=1">
+<link rel="stylesheet" href="css/dashboard-v2.css?v=2">
 </head>
 <body>
 <a class="skip-link" href="#mainContent">Aller au contenu principal</a>
@@ -27,11 +27,11 @@
 <nav class="topbar-nav" aria-label="Navigation rapide">
 <button class="active" data-view="home" onclick="showView('home')" type="button"><span>⌂</span>Accueil</button>
 <button data-view="library" onclick="showView('library')" type="button"><span>▣</span>Cours</button>
-<button data-view="games" onclick="showView('games')" type="button"><span>✎</span>Exercices</button>
-<button data-view="flashcards" onclick="showView('flashcards')" type="button"><span>▤</span>Mes révisions</button>
-<button data-view="progress" onclick="showView('progress')" type="button"><span>▥</span>Suivi</button>
+<button data-view="games" onclick="showView('games')" type="button"><span aria-hidden="true">✎</span>Jeux & quiz</button>
+<button data-view="flashcards" onclick="showView('flashcards')" type="button"><span aria-hidden="true">▤</span>Flashcards</button>
+<button data-view="progress" onclick="showView('progress')" type="button"><span aria-hidden="true">▥</span>Progression</button>
 </nav>
-<button class="topbar-search" onclick="showView('library')" type="button" aria-label="Rechercher un cours"><span>⌕</span><span>Rechercher un cours, une notion…</span></button>
+<button class="topbar-search" onclick="homeSearch()" type="button" aria-label="Rechercher un cours"><span>⌕</span><span>Rechercher un cours, une notion…</span></button>
 </header>
 <aside class="sidebar">
 <button class="brand" onclick="showView('home')" type="button"><span class="brand-icon">🎓</span><span class="brand-text"><strong>Carnet CESS</strong><small>Réviser · comprendre · réussir</small></span></button>
@@ -51,7 +51,7 @@
 <div class="dashboard-heading"><div><span class="dashboard-kicker">Bonjour !</span><h1>Mon espace de révision</h1><p>Organise ton travail, progresse pas à pas vers le CESS.</p></div><div id="homeStreak" class="streak-pill"></div></div>
 <div id="homeStats" class="dashboard-focus"></div>
 <section class="home-section dashboard-subjects"><div class="section-heading"><h2>Mes matières</h2><button class="dashboard-link" onclick="showView('library')" type="button">Voir toutes les matières →</button></div><div id="homeSubjects" class="subject-cards"></div></section>
-<div class="dashboard-lower"><section class="panel"><div class="panel-header"><h2>☷ &nbsp;À faire ensuite</h2><button class="dashboard-link" onclick="showView('progress')" type="button">Voir tout →</button></div><div id="homePriorities"></div></section><section class="panel quick-challenges"><div class="panel-header"><h2>ϟ &nbsp;Défis rapides</h2></div><div class="challenge-grid"><button onclick="showView('flashcards')" type="button"><span>▤</span><strong>Flashcards</strong><small>Teste ta mémoire en 5 minutes.</small><b>Commencer →</b></button><button onclick="showView('games')" type="button"><span>?</span><strong>Quiz</strong><small>Réponds à une série mixte.</small><b>Commencer →</b></button></div></section><section class="panel achievements-panel"><div class="panel-header"><h2>♜ &nbsp;Mes réussites</h2><button class="dashboard-link" onclick="showView('progress')" type="button">Voir tout →</button></div><div id="homeActivity"></div></section></div>
+<div class="dashboard-lower"><section class="panel"><div class="panel-header"><h2>☷ &nbsp;À faire ensuite</h2><button class="dashboard-link" onclick="showView('progress')" type="button">Voir tout →</button></div><div id="homePriorities"></div></section><section class="panel quick-challenges"><div class="panel-header"><h2>ϟ &nbsp;Défis rapides</h2></div><div class="challenge-grid"><button onclick="showView('flashcards')" type="button"><span>▤</span><strong>Flashcards</strong><small>Teste ta mémoire en 5 minutes.</small><b>Commencer →</b></button><button onclick="showView('games')" type="button"><span>?</span><strong>Quiz</strong><small>Réponds à une série mixte.</small><b>Commencer →</b></button></div></section><section class="panel achievements-panel"><div class="panel-header"><h2>Derniers résultats</h2><button class="dashboard-link" onclick="showView('progress')" type="button">Voir tout →</button></div><div id="homeActivity"></div></section></div>
 </section>
 <section id="maths" class="view"><div class="page-header"><div class="page-header-main"><span class="eyebrow">Matière</span><h1>📐 Mathématiques</h1><p>Choisis une année, parcours les domaines et ouvre un chapitre pour travailler le cours et les exercices.</p></div><span id="mathsTotal" class="page-counter"></span></div><div id="mathYears" class="year-selector"></div><div id="mathContent"></div></section>
 <section id="geo" class="view"><div class="page-header"><div class="page-header-main"><span class="eyebrow">Matière</span><h1>🌍 Géographie</h1><p>Retrouve ton programme par année, travaille les notions et entraîne-toi sur les questions disponibles.</p></div><span id="geoTotal" class="page-counter"></span></div><div id="geoYears" class="year-selector"></div><div id="geoContent"></div></section>
@@ -66,13 +66,13 @@
 <nav class="mobile-nav" aria-label="Navigation mobile"><button data-view="home" onclick="showView('home')" type="button"><span>⌂</span><small>Accueil</small></button><button data-view="library" onclick="showView('library')" type="button"><span>🗂️</span><small>Matières</small></button><button data-view="memo" onclick="showView('memo')" type="button"><span>📚</span><small>Mémo</small></button><button data-view="flashcards" onclick="showView('flashcards')" type="button"><span>🃏</span><small>Cartes</small></button><button data-view="games" onclick="showView('games')" type="button"><span>🎮</span><small>Quiz</small></button><button data-view="exam" onclick="showView('exam')" type="button"><span>📝</span><small>Examens</small></button><button data-view="progress" onclick="showView('progress')" type="button"><span>📊</span><small>Suivi</small></button></nav>
 </div>
 <script src="js/maths-data.js"></script><script src="js/geo-data.js"></script><script src="js/biology-data.js"></script><script src="js/biology-deep-3e.js"></script><script src="js/geo-exercises-extra.js"></script><script src="js/additional-chapters.js"></script><script src="js/geo-deep-content.js"></script><script src="js/all-exercises-extra.js"></script><script src="js/mastery-expansion.js?v=6322da8"></script><script src="js/biology-complete.js?v=20260912"></script><script src="js/geo-vocab.js"></script><script src="js/flashcards.js?v=history-2"></script><script src="js/capitals-data.js"></script>
-<script src="js/library-subjects.js?v=learning-2"></script><script src="js/essential-subjects.js?v=learning-2"></script><script src="js/learning-content.js?v=quality-1"></script><script src="js/app-state.js?v=learning-2"></script><script src="js/app-utils.js?v=exercise-1"></script><script src="js/app-navigation.js?v=dashboard-2"></script><script src="js/app-render.js?v=history-games-1"></script><script src="js/app-memo-organizer.js?v=learning-2"></script><script src="js/app-subjects.js?v=exercise-1"></script><script src="js/app-library.js?v=exercise-1"></script><script src="js/chemistry-mastery.js?v=2"></script><script src="js/chemistry-rich-content.js?v=1"></script><script src="js/curriculum-quality.js?v=1"></script><script src="js/physics-mastery.js?v=1"></script><script src="js/app-learning.js?v=learning-2"></script><script src="js/subject-exercises.js?v=1"></script><script src="js/app-overview.js?v=dashboard-2"></script><script src="js/app-quiz.js?v=feedback-1"></script><script src="js/app-mini-games.js?v=history-games-1"></script><script src="js/body-game.js?v=1"></script><script src="js/app-exam.js?v=feedback-1"></script><script src="js/app-badges.js?v=learning-2"></script><script src="js/app-feedback.js?v=feedback-1"></script><script src="js/app.js"></script>
+<script src="js/library-subjects.js?v=learning-2"></script><script src="js/essential-subjects.js?v=learning-2"></script><script src="js/learning-content.js?v=quality-1"></script><script src="js/app-state.js?v=dashboard-3"></script><script src="js/app-utils.js?v=exercise-1"></script><script src="js/app-navigation.js?v=dashboard-2"></script><script src="js/app-render.js?v=history-games-1"></script><script src="js/app-memo-organizer.js?v=learning-2"></script><script src="js/app-subjects.js?v=exercise-1"></script><script src="js/app-library.js?v=exercise-1"></script><script src="js/chemistry-mastery.js?v=2"></script><script src="js/chemistry-rich-content.js?v=1"></script><script src="js/curriculum-quality.js?v=1"></script><script src="js/physics-mastery.js?v=1"></script><script src="js/app-learning.js?v=learning-2"></script><script src="js/subject-exercises.js?v=1"></script><script src="js/app-overview.js?v=dashboard-3"></script><script src="js/app-quiz.js?v=feedback-1"></script><script src="js/app-mini-games.js?v=history-games-1"></script><script src="js/body-game.js?v=1"></script><script src="js/app-exam.js?v=feedback-1"></script><script src="js/app-badges.js?v=learning-2"></script><script src="js/app-feedback.js?v=feedback-1"></script><script src="js/app.js"></script>
 <script src="js/francais-mastery.js?v=1"></script>
 <script src="js/history-revision-data.js?v=1"></script>
 <script src="js/history-years-456.js?v=3"></script>
 <script src="js/history-crossed-curriculum.js?v=3"></script>
 <script src="js/history-revision-ui.js?v=11"></script>
-<script src="js/lot1-coherence.js?v=1"></script>
+<script src="js/lot1-coherence.js?v=2"></script>
 <script src="js/premium-sheets.js?v=2"></script>
 <script src="js/pwa.js?v=1"></script>
 </body>
