@@ -125,29 +125,35 @@ function findChapter(id) {
    ========================================================= */
 
 function parseCoursSections(cours) {
-    if (!cours) {
-        return [];
+    if (!cours) return [];
+    var html = String(cours), sections = [], stack = [];
+    var tags = /<!--[\s\S]*?-->|<\/?([a-z][a-z0-9:-]*)\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi;
+    var voidTags = /^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/;
+    var currentTitle = '', bodyStart = 0, headingStart = -1, match;
+    function append(end) {
+        var body = html.slice(bodyStart, end).trim();
+        if (currentTitle || body) sections.push({title: currentTitle || 'Introduction', body: body});
     }
-
-    var parts = String(cours).split(
-        /<h4>([\s\S]*?)<\/h4>/
-    );
-
-    // parts[0] = texte avant le premier <h4> (ignoré s'il est vide)
-    var sections = [];
-
-    for (var i = 1; i < parts.length; i += 2) {
-        var title = (parts[i] || '').trim();
-        var body = (parts[i + 1] || '').trim();
-
-        if (title) {
-            sections.push({
-                title: title,
-                body: body
-            });
+    while ((match = tags.exec(html))) {
+        if (!match[1]) continue;
+        var name = match[1].toLowerCase(), closing = /^<\//.test(match[0]);
+        if (!closing) {
+            if (name === 'h4' && stack.length === 0) {
+                append(match.index);
+                headingStart = tags.lastIndex;
+            }
+            if (!voidTags.test(name) && !/\/\s*>$/.test(match[0])) stack.push(name);
+        } else {
+            if (name === 'h4' && stack.length === 1 && stack[0] === 'h4' && headingStart >= 0) {
+                currentTitle = html.slice(headingStart, match.index).trim();
+                bodyStart = tags.lastIndex;
+                headingStart = -1;
+            }
+            var index = stack.lastIndexOf(name);
+            if (index >= 0) stack.length = index;
         }
     }
-
+    append(html.length);
     return sections;
 }
 
@@ -175,7 +181,7 @@ function groupCoursSections(sections, subject) {
                 return expected.match.test(String(section.title || '').replace(/<[^>]*>/g, ' ').trim());
             });
         });
-        if (canonicalHistory) {
+        if (canonicalHistory && sections.length === historyOrder.length) {
             return historyOrder.map(function (expected) {
                 var section = sections.find(function (candidate) {
                     return expected.match.test(String(candidate.title || '').replace(/<[^>]*>/g, ' ').trim());
