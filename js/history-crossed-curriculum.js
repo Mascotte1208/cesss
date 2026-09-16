@@ -5,6 +5,7 @@ var annual=[{"id":"histoire_pdf_4e_1_1","number":"4e-1.1","year":"4e","theme":"4
 HISTORY_REVISION_DATA=HISTORY_REVISION_DATA.filter(function(c){return c.year==='socle'||!c.year;});
 HISTORY_REVISION_DATA.forEach(function(c){c.year='socle';});
 Array.prototype.push.apply(HISTORY_REVISION_DATA,annual);
+if(typeof cleanHistoryDossiers==='function')cleanHistoryDossiers(HISTORY_REVISION_DATA);
 window.HISTORY_ADVANCED_DATA=annual;
 window.HISTORY_CURRICULUM_COUNTS={socle:100,'4e':31,'5e':22,'6e':25,annual:78,total:178};
 function flashClean(s){return String(s||'').replace(/^#+\s*/,'').replace(/\*\*/g,'').replace(/^[-*]\s*/,'').replace(/\s+/g,' ').trim();}
