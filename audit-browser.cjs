@@ -18,7 +18,7 @@ const server=http.createServer((req,res)=>{
  const ids=await page.evaluate(()=>Object.keys(CESS_SUBJECTS).flatMap(s=>allChaps(s).map(c=>({id:c.id,subject:s}))));
  assert.equal(ids.length,380);
  for(const item of ids){
-   await page.evaluate(id=>openChapter(id),item.id);
+   await page.evaluate(item=>{showView(item.subject);openChapter(item.id);},item);
    assert.equal(await page.locator('.bplus-detail').count()>0,true,'Chapter missing '+item.id);
    if(item.subject==='maths'){
      assert.equal(await page.locator('.bplus-maths .maths-precision').count(),1,'Maths block missing '+item.id);
