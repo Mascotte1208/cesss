@@ -13,3 +13,15 @@ for(const f of ['js/maths-data.js','js/additional-chapters.js'])vm.runInContext(
 for(const ch of Object.values(originalContext.CHAPITRES).flat()){const now=maths.find(x=>x.id===ch.id);assert(now,'missing '+ch.id);assert(now.cours.includes(ch.cours),'original course changed '+ch.id);for(const q of ch.exercices)assert(now.exercices.some(x=>x.question===q.question),'exercise removed');}
 assert(!maths.some(ch=>ch.cours.includes('M55 135 L285')),'incorrect triangle remains');
 console.log(JSON.stringify({maths:maths.length,enhanced:maths.filter(x=>x.mathsPrecision).length,historyDossiers:history.length,allOriginalMathsCoursesPreserved:true,allScriptsLoaded:true}));
+// The renderer must retain complete nested cards and all content before the first heading.
+const nested='<section><h4>Example</h4><p>kept</p></section>';
+const parsed=c.parseCoursSections(nested+'<h4>Course</h4><article><h4>Nested</h4><p>body</p></article>');
+assert.equal(parsed.length,2);assert.equal(parsed[0].body,nested);assert(parsed[1].body.includes('<h4>Nested</h4>'));
+let checked=0;
+for(const subject of Object.keys(c.CESS_SUBJECTS))for(const ch of c.allChaps(subject)){
+ const sections=c.parseCoursSections(ch.cours),grouped=c.groupCoursSections(sections,subject);
+ const rendered=grouped.map(x=>x.body).join('');
+ for(const section of sections)if(section.body)assert(rendered.includes(section.body),'Rendering lost content: '+ch.id);
+ checked++;
+}
+console.log('PASS: complete section bodies survive grouping in '+checked+' chapters.');
