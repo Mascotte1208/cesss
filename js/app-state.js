@@ -58,8 +58,10 @@ var CESS_MIGRATIONS = [function(data) {
     data.readChapters = data.readChapters || {};
     Object.keys(data.progress || {}).forEach(function(id){ if(data.progress[id]>0) data.readChapters[id]=true; });
     data.mastery = data.mastery || {};
-    data.legacyMistakes = data.mistakes || [];
-    data.mistakes = [];
+    // Les identifiants d'erreurs ("chapitre_index") n'ont pas changé de
+    // format : on les garde utilisables plutôt que de les archiver dans un
+    // champ que rien ne relit.
+    data.mistakes = data.mistakes || [];
     data.version = 2;
     return data;
 }];
@@ -112,6 +114,15 @@ function applyMigrations(data) {
                         : 'light',
                     version: CESS_STATE_VERSION
                 };
+
+                // Récupère les erreurs orphelines d'un ancien chargement qui
+                // avait appliqué la précédente migration (celle-ci les
+                // archivait dans legacyMistakes sans jamais les relire).
+                cessState.legacyMistakes.forEach(function (id) {
+                    if (cessState.mistakes.indexOf(id) < 0) {
+                        cessState.mistakes.push(id);
+                    }
+                });
             }
         }
     } catch (error) {

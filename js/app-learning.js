@@ -9,8 +9,14 @@ function personalChapters() {
 }
 function chapterStatus(id) {
     var m = (cessState.mastery || {})[id];
-    if (m && m.total >= 3 && m.score / m.total >= .8) return 'Exercices réussis';
-    if (m) return 'À retravailler';
+    if (m) {
+        var chapter = findChapter(id);
+        var usable = chapter && Array.isArray(chapter.exercices) ? chapter.exercices.filter(function(q){return q && Array.isArray(q.options) && q.options.length;}).length : 0;
+        // Un chapitre avec moins de 3 exercices réels ne peut pas exiger 3 réponses pour être validé.
+        var required = Math.min(3, usable || 1);
+        if (m.total >= required && m.score / m.total >= .8) return 'Exercices réussis';
+        return 'À retravailler';
+    }
     if ((cessState.readChapters || {})[id] || (cessState.progress || {})[id]) return 'Lu';
     return 'À découvrir';
 }
