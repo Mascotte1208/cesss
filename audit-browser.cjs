@@ -40,7 +40,7 @@ const server=http.createServer((req,res)=>{
  await page.getByRole('button',{name:'Commencer',exact:true}).click();
  await page.locator('#subjectExerciseSession .quiz-option').first().click();
  assert(await page.locator('#subjectExerciseFeedback').innerText());
- await page.evaluate(()=>openChapter('lib_histoire_4e_1'));
+ await page.evaluate(()=>{showView('histoire');openChapter('lib_histoire_4e_1');});
  const link=page.locator('.history-source-links button').first();await link.click();
  await page.waitForTimeout(150);
  assert(await page.locator('.history-revision-card[open]').first().isVisible(),'History dossier hidden');
