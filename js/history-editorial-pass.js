@@ -16,6 +16,7 @@ function tidy(md){
  s=s.split('\n').filter(function(line){var key=line.trim().replace(/^[-*]\s*/,'').replace(/\*\*/g,'').toLowerCase();if(!key||key.length<24)return true;if(seen[key])return false;seen[key]=1;return true;}).join('\n');
  return s.trim();
 }
-HISTORY_REVISION_DATA.forEach(function(d){d.markdown=tidy(d.markdown);d.section=String(d.section||'').replace(/^IE I\b/,'PARTIE I');d.editorialReviewed=true;});
+window.cleanHistoryDossiers=function(items){items.forEach(function(d){d.markdown=tidy(d.markdown);d.section=String(d.section||'').replace(/^IE I\b/,'PARTIE I');d.editorialCleaned=true;});};
+cleanHistoryDossiers(HISTORY_REVISION_DATA);
 if(window.CESS_LIBRARY_DATA&&CESS_LIBRARY_DATA.histoire){Object.keys(CESS_LIBRARY_DATA.histoire.data||{}).forEach(function(y){(CESS_LIBRARY_DATA.histoire.data[y]||[]).forEach(function(ch){ch.cours=String(ch.cours||'').replace(/<p>\s*<\/p>/g,'').replace(/(<br\s*\/?>(\s*)){3,}/gi,'<br><br>');ch.contentVersion=12;});});}
 })();

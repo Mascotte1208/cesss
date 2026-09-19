@@ -1,0 +1,26 @@
+name: Course preservation audit
+on:
+  push:
+    branches: [fix/audit-preserve-content-20260916]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node audit-preservation.cjs
+      - run: npm install --no-save --package-lock=false playwright@1.58.2
+      - run: npx playwright install --with-deps chromium
+      - run: node audit-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: chapter-screenshots
+          path: audit-*.png
+          if-no-files-found: ignore

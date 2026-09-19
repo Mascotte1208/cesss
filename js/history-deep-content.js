@@ -50,7 +50,7 @@
       seen[key] = true;
       selected.push(dossier);
     });
-    return selected.slice(0, 4);
+    return selected;
   }
 
   function removeExerciseBlocks(markdown) {
@@ -62,7 +62,7 @@
   }
 
   function markdownToHtml(markdown) {
-    var source = removeExerciseBlocks(markdown).slice(0, 4200);
+    var source = removeExerciseBlocks(markdown);
     var lines = source.split(/\n/), html = '', list = null;
     function closeList() { if (list) { html += '</' + list + '>'; list = null; } }
     lines.forEach(function (raw) {
