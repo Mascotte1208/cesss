@@ -34,6 +34,24 @@ function renderLibraryResults() {
     var groups={'Langue française et mathématiques':['francais','maths'],'Langues':['anglais','neerlandais','latin'],'Sciences':['bio','physique','chimie'],'Sciences humaines':['geo','histoire','sciences_sociales','sciences_economiques','epc'],'Numérique':['numerique']};
     root.innerHTML=Object.keys(groups).map(function(group){return '<section class="home-section"><h2>'+group+'</h2><div class="subject-cards">'+groups[group].filter(function(k){return !!CESS_SUBJECTS[k];}).map(function(k){return '<button class="subject-card" type="button" onclick="showView(\''+k+'\')"><div class="subject-icon">'+(CESS_SUBJECTS[k].icon||'📘')+'</div><h3>'+escapeHtml(CESS_SUBJECTS[k].label)+'</h3><p>'+allChaps(k).length+' chapitres · 3e à 6e</p><small>'+(p.subjects.indexOf(k)>=0?'Dans mon parcours':'Catalogue complet')+'</small></button>';}).join('')+'</div></section>';}).join('');
 }
+function libraryYearNav(subject, allYearChapters, rerenderCall) {
+    var years = ['3e', '4e', '5e', '6e'];
+    if (!cessSelectedYear[subject] || years.indexOf(cessSelectedYear[subject]) < 0) {
+        cessSelectedYear[subject] = '3e';
+    }
+    var selected = cessSelectedYear[subject];
+    var picker = '<div class="year-selector">' + years.map(function (year) {
+        var count = allYearChapters.filter(function (c) { return c.annee === year; }).length;
+        var active = selected === year ? 'active' : '';
+        return '<button type="button" class="year-button ' + active + '" onclick="cessSelectedYear[\'' + subject + '\']=\'' + year + '\';' + rerenderCall + '"><b>' + year + '</b><small>' + count + ' chapitre' + (count > 1 ? 's' : '') + '</small></button>';
+    }).join('') + '</div>';
+    var chapters = allYearChapters.filter(function (c) { return c.annee === selected; });
+    var grid = chapters.length
+        ? '<div class="content-grid">' + chapters.map(chapterLink).join('') + '</div>'
+        : '<div class="empty-state">Aucun chapitre disponible pour cette année.</div>';
+    return picker + grid;
+}
+
 function subjectExerciseToolbar(subject) {
     var info=CESS_SUBJECTS[subject]||{};
     return '<div class="subject-exercise-launch"><button class="button primary" type="button" onclick="openSubjectExercises(\''+subject+'\')">✎ Exercices de '+escapeHtml(info.label||'la matière')+'</button></div>';
@@ -52,7 +70,7 @@ function renderLibrarySubject(subject) {
     if(subject==='chimie' && typeof renderChemistryHub==='function'){
         renderChemistryHub(root,p);root.insertAdjacentHTML('afterbegin',subjectExerciseToolbar(subject));return;
     }
-    root.innerHTML='<div class="page-header"><h1>'+escapeHtml(info.label)+'</h1><button class="button secondary" onclick="renderLibrary()">← Catalogue</button></div>'+subjectExerciseToolbar(subject)+['3e','4e','5e','6e'].map(function(year){var chapters=allChaps(subject).filter(function(c){return c.annee===year;});return '<details class="memo-group"'+(p.year===year?' open':'')+'><summary><strong>'+year+' secondaire</strong><span>'+chapters.length+' chapitres</span></summary><div class="content-grid">'+chapters.map(chapterLink).join('')+'</div></details>';}).join('');
+    root.innerHTML='<div class="page-header"><h1>'+escapeHtml(info.label)+'</h1><button class="button secondary" onclick="renderLibrary()">← Catalogue</button></div>'+subjectExerciseToolbar(subject)+libraryYearNav(subject, allChaps(subject), "renderLibrarySubject('"+subject+"')");
 }
 
 function returnToSubject(subject) {

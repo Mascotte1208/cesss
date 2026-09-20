@@ -849,7 +849,9 @@ function startQuizTimer(seconds) {
             clearInterval(quizTimer);
             quizTimer = null;
             alert('⏰ Temps écoulé !');
-            finishQuiz();
+            // Le temps écoulé ne compte que comme une mauvaise réponse à
+            // cette question, pas comme la fin de toute la série.
+            answerQuiz(-1);
         }
     }, 1000);
 }

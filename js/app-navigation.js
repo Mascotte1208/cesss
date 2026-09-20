@@ -23,6 +23,7 @@ function showView(id) {
 
     for (var i = 0; i < views.length; i++) {
         views[i].classList.remove('active');
+        views[i].classList.remove('chapter-host-focus');
     }
 
     target.classList.add('active');
