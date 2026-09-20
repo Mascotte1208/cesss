@@ -702,32 +702,24 @@ function showCapitalLevels() {
     ];
 
     panel.innerHTML = `
-        <div class="quiz-start">
-            <button class="back-button" onclick="renderGamePanel()" type="button">
-                ← Retour aux jeux
+        <button class="back-button" onclick="renderGamePanel()" type="button">← Tous les jeux</button>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+            <span style="width:44px;height:44px;border-radius:14px;background:#e8f5f3;color:#0f5d59;display:grid;place-items:center;font-size:22px">🌍</span>
+            <div><h2 style="margin:0">Jeu des capitales</h2><p style="margin:2px 0 0;font-size:12px;color:var(--text-soft)">195 pays disponibles · chaque partie propose 15 pays</p></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+            ${niveaux.map(function (niveau) {
+                return `
+                    <button class="level-card" onclick="startCapitals('${niveau[0]}')" type="button">
+                        <span class="badge-circle" style="background:#e8f5f3;color:#0f5d59">${niveau[1]}</span>
+                        <span><strong>${niveau[0]}</strong><small>${niveau[2]}</small></span>
+                    </button>
+                `;
+            }).join('')}
+            <button class="level-card" onclick="startCapitals('all')" type="button">
+                <span class="badge-circle" style="background:#f3ded4;color:#914633">🌐</span>
+                <span><strong>Tous les pays</strong><small>Les trois niveaux mélangés</small></span>
             </button>
-            <span class="eyebrow">195 pays disponibles</span>
-            <h2>🌍 Choisis ton niveau</h2>
-            <p>Chaque partie propose 15 pays et évite ceux joués récemment.</p>
-            <div class="game-grid capital-level-grid">
-                ${niveaux.map(function (niveau) {
-                    return `
-                        <button
-                            class="game-card"
-                            onclick="startCapitals('${niveau[0]}')"
-                            type="button">
-                            <span>${niveau[1]}</span>
-                            <strong>${niveau[0]}</strong>
-                            <small>${niveau[2]}</small>
-                        </button>
-                    `;
-                }).join('')}
-                <button class="game-card" onclick="startCapitals('all')" type="button">
-                    <span>🌐</span>
-                    <strong>Tous les pays</strong>
-                    <small>Les trois niveaux mélangés</small>
-                </button>
-            </div>
         </div>
     `;
 }
