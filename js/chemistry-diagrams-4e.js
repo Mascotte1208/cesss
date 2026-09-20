@@ -13,13 +13,13 @@
             '<text x="332" y="78" font-size="11" font-weight="700">Produits</text>' +
             '<rect x="285" y="85" width="95" height="95" rx="14" fill-opacity="0.1"/>' +
             '<path d="M305,158 L297,173 L313,173 Z" fill-opacity="0.25"/><path d="M340,158 L332,173 L348,173 Z" fill-opacity="0.25"/>' +
-            '<text x="332" y="196" font-size="10">2 mol C (théorique)</text>' +
+            '<circle cx="332" cy="110" r="9" fill-opacity="0.25"/><text x="332" y="196" font-size="10">2 mol C + 1 mol A restante</text>' +
             '<line x1="76" y1="86" x2="188" y2="35" stroke-width="1"/><text x="72" y="90" font-size="9" font-weight="700" style="text-anchor:end">Équation</text><text x="72" y="101" font-size="8" style="text-anchor:end">Équilibrer</text>' +
             '<line x1="76" y1="206" x2="141" y2="157" stroke-width="1"/><text x="72" y="210" font-size="9" font-weight="700" style="text-anchor:end">Limitant</text><text x="72" y="221" font-size="8" style="text-anchor:end">Maximum</text>' +
             '<line x1="384" y1="56" x2="274" y2="35" stroke-width="1"/><text x="388" y="60" font-size="9" font-weight="700" style="text-anchor:start">Rapport</text><text x="388" y="71" font-size="8" style="text-anchor:start">Coefficients</text>' +
             '<line x1="384" y1="146" x2="145" y2="106" stroke-width="1"/><text x="388" y="150" font-size="9" font-weight="700" style="text-anchor:start">Données</text><text x="388" y="161" font-size="8" style="text-anchor:start">En moles</text>' +
             '<line x1="384" y1="236" x2="332" y2="173" stroke-width="1"/><text x="388" y="240" font-size="9" font-weight="700" style="text-anchor:start">Produit</text><text x="388" y="251" font-size="8" style="text-anchor:start">Théorique</text>' +
-            '</svg><p>Compare les quantités disponibles de A et de B au rapport 2:1 de l\'équation pour repérer le réactif limitant et la quantité théorique de C obtenue.</p></figure>',
+            '</svg><p>Compare les quantités disponibles de A et de B au rapport 2:1 de l\'équation pour repérer le réactif limitant et la quantité théorique de C obtenue. B est entièrement consommé ; 1 mol de A reste dans le mélange final.</p></figure>',
 
         'lib_chimie_4e_2': '<figure class="bio-visual-atlas"><figcaption><span>Planche scientifique</span><strong>Réaliser une dilution</strong></figcaption><svg viewBox="0 0 480 300" role="img" aria-label="Dilution d\'une solution mere en solution fille avec fiole jaugee et trait de jauge">' +
             '<text x="110" y="80" font-size="10" font-weight="700">Solution mère</text>' +
@@ -122,3 +122,4 @@
         });
     });
 })();
+

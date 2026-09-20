@@ -44,7 +44,24 @@ const server=http.createServer((req,res)=>{
  const link=page.locator('.history-source-links button').first();await link.click();
  await page.waitForTimeout(150);
  assert(await page.locator('.history-revision-card[open]').first().isVisible(),'History dossier hidden');
+ await page.evaluate(()=>openSubjectExercises('histoire'));
+ await page.locator('#subjectExerciseYear').selectOption('4e');
+ await page.locator('#subjectExerciseLevel').selectOption('Rédaction guidée');
+ await page.getByRole('button',{name:'Commencer',exact:true}).click();
+ await page.locator('#subjectWrittenAnswer').fill('Je distingue les faits et leur interprétation.');
+ await page.getByRole('button',{name:'Voir la correction',exact:true}).click();
+ assert.equal(await page.locator('#subjectExerciseFeedback li').count(),3);
+ assert.equal(await page.locator('#subjectWrittenAnswer').inputValue(),'Je distingue les faits et leur interprétation.');
+ for(const [subject,id] of [['physique','lib_physique_4e_4'],['chimie','lib_chimie_4e_1']]){
+  for(const width of [390,1440]){
+   await page.setViewportSize({width,height:900});
+   await page.evaluate(({subject,id})=>{showView(subject);openChapter(id);},{subject,id});
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2),false,'Scientific figure overflow '+id);
+   await page.screenshot({path:'audit-'+width+'-'+id+'.png',fullPage:true});
+  }
+ }
  assert.deepEqual(errors,[]);
  console.log('PASS: 380 chapter openings; 34 maths additions; desktop/mobile overflow checks; exercise feedback; history dossier navigation.');
  }finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);server.close();process.exitCode=1});
+
