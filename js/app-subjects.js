@@ -292,6 +292,8 @@ function openChapterBplus(id) {
     var previous = host.querySelector('.detail');
     if (previous) previous.remove();
     host.prepend(content);
+    var viewSection = host.closest('.view');
+    if (viewSection) viewSection.classList.add('chapter-host-focus');
     if (typeof window.enhancePremiumSheet === 'function') {
         window.enhancePremiumSheet(id);
     }

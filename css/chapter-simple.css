@@ -6,6 +6,20 @@
   --chapter-line:#cfe0e4;
   max-width:1380px;
 }
+/* Quand un chapitre est ouvert, il occupe toute la page : le reste du
+   contenu de la matière (en-tête, sélecteur d'année, liste des chapitres)
+   est masqué au lieu de rester visible sous la fiche. */
+.view.chapter-host-focus > .page-header{display:none}
+/* #maths/#geo/#bio .year-selector is styled with an ID selector elsewhere
+   (higher specificity than a plain class rule), so the override needs the
+   same ID+class specificity to actually win. */
+#maths.chapter-host-focus > .year-selector,
+#geo.chapter-host-focus > .year-selector,
+#bio.chapter-host-focus > .year-selector{display:none}
+.view.chapter-host-focus #mathContent > *:not(.bplus-detail),
+.view.chapter-host-focus #geoContent > *:not(.bplus-detail),
+.view.chapter-host-focus #bioContent > *:not(.bplus-detail),
+.view.chapter-host-focus #libraryContent > *:not(.bplus-detail){display:none}
 .bplus-maths{--chapter-accent:#246bc5;--chapter-dark:#174f98;--chapter-soft:#edf5ff;--chapter-line:#cbdff3}
 .bplus-geo{--chapter-accent:#167a76;--chapter-dark:#0f5d59;--chapter-soft:#e8f5f3;--chapter-line:#c9e2de}
 .bplus-bio{--chapter-accent:#2d8b60;--chapter-dark:#206947;--chapter-soft:#edf7f1;--chapter-line:#cfe6d9}
