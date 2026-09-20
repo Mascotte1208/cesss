@@ -118,11 +118,13 @@ function applyMigrations(data) {
                 // Récupère les erreurs orphelines d'un ancien chargement qui
                 // avait appliqué la précédente migration (celle-ci les
                 // archivait dans legacyMistakes sans jamais les relire).
-                cessState.legacyMistakes.forEach(function (id) {
+                (cessState.legacyMistakes || []).forEach(function (id) {
                     if (cessState.mistakes.indexOf(id) < 0) {
                         cessState.mistakes.push(id);
                     }
                 });
+                cessState.legacyMistakes = [];
+                localStorage.setItem(CESS_DBKEY, JSON.stringify(cessState));
             }
         }
     } catch (error) {
@@ -208,5 +210,6 @@ var CESS_SUBJECTS = {
         }
     }
 };
+
 
 

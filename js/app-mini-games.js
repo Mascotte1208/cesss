@@ -72,9 +72,36 @@ var MINI_META={
 };
 function stopMiniGame(){if(miniInterval)clearInterval(miniInterval);miniInterval=null;}
 function miniPrepare(row,i){var choices=shuffle(row[2].map(function(t,j){return {text:t,correct:j===row[3]};}));return {context:row[0],question:row[1],choices:choices,explanation:row[4],id:i};}
+// Historique séparé des notes : une réponse non donnée ne compte jamais comme vue.
+function miniHistory(){try{return JSON.parse(localStorage.getItem('cessMiniHistoryV1')||'{}');}catch(e){return {};}}
+function miniKey(mode,row){return mode+'|'+row[0]+'|'+row[1];}
+function miniSessionBank(mode,bank){
+ var history=miniHistory(),seen=new Set();
+ return shuffle(bank).filter(function(row){var k=miniKey(mode,row);if(seen.has(k))return false;seen.add(k);return true;}).sort(function(a,b){
+  var x=history[miniKey(mode,a)],y=history[miniKey(mode,b)];
+  var rank=function(v){return !v?0:(!v.correct?1:2);};
+  return rank(x)-rank(y)||((x&&x.at)||0)-((y&&y.at)||0);
+ }).slice(0,mode==='sprint'?30:8);
+}
+function rememberMiniAnswer(mode,q,good){
+ var history=miniHistory(),key=mode+'|'+q.context+'|'+q.question;
+ history[key]={correct:good,at:Date.now()};
+ var keys=Object.keys(history).sort(function(a,b){return history[b].at-history[a].at;});
+ keys.slice(600).forEach(function(k){delete history[k];});
+ try{localStorage.setItem('cessMiniHistoryV1',JSON.stringify(history));}catch(e){}
+}
+function miniVariants(mode){
+ var rows=[];
+ for(var n=2;n<=9;n++){
+  if(mode==='detective')rows.push(['Tableau fictif : '+(n*100)+' ventes avant, '+(n*120)+' après.','Quelle est la hausse en pourcentage ?',['20 %','120 %','2 %','80 %'],0,'La variation relative vaut ('+(n*120)+' − '+(n*100)+') / '+(n*100)+' × 100 = 20 %.']);
+  if(mode==='repair')rows.push(['Électricité : résistance '+n+' Ω, intensité 3 A.','Quelle tension faut-il appliquer ?',[String(n*3)+' V',String(n)+' V',String(n*3+1)+' V',String(n*3-1)+' V'],0,'La loi d’Ohm donne U = R × I = '+n+' × 3 = '+(n*3)+' V.']);
+  if(mode==='lab')rows.push(['Trois mesures de durée : '+(n*2-1)+', '+(n*2)+' et '+(n*2+1)+' secondes.','Quelle moyenne faut-il reporter ?',[String(n*2)+' s',String(n*6)+' s',String(n*2+1)+' s',String(n*2-1)+' s'],0,'On additionne les trois durées puis on divise par trois : '+(n*6)+' / 3 = '+(n*2)+' s.']);
+ }
+ return rows;
+}
 function startMini(mode){
  stopMiniGame();if(typeof quizTimer!=='undefined'&&quizTimer){clearInterval(quizTimer);quizTimer=null;}
- var bank=MINI_BANKS[mode]||[];
+ var bank=(MINI_BANKS[mode]||[]).concat(miniVariants(mode));
  if(mode==='sprint'){
      bank=[];
      for(var i=0;i<30;i++){
@@ -87,8 +114,8 @@ function startMini(mode){
          bank.push(['Calcul mental',q,opts,0,q.replace(' ?','')+' '+v+'.']);
      }
  }
- if(mode==='association'){var events=[["Imprimerie de Gutenberg en Europe",1450],["Publication des 95 thèses de Luther",1517],["Traités de Westphalie",1648],["Déclaration d’indépendance des États-Unis",1776],["Début de la Révolution française",1789],["Coup d’État de Bonaparte",1799],["Congrès de Vienne",1815],["Indépendance de la Belgique",1830],["Printemps des peuples",1848],["Proclamation de l’Empire allemand",1871],["Conférence de Berlin sur l’Afrique","1884-1885"],["Début de la Première Guerre mondiale",1914],["Révolutions russes",1917],["Armistice de la Première Guerre mondiale",1918],["Krach de Wall Street",1929],["Hitler devient chancelier",1933],["Début de la Seconde Guerre mondiale",1939],["Fin de la Seconde Guerre mondiale et création de l’ONU",1945],["Doctrine Truman",1947],["Création de la CECA",1951],["Indépendance du Congo",1960],["Construction du mur de Berlin",1961],["Chute du mur de Berlin",1989],["Dissolution de l’URSS",1991],["Traité de Maastricht",1992]];bank=events.map(function(e){return ['Repère historique','Quelle date correspond à : '+e[0]+' ?',events.filter(function(x){return x!==e;}).slice(0,3).map(function(x){return String(x[1]);}).concat(String(e[1])),3,e[0]+' : '+(e[1]===1450?'vers ':'')+e[1]+'.'];});}
- cessMiniGame={mode:mode,cards:shuffle(bank).map(miniPrepare),index:0,score:0,streak:0,answered:false,finished:false,deadline:Date.now()+60000};
+ if(mode==='association'){var events=[["Imprimerie de Gutenberg en Europe",1450],["Publication des 95 thèses de Luther",1517],["Traités de Westphalie",1648],["Déclaration d’indépendance des États-Unis",1776],["Début de la Révolution française",1789],["Coup d’État de Bonaparte",1799],["Congrès de Vienne",1815],["Indépendance de la Belgique",1830],["Printemps des peuples",1848],["Proclamation de l’Empire allemand",1871],["Conférence de Berlin sur l’Afrique","1884-1885"],["Début de la Première Guerre mondiale",1914],["Révolutions russes",1917],["Armistice de la Première Guerre mondiale",1918],["Krach de Wall Street",1929],["Hitler devient chancelier",1933],["Début de la Seconde Guerre mondiale",1939],["Fin de la Seconde Guerre mondiale et création de l’ONU",1945],["Doctrine Truman",1947],["Création de la CECA",1951],["Indépendance du Congo",1960],["Construction du mur de Berlin",1961],["Chute du mur de Berlin",1989],["Dissolution de l’URSS",1991],["Traité de Maastricht",1992]];bank=events.map(function(e){return ['Repère historique','Quelle date correspond à : '+e[0]+' ?',shuffle(events.filter(function(x){return x!==e;})).slice(0,3).map(function(x){return String(x[1]);}).concat(String(e[1])),3,e[0]+' : '+(e[1]===1450?'vers ':'')+e[1]+'.'];});}
+ cessMiniGame={mode:mode,cards:miniSessionBank(mode,bank).map(miniPrepare),index:0,score:0,streak:0,answered:false,finished:false,deadline:Date.now()+60000};
  renderMini();
  if(mode==='sprint')miniInterval=setInterval(function(){if(!cessMiniGame||cessMiniGame.finished)return stopMiniGame();var n=Math.max(0,Math.ceil((cessMiniGame.deadline-Date.now())/1000));var el=document.getElementById('miniClock');if(el)el.textContent=n+' s';var ring=document.getElementById('sprintRing');if(ring)ring.style.background='conic-gradient(#d97757 0deg '+(n/60*360)+'deg, #4a3f36 '+(n/60*360)+'deg 360deg)';if(n===0)finishMiniGame();},250);
 }
@@ -120,6 +147,7 @@ function answerMini(i){
  var s=cessMiniGame;if(!s||s.answered||s.finished)return;
  if(s.mode==='sprint'&&Date.now()>=s.deadline)return finishMiniGame();
  var q=s.cards[s.index];if(!q.choices[i])return;s.answered=true;var good=q.choices[i].correct;if(good){s.score++;s.streak=(s.streak||0)+1;}else{s.streak=0;}
+ rememberMiniAnswer(s.mode,q,good);
  document.querySelectorAll('#gamePanel .quiz-option').forEach(function(b,j){b.disabled=true;if(q.choices[j].correct)b.classList.add('correct');else if(j===i)b.classList.add('wrong');});
  document.getElementById('miniFeedback').innerHTML=feedbackMarkup(good,q.explanation,'Continuer →','nextMiniGame()',s);
 }
@@ -160,3 +188,4 @@ function chooseMatchingDefinition(i){
     if(s.matched.length===s.cards.length){s.finished=true;cessState.results.push({contentVersion:2,date:new Date().toISOString(),mode:'Relier les notions',score:s.cards.length,total:s.attempts,percentage:Math.round(s.cards.length/s.attempts*100)});cessSave();}
     renderMatchingGame();var feedback=document.getElementById('matchingFeedback');if(feedback){feedback.className=good?'feedback-success':'feedback-retry';feedback.textContent=good?'✓ Bonne association !':'↺ À revoir : relis les deux propositions puis réessaie.';}
 }
+

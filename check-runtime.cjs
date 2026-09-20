@@ -6,7 +6,7 @@ const c={navigator:{},console,Date,Math,Map,Set,Array,Object,Number,String,JSON,
 for(const f of files){try{vm.runInContext(fs.readFileSync(__dirname+'/'+f,'utf8'),c,{filename:f});}catch(e){throw Error(f+': '+e.stack);}}
 assert.equal(Object.keys(c.CESS_SUBJECTS).length,14);
 const library=Object.values(c.CESS_LIBRARY_DATA).flatMap(s=>Object.values(s.data).flat());assert.equal(library.length,279);
-const questions=library.flatMap(ch=>ch.exercices);assert.equal(questions.length,1407);
+const questions=library.flatMap(ch=>ch.exercices);assert.equal(questions.length,1431);
 const qcmQuestions=questions.filter(q=>Array.isArray(q.options)&&q.options.length);
 const openQuestions=questions.filter(q=>!(Array.isArray(q.options)&&q.options.length));
 assert(qcmQuestions.every(q=>q.options.length===4&&q.correct>=0&&q.correct<4&&new Set(q.options).size===4));
@@ -34,3 +34,4 @@ c.cessSave();const saved=JSON.parse(storage.get('carnetCESSv4'));assert(saved.pr
 console.log('PASS: all scripts, 14 subjects, 279 fiches / '+qcmQuestions.length+' QCM + '+openQuestions.length+' open questions, profile migration, navigation, search results, memo folders, flashcard content, answer mapping, progress, simulation and duplicate completion.');
 
 console.log("Flashcards utiles :",c.FLASHCARDS_DATA.all.length);
+
