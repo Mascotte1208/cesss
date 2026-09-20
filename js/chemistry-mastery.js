@@ -106,7 +106,7 @@
   };
   window.closeElementDetail=function(){document.getElementById('elementDetail').innerHTML='';};
   function chaptersHtml(p){
-    return ['3e','4e','5e','6e'].map(function(year){var chapters=allChaps('chimie').filter(function(c){return c.annee===year;});return '<details class="memo-group"'+(p.year===year?' open':'')+'><summary><strong>'+year+' secondaire</strong><span>'+chapters.length+' chapitres · '+chapters.reduce(function(n,c){return n+c.exercices.length;},0)+' exercices</span></summary><div class="content-grid">'+chapters.map(chapterLink).join('')+'</div></details>';}).join('');
+    return libraryYearNav('chimie', allChaps('chimie'), "renderChemistryHub(document.getElementById('libraryContent'), learningProfile())");
   }
   window.renderChemistryHub=function(root,p){
     root.innerHTML='<div class="page-header chem-header"><div><span class="eyebrow">CHIMIE · 3e À 6e</span><h1>⚗️ Comprendre la matière</h1><p>24 cours structurés, 264 exercices corrigés, 192 flashcards et des outils interactifs.</p></div><button class="button secondary" onclick="renderLibrary()">← Catalogue</button></div>'+
