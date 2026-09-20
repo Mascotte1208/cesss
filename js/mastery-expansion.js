@@ -164,6 +164,35 @@
         });
     }
 
+    var comportementsErrones = [
+        'Réciter le titre sans l’expliquer',
+        'Choisir une réponse uniquement parce qu’elle paraît familière',
+        'Répéter un mot du chapitre sans le relier à la question',
+        'Copier une phrase du cours sans l’adapter à la situation',
+        'Affirmer une conclusion sans vérifier les données',
+        'Écarter une option seulement parce qu’elle semble compliquée',
+        'Reformuler la question sans y répondre',
+        'Confondre deux notions proches sans les distinguer',
+        'Se fier à la position de la réponse plutôt qu’à son contenu',
+        'Donner une réponse générale sans exemple ni justification',
+        'Mélanger deux chapitres différents dans la même réponse',
+        'Répondre avec un mot technique sans en connaître le sens'
+    ];
+
+    function hashCode(s) {
+        var h = 0;
+        s = String(s || '');
+        for (var i = 0; i < s.length; i++) {
+            h = (h * 31 + s.charCodeAt(i)) | 0;
+        }
+        return Math.abs(h);
+    }
+
+    function comportementErrone(seed, decalage) {
+        var n = comportementsErrones.length;
+        return comportementsErrones[(seed + decalage) % n];
+    }
+
     function melangerOptions(bonne, distracteurs, position) {
         var opts = [bonne];
         distracteurs.forEach(function (d) {
@@ -219,10 +248,12 @@
             correction = 'Cette structure donne une réponse complète, organisée et directement reliée au problème posé.';
         }
 
+        var seed = hashCode(chapitre.id) + numero;
+        var horsChapitreIndex = (seed * 7 + numero) % Math.max(1, horsChapitre.length);
         var choix = melangerOptions(bonne, [
-            horsChapitre[(numero * 3) % Math.max(1, horsChapitre.length)],
-            'Réciter le titre sans expliquer',
-            'Choisir une réponse uniquement parce qu’elle paraît familière'
+            horsChapitre[horsChapitreIndex],
+            comportementErrone(seed, 0),
+            comportementErrone(seed, 3)
         ], numero + chapitre.id.length);
 
         return {

@@ -42,6 +42,18 @@
       '<h4>Erreur fréquente</h4><p class="chem-warning">'+esc(row[10])+'</p>'+
       '<h4>Synthèse CESS</h4><p>Je sais définir les notions, expliquer le modèle, appliquer la relation, interpréter une expérience et justifier une conclusion avec une unité et une phrase complète.</p>';
   }
+  var pasNotion=['Aucune de ces notions','Cette notion n’a aucun lien avec le chapitre','Cette notion appartient à un autre chapitre','Une notion vue dans une autre matière','Un mot du titre repris sans lien avec le contenu'];
+  var toutesNotions=['Toutes sans distinction','Toutes les notions du chapitre à la fois','N’importe laquelle, selon le contexte','Toutes, car elles se ressemblent','Peu importe, si la réponse contient un mot du cours'];
+  var pasRelation=['Aucune relation ne peut être vérifiée','Toute relation du cours convient sans vérification','Une relation choisie au hasard suffit','La première formule venue, sans vérifier ses conditions','Une relation d’un autre chapitre, par analogie'];
+  var toujoursMultiplier=['Toujours multiplier toutes les données','Additionner toutes les données sans réfléchir','Ignorer les unités pour aller plus vite','Utiliser la première formule trouvée dans le cours','Remplacer les lettres par les nombres dans le désordre'];
+  var degresPartout=['Utiliser les degrés Celsius dans toutes les formules','Ne jamais convertir les unités avant de calculer','Arrondir le résultat avant de terminer le calcul','Mélanger les unités du système international avec d’autres','Négliger les unités tant que le nombre paraît correct'];
+  var memoriserSansObserver=['Mémoriser sans observer','Répéter le cours sans réaliser l’expérience','Deviner le résultat avant toute mesure','Recopier un résultat attendu sans le vérifier','Sauter l’étape d’observation pour aller plus vite'];
+  var changerVariables=['Changer toutes les variables à la fois','Ne noter aucune des valeurs mesurées','Comparer des mesures obtenues avec des protocoles différents','Répéter l’expérience sans changer aucune variable ni conclure','Ignorer le témoin pour gagner du temps'];
+  var ignorerIncertitudes=['Ignorer les incertitudes','Arrondir la mesure sans expliquer pourquoi','Annoncer un résultat sans unité','Ne garder qu’une seule mesure sans répétition','Confondre précision de l’instrument et exactitude du résultat'];
+  var bonnesPratiques=['Donner une unité et vérifier le résultat','Expliquer le modèle utilisé','Comparer le résultat à un ordre de grandeur','Vérifier les unités avant de conclure','Contrôler la cohérence du résultat'];
+  function hashCode(s){var h=0;s=String(s||'');for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return Math.abs(h);}
+  function pick(pool,seed){return pool[((seed%pool.length)+pool.length)%pool.length];}
+  function pickN(pool,seed,count){var n=pool.length,start=((seed%n)+n)%n,out=[];for(var i=0;i<count&&i<n;i++)out.push(pool[(start+i)%n]);return out;}
   function exercises(row,index,allPairs){
     var ps=pairs(row), levels=['Mémoriser','Comprendre','Appliquer','Analyser'];
     var out=ps.map(function(p,i){
@@ -51,13 +63,15 @@
       var rotated=opts.slice(i%4).concat(opts.slice(0,i%4)),correct=rotated.indexOf(p.definition);
       return {question:'Quelle définition correspond à « '+p.term+' » ?',options:rotated,correct:correct,correction:p.term+' : '+p.definition+'.',niveau:levels[i],contentVersion:3};
     });
+    var seedChapitre=hashCode(row[1]);
     ps.forEach(function(p,i){
       var distract=allPairs.filter(function(x){return ps.every(function(y){return y.term!==x.term;});})[(index*3+i)%allPairs.length];
-      out.push({question:'Quelle notion appartient directement au chapitre « '+row[1]+' » ?',options:[distract.term,p.term,'Aucune de ces notions','Toutes sans distinction'],correct:1,correction:p.term+' est bien une notion centrale de ce chapitre : '+p.definition+'.',niveau:'Comprendre',contentVersion:3});
+      out.push({question:'Quelle notion appartient directement au chapitre « '+row[1]+' » ?',options:[distract.term,p.term,pick(pasNotion,seedChapitre+i),pick(toutesNotions,seedChapitre+i+1)],correct:1,correction:p.term+' est bien une notion centrale de ce chapitre : '+p.definition+'.',niveau:'Comprendre',contentVersion:3});
     });
-    out.push({question:'Quelle relation ou règle faut-il mobiliser en priorité dans ce chapitre ?',options:['Aucune relation ne peut être vérifiée',row[7],'Toujours multiplier toutes les données','Utiliser les degrés Celsius dans toutes les formules'],correct:1,correction:'La relation de référence est : '+row[7]+'. Il faut aussi vérifier les unités et le domaine de validité.',niveau:'Appliquer',contentVersion:3});
-    out.push({question:'Quelle activité permet le mieux de vérifier expérimentalement ce chapitre ?',options:['Mémoriser sans observer','Changer toutes les variables à la fois',row[9],'Ignorer les incertitudes'],correct:2,correction:'Une expérience utile contrôle les variables, mesure une grandeur et explicite ses limites : '+row[9],niveau:'Analyser',contentVersion:3});
-    out.push({question:'Quelle erreur faut-il éviter ?',options:['Donner une unité et vérifier le résultat',row[10],'Expliquer le modèle utilisé','Comparer le résultat à un ordre de grandeur'],correct:1,correction:'Erreur à éviter : '+row[10],niveau:'Analyser',contentVersion:3});
+    out.push({question:'Quelle relation ou règle faut-il mobiliser en priorité dans ce chapitre ?',options:[pick(pasRelation,seedChapitre),row[7],pick(toujoursMultiplier,seedChapitre+1),pick(degresPartout,seedChapitre+2)],correct:1,correction:'La relation de référence est : '+row[7]+'. Il faut aussi vérifier les unités et le domaine de validité.',niveau:'Appliquer',contentVersion:3});
+    out.push({question:'Quelle activité permet le mieux de vérifier expérimentalement ce chapitre ?',options:[pick(memoriserSansObserver,seedChapitre),pick(changerVariables,seedChapitre+1),row[9],pick(ignorerIncertitudes,seedChapitre+2)],correct:2,correction:'Une expérience utile contrôle les variables, mesure une grandeur et explicite ses limites : '+row[9],niveau:'Analyser',contentVersion:3});
+    var autresPratiques=pickN(bonnesPratiques,seedChapitre,3);
+    out.push({question:'Quelle erreur faut-il éviter ?',options:[autresPratiques[0],row[10],autresPratiques[1],autresPratiques[2]],correct:1,correction:'Erreur à éviter : '+row[10],niveau:'Analyser',contentVersion:3});
     return out;
   }
   var allPairs=TOPICS.reduce(function(a,r){return a.concat(pairs(r));},[]);
