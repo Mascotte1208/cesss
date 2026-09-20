@@ -48,11 +48,20 @@ function showBodyGame() {
     if (quizTimer) { clearInterval(quizTimer); quizTimer = null; }
     cessQuizState = null;
     var panel = document.getElementById('gamePanel');
-    panel.innerHTML = '<h2>🦴 Mission Corps humain</h2><p>36 questions expliquées. Choisis un thème pour une série de 10 questions. Les questions récentes sont moins souvent proposées.</p>' +
-        '<div class="body-game-choices">' +
-        [['os','Os et articulations'],['organes','Organes'],['fonctions','Fonctionnement du corps'],['all','Tout mélanger']].map(function (item) {
-            return '<button type="button" class="button primary" onclick="startBodyGame(\'' + item[0] + '\')">' + item[1] + '</button>';
-        }).join('') + '</div><button type="button" class="button secondary" onclick="renderGamePanel()">← Tous les jeux</button>';
+    var themes = [
+        ['os', '🦴', 'Os et articulations', '12 questions'],
+        ['organes', '🫀', 'Organes', '12 questions'],
+        ['fonctions', '⚙️', 'Fonctionnement du corps', '12 questions'],
+        ['all', '🧬', 'Tout mélanger', '36 questions']
+    ];
+    panel.innerHTML = '<button class="back-button" type="button" onclick="renderGamePanel()">← Tous les jeux</button>' +
+        '<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">' +
+        '<span style="width:44px;height:44px;border-radius:14px;background:#edf7f1;color:#206947;display:grid;place-items:center;font-size:22px">🦴</span>' +
+        '<div><h2 style="margin:0">Mission Corps humain</h2><p style="margin:2px 0 0;font-size:12px;color:var(--text-soft)">36 questions expliquées · une série de 10 par thème</p></div></div>' +
+        '<div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">' +
+        themes.map(function (item) {
+            return '<button type="button" class="level-card" onclick="startBodyGame(\'' + item[0] + '\')"><span class="badge-circle" style="background:#edf7f1;color:#206947">' + item[1] + '</span><span><strong>' + item[2] + '</strong><small>' + item[3] + '</small></span></button>';
+        }).join('') + '</div>';
 }
 
 function startBodyGame(theme) {

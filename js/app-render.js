@@ -847,10 +847,65 @@ function renderProgress() {
    GAME PANEL
    ========================================================= */
 
+var cessGameTab = cessGameTab || 'start';
+
+var GAME_SUBJECT_COLORS = {
+    maths: { dark: '#174f98', soft: '#edf5ff' },
+    geo: { dark: '#0f5d59', soft: '#e8f5f3' },
+    bio: { dark: '#206947', soft: '#edf7f1' },
+    francais: { dark: '#923438', soft: '#fdf0f1' },
+    histoire: { dark: '#895a15', soft: '#fbf4e7' },
+    chimie: { dark: '#57317f', soft: '#f3edfa' },
+    physique: { dark: '#24516d', soft: '#eaf3f8' },
+    anglais: { dark: '#214f78', soft: '#edf5fb' },
+    neerlandais: { dark: '#93491e', soft: '#fff2e9' },
+    latin: { dark: '#65472f', soft: '#f7f0e8' },
+    numerique: { dark: '#1d5961', soft: '#eaf6f7' },
+    sciences_sociales: { dark: '#743653', soft: '#faeef4' },
+    sciences_economiques: { dark: '#285838', soft: '#edf7f0' },
+    epc: { dark: '#493c7d', soft: '#f1effa' }
+};
+
+function setGameTab(tab) {
+    cessGameTab = tab;
+    renderGamePanel();
+}
+
 function renderGamePanel(){
 if(typeof stopMiniGame==='function')stopMiniGame();if(typeof quizTimer!=='undefined'&&quizTimer){clearInterval(quizTimer);quizTimer=null;}var panel=document.getElementById('gamePanel');if(!panel)return;
-var subjects=Object.keys(CESS_SUBJECTS).filter(function(key){return allChaps(key).some(function(ch){return(ch.exercices||[]).length;});}).map(function(key){var info=CESS_SUBJECTS[key],count=allChaps(key).reduce(function(n,ch){return n+(ch.exercices||[]).length;},0);return'<button class="game-card" type="button" onclick="startQuiz(\''+key+'\')"><span aria-hidden="true">'+(info.icon||'📘')+'</span><strong>Défi '+escapeHtml(info.label)+'</strong><small>'+count+' questions disponibles</small><small class="game-meta">5–10 min · adaptable</small></button>';}).join('');
-panel.innerHTML='<section class="game-section"><div class="game-section-head"><div><span class="eyebrow">DÉMARRER VITE</span><h2>Une courte session</h2></div><p>Idéal pour réviser sans choisir un chapitre.</p></div><div class="game-grid"><button class="game-card featured" type="button" onclick="startQuiz(\'mixed\')"><span aria-hidden="true">🎯</span><strong>Quiz express</strong><small>15 questions de ton parcours</small><small class="game-meta">7 min · mixte</small></button><button class="game-card" type="button" onclick="startSprintGame()"><span aria-hidden="true">⏱️</span><strong>Sprint 60 secondes</strong><small>Réponds vite et garde ton rythme</small><small class="game-meta">1 min · rapide</small></button><button class="game-card" type="button" onclick="startQuiz(\'mistakes\')"><span aria-hidden="true">🧠</span><strong>Mes erreurs</strong><small>'+(cessState.mistakes.length?cessState.mistakes.length+' question'+(cessState.mistakes.length>1?'s':'')+' à revoir':'Aucune erreur à revoir')+'</small><small class="game-meta">personnalisé · prioritaire</small></button></div></section>'+
-'<section class="game-section"><div class="game-section-head"><div><span class="eyebrow">RAISONNER</span><h2>Jeux de méthode</h2></div><p>Associer, corriger, expérimenter et analyser.</p></div><div class="game-grid"><button class="game-card" type="button" onclick="startMatchingGame()"><span aria-hidden="true">↔</span><strong>Relier les notions</strong><small>4 paires de ton parcours</small><small class="game-meta">3 min · mémoire</small></button><button class="game-card" type="button" onclick="startMini(\'repair\')"><span aria-hidden="true">✎</span><strong>Phrase et formule à réparer</strong><small>Langues, maths et sciences</small><small class="game-meta">5 min · précision</small></button><button class="game-card" type="button" onclick="startMini(\'lab\')"><span aria-hidden="true">⚗️</span><strong>Mission laboratoire</strong><small>Variables, mesures et hypothèses</small><small class="game-meta">5 min · sciences</small></button><button class="game-card" type="button" onclick="startAssociationGame()"><span aria-hidden="true">🔗</span><strong>Chronologie express</strong><small>Dates et événements historiques</small><small class="game-meta">5 min · repères</small></button><button class="game-card" type="button" onclick="startHistoryCauseGame()"><span aria-hidden="true">⛓️</span><strong>Causes et conséquences</strong><small>Relie les événements et leurs mécanismes</small><small class="game-meta">12 questions · histoire</small></button><button class="game-card" type="button" onclick="startHistorySourceGame()"><span aria-hidden="true">🕵️</span><strong>Enquête sur les sources</strong><small>Auteur, contexte, intention et limites</small><small class="game-meta">10 questions · méthode CESS</small></button><button class="game-card" type="button" onclick="startDetectiveGame()"><span aria-hidden="true">🔎</span><strong>Détective de document</strong><small>Les bons réflexes d’analyse</small><small class="game-meta">5 min · méthode CESS</small></button><button class="game-card" type="button" onclick="startQuiz(\'truefalse\')"><span aria-hidden="true">⚡</span><strong>Vrai / Faux</strong><small>12 affirmations variées</small><small class="game-meta">4 min · vigilance</small></button></div></section>'+
-'<section class="game-section"><div class="game-section-head"><div><span class="eyebrow">PAR MATIÈRE</span><h2>Choisir son terrain</h2></div><p>Des jeux spécialisés et des séries complètes.</p></div><div class="game-grid"><button class="game-card" type="button" onclick="showBodyGame()"><span aria-hidden="true">🦴</span><strong>Mission Corps humain</strong><small>Os, organes et fonctions</small><small class="game-meta">36 questions · biologie</small></button><button class="game-card" type="button" onclick="showCapitalLevels()"><span aria-hidden="true">🌍</span><strong>Jeu des capitales</strong><small>195 pays · 3 niveaux</small><small class="game-meta">géographie · progressif</small></button><button class="game-card" type="button" onclick="startChemistryGame(\'element\')"><span aria-hidden="true">⚛️</span><strong>Quel élément ?</strong><small>Symboles et noms</small><small class="game-meta">10 questions · chimie</small></button><button class="game-card" type="button" onclick="startChemistryGame(\'family\')"><span aria-hidden="true">🧪</span><strong>Familles chimiques</strong><small>Classe les éléments</small><small class="game-meta">10 questions · chimie</small></button>'+subjects+'</div></section>';
+var tab=cessGameTab||'start';
+
+var startHtml='<div style="display:flex;flex-direction:column;gap:12px"><button class="game-card featured" type="button" onclick="startQuiz(\'mixed\')" style="display:flex;align-items:center;gap:14px;text-align:left"><span aria-hidden="true" style="font-size:24px">🎯</span><span><strong style="display:block">Quiz express</strong><small style="display:block;color:var(--text-soft)">15 questions de ton parcours</small><small class="game-meta">7 min · mixte</small></span></button><button class="game-card" type="button" onclick="startSprintGame()" style="display:flex;align-items:center;gap:14px;text-align:left"><span aria-hidden="true" style="font-size:24px">⏱️</span><span><strong style="display:block">Sprint 60 secondes</strong><small style="display:block;color:var(--text-soft)">Réponds vite et garde ton rythme</small><small class="game-meta">1 min · rapide</small></span></button><button class="game-card" type="button" onclick="startQuiz(\'mistakes\')" style="display:flex;align-items:center;gap:14px;text-align:left"><span aria-hidden="true" style="font-size:24px">🧠</span><span><strong style="display:block">Mes erreurs</strong><small style="display:block;color:var(--text-soft)">'+(cessState.mistakes.length?cessState.mistakes.length+' question'+(cessState.mistakes.length>1?'s':'')+' à revoir':'Aucune erreur à revoir')+'</small><small class="game-meta">personnalisé · prioritaire</small></span></button></div>';
+
+var methodGames=[
+    {icon:'↔',title:'Relier les notions',subtitle:'4 paires de ton parcours',meta:'3 min · mémoire',action:"startMatchingGame()"},
+    {icon:'✎',title:'Phrase et formule à réparer',subtitle:'Langues, maths et sciences',meta:'5 min · précision',action:"startMini('repair')"},
+    {icon:'⚗️',title:'Mission laboratoire',subtitle:'Variables, mesures, hypothèses',meta:'5 min · sciences',action:"startMini('lab')"},
+    {icon:'🔗',title:'Chronologie express',subtitle:'Dates et événements historiques',meta:'5 min · repères',action:"startAssociationGame()"},
+    {icon:'⛓️',title:'Causes et conséquences',subtitle:'Mécanismes historiques',meta:'12 questions',action:"startHistoryCauseGame()"},
+    {icon:'🕵️',title:'Enquête sur les sources',subtitle:'Auteur, contexte, limites',meta:'10 questions',action:"startHistorySourceGame()"},
+    {icon:'🔎',title:'Détective de document',subtitle:'Les bons réflexes d’analyse',meta:'5 min · méthode',action:"startDetectiveGame()"},
+    {icon:'⚡',title:'Vrai / Faux',subtitle:'12 affirmations variées',meta:'4 min · vigilance',action:"startQuiz('truefalse')"}
+];
+var methodHtml='<div class="game-grid" style="grid-template-columns:repeat(2,1fr)">'+methodGames.map(function(g){
+    return '<button class="game-card" type="button" onclick="'+g.action+'"><span aria-hidden="true">'+g.icon+'</span><strong>'+escapeHtml(g.title)+'</strong><small>'+escapeHtml(g.subtitle)+'</small><small class="game-meta">'+escapeHtml(g.meta)+'</small></button>';
+}).join('')+'</div>';
+
+var specialtyGames=[
+    {icon:'🦴',title:'Mission Corps humain',subtitle:'36 questions',meta:'biologie',action:'showBodyGame()',color:GAME_SUBJECT_COLORS.bio},
+    {icon:'🌍',title:'Jeu des capitales',subtitle:'195 pays · 3 niveaux',meta:'géographie',action:'showCapitalLevels()',color:GAME_SUBJECT_COLORS.geo},
+    {icon:'⚛️',title:'Quel élément ?',subtitle:'Symboles et noms',meta:'chimie',action:"startChemistryGame('element')",color:GAME_SUBJECT_COLORS.chimie},
+    {icon:'🧪',title:'Familles chimiques',subtitle:'Classer les éléments',meta:'chimie',action:"startChemistryGame('family')",color:GAME_SUBJECT_COLORS.chimie}
+];
+var subjectChips=Object.keys(CESS_SUBJECTS).filter(function(key){return allChaps(key).some(function(ch){return(ch.exercices||[]).length;});}).map(function(key){
+    var info=CESS_SUBJECTS[key],count=allChaps(key).reduce(function(n,ch){return n+(ch.exercices||[]).length;},0);
+    var color=GAME_SUBJECT_COLORS[key]||{dark:'var(--primary-dark)',soft:'var(--primary-soft)'};
+    return '<button class="game-chip" type="button" onclick="startQuiz(\''+key+'\')"><span class="chip-icon" style="background:'+color.soft+';color:'+color.dark+'">'+(info.icon||'📘')+'</span><strong>'+escapeHtml(info.label)+'</strong><small>'+count+' questions</small></button>';
+}).join('');
+var subjectHtml='<div style="display:flex;flex-direction:column;gap:22px"><div><div class="game-section-title">JEUX SPÉCIALISÉS</div><div class="game-grid" style="grid-template-columns:repeat(2,1fr)">'+specialtyGames.map(function(g){
+    return '<button class="game-card" type="button" onclick="'+g.action+'"><span aria-hidden="true" style="background:'+g.color.soft+';color:'+g.color.dark+';width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:17px">'+g.icon+'</span><strong>'+escapeHtml(g.title)+'</strong><small>'+escapeHtml(g.subtitle)+'</small><small class="game-meta">'+escapeHtml(g.meta)+'</small></button>';
+}).join('')+'</div></div><div><div class="game-section-title">DÉFI PAR MATIÈRE — série complète et chronométrée</div><div class="game-chip-grid">'+subjectChips+'</div></div></div>';
+
+panel.innerHTML='<div class="games-tabs" role="tablist"><button type="button" role="tab" class="games-tab '+(tab==='start'?'active':'')+'" aria-selected="'+(tab==='start')+'" onclick="setGameTab(\'start\')">🚀 Démarrer</button><button type="button" role="tab" class="games-tab '+(tab==='method'?'active':'')+'" aria-selected="'+(tab==='method')+'" onclick="setGameTab(\'method\')">🧩 Méthode</button><button type="button" role="tab" class="games-tab '+(tab==='subject'?'active':'')+'" aria-selected="'+(tab==='subject')+'" onclick="setGameTab(\'subject\')">📚 Matières</button></div>'+
+(tab==='method'?methodHtml:tab==='subject'?subjectHtml:startHtml);
 }
