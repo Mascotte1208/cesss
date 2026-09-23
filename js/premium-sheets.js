@@ -71,7 +71,13 @@
   }
 
   function firstExercise(chapter) {
-    return Array.isArray(chapter.exercices) && chapter.exercices.length ? chapter.exercices[0] : null;
+    if(chapter.guidedExample)return chapter.guidedExample;
+    return (chapter.exercices||[]).find(function(q){return q.correction&&q.correction.length>120&&!/^Quelle (notion|erreur|démarche|relation)/.test(q.question);})||null;
+  }
+  function chapterVigilance(chapter){
+    if(chapter.vigilance)return chapter.vigilance;
+    var match=String(chapter.cours||'').match(/<(?:p|div)[^>]*class="[^"]*(?:piege|warning|erreur)[^"]*"[^>]*>([\s\S]*?)<\/(?:p|div)>/);
+    return match?match[1].replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim():'';
   }
 
   function vigilance(subject) {
@@ -132,9 +138,9 @@
       tabsBar.setAttribute('aria-label', 'Ressources du chapitre');
       tabsBar.innerHTML =
         '<button class="active" type="button"><span>▤</span>Cours</button>' +
-        '<button type="button" onclick="showView(\'memo\')"><span>▧</span>Mémo</button>' +
-        '<button type="button" onclick="showView(\'flashcards\');selectFlashcardSubject(\'' + esc(subject) + '\')"><span>▦</span>Flashcards</button>' +
-        '<button type="button" onclick="openSubjectExercises(\'' + esc(subject) + '\')"><span>✎</span>Exercices</button>';
+        '<button type="button" onclick="openChapterResource(\'memo\',\'' + esc(chapter.id) + '\')"><span>▧</span>Mémo</button>' +
+        '<button type="button" onclick="openChapterResource(\'flashcards\',\'' + esc(chapter.id) + '\')"><span>▦</span>Flashcards</button>' +
+        '<button type="button" onclick="openChapterResource(\'exercise\',\'' + esc(chapter.id) + '\')"><span>✎</span>Exercices</button>';
       header.insertAdjacentElement('afterend', tabsBar);
     }
 
@@ -151,7 +157,7 @@
     if (reading) {
       var objective = document.createElement('section');
       objective.className = 'editorial-objective';
-      objective.innerHTML = '<span aria-hidden="true">◎</span><div><h2>Objectif d’apprentissage</h2><p>' + esc((Array.isArray(chapter.objectifs) && chapter.objectifs[0]) || chapter.desc || 'Comprendre et maîtriser les notions essentielles de ce chapitre.') + '</p></div>';
+      objective.innerHTML = '<span aria-hidden="true">◎</span><div><h2>Objectif d’apprentissage</h2><p>' + esc((Array.isArray(chapter.objectifs) && chapter.objectifs.join(' · ')) || chapter.desc || 'Comprendre et maîtriser les notions essentielles de ce chapitre.') + '</p></div>';
       reading.insertBefore(objective, reading.firstChild);
     }
 
@@ -161,9 +167,9 @@
     if (rail) {
       rail.innerHTML =
         '<section class="editorial-card retain"><h2><span>♢</span>À retenir</h2><ul>' + items.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join('') + '</ul></section>' +
-        (exercise ? '<section class="editorial-card example"><h2><span>✓</span>Exemple guidé</h2><h3>' + esc(exercise.question || 'Application') + '</h3><p>' + esc(exercise.correction || 'Retrouve la démarche dans le cours puis vérifie chaque étape.') + '</p></section>' : '') +
-        '<section class="editorial-card warning"><h2><span>!</span>Point de vigilance</h2><p>' + esc(vigilance(subject)) + '</p></section>' +
-        '<button class="button primary editorial-practice" onclick="openSubjectExercises(\'' + esc(subject) + '\')" type="button">S’entraîner dans cette matière →</button>';
+        (exercise ? '<section class="editorial-card example"><h2><span>✓</span>Exemple corrigé</h2><h3>' + esc(exercise.question || 'Application') + '</h3><p>' + esc(exercise.correction || 'Retrouve la démarche dans le cours puis vérifie chaque étape.') + '</p></section>' : '') +
+        (chapterVigilance(chapter) ? '<section class="editorial-card warning"><h2><span>!</span>Point de vigilance</h2><p>' + esc(chapterVigilance(chapter)) + '</p></section>' : '') +
+        '<button class="button primary editorial-practice" onclick="openChapterResource(\'exercise\',\'' + esc(chapter.id) + '\')" type="button">S’entraîner dans cette matière →</button>';
     }
 
     var printZone = detail.querySelector('.bplus-print');

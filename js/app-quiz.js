@@ -1,3 +1,29 @@
+var CESS_TRUEFALSE_BANK = [
+            { id: 'tf_1', question: 'Tout triangle isocèle possède trois côtés de même longueur.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
+            { id: 'tf_2', question: 'La racine carrée de 16 est 4.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '3e' },
+            { id: 'tf_3', question: '(a+b)² = a² + b²', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
+            { id: 'tf_4', question: 'La Belgique a un climat méditerranéen.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'geo', annee: '3e' },
+            { id: 'tf_5', question: 'Les séismes se produisent aux frontières des plaques.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '3e' },
+            { id: 'tf_6', question: 'Le développement durable a 3 piliers.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '6e' },
+            { id: 'tf_7', question: 'Le cosinus est opposé/hypoténuse.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
+            { id: 'tf_8', question: 'Une fonction dérivable croissante sur un intervalle a une dérivée positive ou nulle sur cet intervalle.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '6e' },
+            { id: 'tf_9', question: 'Multiplier une inéquation par un nombre négatif inverse son sens.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '3e' },
+            { id: 'tf_10', question: 'La solution d’un système de deux équations est toujours un nombre unique.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
+            { id: 'tf_11', question: 'Une réduction de 20 % correspond à un coefficient multiplicateur de 0,8.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '3e' },
+            { id: 'tf_12', question: 'Le discriminant permet d’étudier les solutions d’une équation du second degré.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '4e' },
+            { id: 'tf_13', question: 'Dans une combinaison, l’ordre des éléments compte.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '5e' },
+            { id: 'tf_14', question: 'La contraposée d’une implication lui est logiquement équivalente.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '5e' },
+            { id: 'tf_15', question: 'Une probabilité conditionnelle peut être supérieure à 1.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '6e' },
+            { id: 'tf_16', question: 'Une primitive de f a pour dérivée f.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '6e' },
+            { id: 'tf_17', question: 'Un aléa naturel devient un risque même sans population ni bien exposé.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'geo', annee: '3e' },
+            { id: 'tf_18', question: 'La densité correspond au nombre d’habitants par unité de surface.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '3e' },
+            { id: 'tf_19', question: 'La météo et le climat désignent exactement la même chose.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'geo', annee: '4e' },
+            { id: 'tf_20', question: 'L’adaptation climatique cherche à limiter les conséquences du changement climatique.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '4e' },
+            { id: 'tf_21', question: 'Le PIB par habitant suffit toujours à mesurer toutes les dimensions du développement.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'geo', annee: '5e' },
+            { id: 'tf_22', question: 'Une chaîne de valeur peut répartir la production entre plusieurs continents.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '5e' },
+            { id: 'tf_23', question: 'L’Union européenne, la zone euro et l’espace Schengen ont exactement les mêmes membres.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'geo', annee: '6e' },
+            { id: 'tf_24', question: 'Un SIG permet de superposer plusieurs couches de données géographiques.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '6e' }
+        ];
 /* =========================================================
    CARNET CESS — QUIZ & CHRONOMÈTRE
    Déroulement d'un quiz, jeu des capitales, et chronomètre
@@ -60,6 +86,7 @@ function selectFreshQuestions(questions, count, mode) {
    ========================================================= */
 
 function startQuiz(mode) {
+    if(mode==='mistakes'&&typeof openMistakeReview==='function'){openMistakeReview();return;}
 
     var filter = CESS_SUBJECTS[mode] ? mode : 'all';
 
@@ -81,32 +108,7 @@ function startQuiz(mode) {
 
     if (mode === 'truefalse') {
         // Questions Vrai/Faux spécifiques
-        var tfQuestions = [
-            { id: 'tf_1', question: 'Tout triangle isocèle possède trois côtés de même longueur.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
-            { id: 'tf_2', question: 'La racine carrée de 16 est 4.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '3e' },
-            { id: 'tf_3', question: '(a+b)² = a² + b²', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
-            { id: 'tf_4', question: 'La Belgique a un climat méditerranéen.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'geo', annee: '3e' },
-            { id: 'tf_5', question: 'Les séismes se produisent aux frontières des plaques.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '3e' },
-            { id: 'tf_6', question: 'Le développement durable a 3 piliers.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '6e' },
-            { id: 'tf_7', question: 'Le cosinus est opposé/hypoténuse.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
-            { id: 'tf_8', question: 'Une fonction dérivable croissante sur un intervalle a une dérivée positive ou nulle sur cet intervalle.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '6e' },
-            { id: 'tf_9', question: 'Multiplier une inéquation par un nombre négatif inverse son sens.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '3e' },
-            { id: 'tf_10', question: 'La solution d’un système de deux équations est toujours un nombre unique.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '3e' },
-            { id: 'tf_11', question: 'Une réduction de 20 % correspond à un coefficient multiplicateur de 0,8.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '3e' },
-            { id: 'tf_12', question: 'Le discriminant permet d’étudier les solutions d’une équation du second degré.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '4e' },
-            { id: 'tf_13', question: 'Dans une combinaison, l’ordre des éléments compte.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '5e' },
-            { id: 'tf_14', question: 'La contraposée d’une implication lui est logiquement équivalente.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '5e' },
-            { id: 'tf_15', question: 'Une probabilité conditionnelle peut être supérieure à 1.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'maths', annee: '6e' },
-            { id: 'tf_16', question: 'Une primitive de f a pour dérivée f.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'maths', annee: '6e' },
-            { id: 'tf_17', question: 'Un aléa naturel devient un risque même sans population ni bien exposé.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'geo', annee: '3e' },
-            { id: 'tf_18', question: 'La densité correspond au nombre d’habitants par unité de surface.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '3e' },
-            { id: 'tf_19', question: 'La météo et le climat désignent exactement la même chose.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'geo', annee: '4e' },
-            { id: 'tf_20', question: 'L’adaptation climatique cherche à limiter les conséquences du changement climatique.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '4e' },
-            { id: 'tf_21', question: 'Le PIB par habitant suffit toujours à mesurer toutes les dimensions du développement.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'geo', annee: '5e' },
-            { id: 'tf_22', question: 'Une chaîne de valeur peut répartir la production entre plusieurs continents.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '5e' },
-            { id: 'tf_23', question: 'L’Union européenne, la zone euro et l’espace Schengen ont exactement les mêmes membres.', options: ['Vrai', 'Faux'], correct: 1, matiere: 'geo', annee: '6e' },
-            { id: 'tf_24', question: 'Un SIG permet de superposer plusieurs couches de données géographiques.', options: ['Vrai', 'Faux'], correct: 0, matiere: 'geo', annee: '6e' }
-        ];
+        var tfQuestions = CESS_TRUEFALSE_BANK;
         var questions = selectFreshQuestions(tfQuestions, 12, mode);
         cessQuizState = {
             mode: mode,
@@ -201,9 +203,7 @@ function quizChapter(id) {
                 questions.push({
 
                     id:
-                        String(chapter.id) +
-                        '_' +
-                        i,
+                        q.uid || questionIdentity(chapter.id,q),
 
                     question:
                         q.question || '',
@@ -505,6 +505,7 @@ function answerQuiz(optionIndex) {
             'nextQuizQuestion()', state);
     }
 
+    if(typeof recordQuestionResult==='function')recordQuestionResult(q.id,good,(state.sessionId||'quiz')+':'+state.index);
     cessSave();
 }
 
@@ -861,4 +862,5 @@ function formatTime(seconds) {
     var secs = seconds % 60;
     return String(minutes).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
 }
+
 

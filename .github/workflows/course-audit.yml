@@ -16,6 +16,7 @@ jobs:
           node-version: '22'
       - run: node check-runtime.cjs
       - run: node audit-pedagogy.cjs
+      - run: node audit-learning.cjs
       - run: node audit-preservation.cjs
       - run: npm install --no-save --package-lock=false playwright@1.58.2
       - run: npx playwright install --with-deps chromium

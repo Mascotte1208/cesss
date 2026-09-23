@@ -96,6 +96,11 @@ function applyMigrations(data) {
 
                 cessState = {
                     progress: parsed.progress || {},
+                    questionMemory: parsed.questionMemory || {},
+                    questionTrackingVersion: parsed.questionTrackingVersion || 0,
+                    archivedMistakes: parsed.archivedMistakes || [],
+                    sessions: parsed.sessions || {},
+                    writtenAnswers: parsed.writtenAnswers || {},
                     profile: parsed.profile || null,
                     weeklyGoal: parsed.weeklyGoal || 5,
                     legacyMistakes: parsed.legacyMistakes || [],
