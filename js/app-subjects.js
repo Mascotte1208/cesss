@@ -162,7 +162,7 @@ function renderSubject(subject) {
                     progress >= 100;
 
                 var statusClass = done ? 'status-done' : (progress > 0 ? 'status-progress' : 'status-new');
-                var statusText = done ? '✓ Maîtrisé' : (progress > 0 ? progress + '%' : 'À revoir');
+                var statusText = chapterStatus(chapter.id) + ' · ' + progress + '% des questions';
 
                 return `
                     <button
@@ -658,7 +658,7 @@ function openChapter(id) {
                     </div>
 
                     <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--text-soft)">
-                        <span>${progress}% maîtrisé</span>
+                        <span>${progress}% des questions réussies</span>
                         <span>${progress >= 100 ? '✅' : '📖'}</span>
                     </div>
 
@@ -1099,3 +1099,4 @@ function printChapter(id) {
  var content='<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>'+title+' - Carnet CESS</title><style>@page{margin:18mm}body{font-family:Georgia,serif;color:#17233a;max-width:820px;margin:auto;line-height:1.65;font-size:12pt}h1{font-size:30pt;line-height:1.08;margin:0 0 10px;border-bottom:2px solid #a94f39;padding-bottom:12px}h2,h3{color:#17233a;break-after:avoid}.meta{font-family:Arial,sans-serif;color:#6d625a;margin-bottom:24px}.formule,.astuce,.piege,.checklist,.retenir,.important,blockquote{padding:12px 15px;margin:14px 0;border-left:4px solid #a94f39;background:#fbede6;break-inside:avoid}.exemple,.example,.checklist{border-color:#477358;background:#edf4ec}.piege,.warning,.erreur{border-color:#a64035;background:#fbefec}table{width:100%;border-collapse:collapse;margin:14px 0}th,td{border:1px solid #d8cec5;padding:8px;text-align:left}th{background:#f5efe7}img,svg{max-width:100%}.footer{margin-top:30px;border-top:1px solid #d8cec5;padding-top:10px;font:10pt Arial,sans-serif;color:#746b65;text-align:center}</style></head><body><h1>'+title+'</h1><div class="meta"><strong>'+escapeHtml(info.label||subject)+'</strong> · '+escapeHtml(chapter.annee||'')+(description?' · '+description:'')+'</div>'+(chapter.cours||'<p>Contenu indisponible.</p>')+'<div class="footer">Fiche générée depuis Carnet CESS · '+escapeHtml(info.label||subject)+'</div></body></html>';
  var win=window.open('','_blank');if(!win){alert('Autorise les fenêtres contextuelles pour imprimer cette fiche.');return;}win.document.write(content);win.document.close();win.focus();win.print();
 }
+

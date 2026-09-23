@@ -28,7 +28,7 @@ function homeSearch() {
     if(input)input.focus();
 }
 function homeProgress(chapters) {
-    var read=chapters.filter(function(c){return getChapterProgress(c.id)>0;}).length;
+    var read=chapters.filter(function(c){return chapterEvidence(c.id).seen>0 || (cessState.readChapters||{})[c.id];}).length;
     return read+' / '+chapters.length+' cours consultés';
 }
 function renderHome() {
@@ -71,6 +71,6 @@ function renderHome() {
 function renderProgress() {
     var root=document.getElementById('progressContent');if(!root)return;
     var ch=personalChapters(), p=learningProfile(), passed=ch.filter(function(c){return getChapterProgress(c.id)>=100;}).length;
-    root.innerHTML=profileEditor()+'<div class="progress-overview"><div class="progress-big-card"><strong>'+passed+' / '+ch.length+'</strong><span>Chapitres : exercices réussis</span></div><div class="progress-big-card"><strong>'+ch.filter(function(c){return getChapterProgress(c.id)>0;}).length+'</strong><span>Chapitres commencés</span></div><div class="progress-big-card"><strong>'+studyStreak()+'</strong><span>Jours de suite</span></div></div><p>Lu : lecture déclarée. À retravailler : exercices tentés. Exercices réussis : au moins 80 % sur une série d’au moins 3 questions du chapitre. Ce repère ne valide pas tout le programme.</p>'+p.subjects.map(function(k){var list=ch.filter(function(c){return c.matiere===k;});return '<details class="memo-group"><summary><strong>'+escapeHtml(CESS_SUBJECTS[k].label)+'</strong><span>'+list.filter(function(c){return getChapterProgress(c.id)>=100;}).length+' / '+list.length+'</span></summary><div class="content-grid">'+list.map(chapterLink).join('')+'</div></details>';}).join('')+'<details class="memo-group"><summary>Historique des sessions</summary>'+recentResults(30)+'</details><details class="memo-group"><summary>Mes succès</summary><div id="badgesContainer"></div></details>';
+    root.innerHTML=profileEditor()+'<div class="progress-overview"><div class="progress-big-card"><strong>'+passed+' / '+ch.length+'</strong><span>Chapitres : toutes les questions réussies</span></div><div class="progress-big-card"><strong>'+ch.filter(function(c){return chapterEvidence(c.id).seen>0 || (cessState.readChapters||{})[c.id];}).length+'</strong><span>Chapitres commencés</span></div><div class="progress-big-card"><strong>'+studyStreak()+'</strong><span>Jours de suite</span></div></div><p>Le pourcentage compte les questions distinctes réussies. Les acquis se confirment par des réussites sur plusieurs jours ; les rédactions restent autoévaluées.</p>'+p.subjects.map(function(k){var list=ch.filter(function(c){return c.matiere===k;});return '<details class="memo-group"><summary><strong>'+escapeHtml(CESS_SUBJECTS[k].label)+'</strong><span>'+list.filter(function(c){return getChapterProgress(c.id)>=100;}).length+' / '+list.length+'</span></summary><div class="content-grid">'+list.map(chapterLink).join('')+'</div></details>';}).join('')+'<details class="memo-group"><summary>Historique des sessions</summary>'+recentResults(30)+'</details><details class="memo-group"><summary>Mes succès</summary><div id="badgesContainer"></div></details>';
     if(typeof renderBadges==='function')renderBadges();
 }

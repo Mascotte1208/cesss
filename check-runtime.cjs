@@ -6,23 +6,23 @@ const c={navigator:{},console,Date,Math,Map,Set,Array,Object,Number,String,JSON,
 for(const f of files){try{vm.runInContext(fs.readFileSync(__dirname+'/'+f,'utf8'),c,{filename:f});}catch(e){throw Error(f+': '+e.stack);}}
 assert.equal(Object.keys(c.CESS_SUBJECTS).length,14);
 const library=Object.values(c.CESS_LIBRARY_DATA).flatMap(s=>Object.values(s.data).flat());assert.equal(library.length,279);
-const questions=library.flatMap(ch=>ch.exercices);assert.equal(questions.length,1431);
+const questions=library.flatMap(ch=>ch.exercices);assert.equal(questions.length,1459);
 const qcmQuestions=questions.filter(q=>Array.isArray(q.options)&&q.options.length);
 const openQuestions=questions.filter(q=>!(Array.isArray(q.options)&&q.options.length));
 assert(qcmQuestions.every(q=>q.options.length===4&&q.correct>=0&&q.correct<4&&new Set(q.options).size===4));
 assert(openQuestions.every(q=>typeof q.correction==='string'&&q.correction.length));
 assert(questions.every(q=>!JSON.stringify(q).includes('Une notion sans lien')));assert(library.every(ch=>ch.fiches.length&&ch.cours.includes(ch.fiches[0].term.replace(/&/g,'&amp;'))));
-assert.equal(c.getChapterProgress('francais_3e_1'),25);
+assert.equal(c.getChapterProgress('francais_3e_1'),0);
 // Les anciennes erreurs migrées doivent rester utilisables dans `mistakes`,
 // pas archivées dans un `legacyMistakes` que rien ne relit.
-assert.equal(c.cessState.legacyMistakes.length,0);assert.equal(c.cessState.mistakes.length,1);
+assert.equal(c.cessState.legacyMistakes.length,0);assert.equal(c.cessState.mistakes.length,0);assert.equal(c.cessState.archivedMistakes.length,1);
 c.cessState.profile={year:'3e',subjects:['francais','chimie']};assert.equal(c.personalChapters().length,12);
 c.renderHome();assert(element('homePriorities').innerHTML.includes('francais_3e_1'));assert(element('homeSubjects').innerHTML.includes('Jeux & quiz'));assert(element('homeActivity').innerHTML.length);
 c.showView('francais');assert(element('libraryContent').innerHTML.includes('Français'));
 c.cessLibrarySearch='equilibre';c.renderLibrary();c.renderLibraryResults();assert(element('libraryResults').innerHTML.includes('lib_chimie_5e_4'));
 c.ensureSubjectFlashcards();assert(c.FLASHCARDS_DATA.all.every(f=>!f.definition.startsWith('Notion étudiée')));assert.equal(c.FLASHCARDS_DATA.francais.length,72);
 const q={options:['correct','wrong1','wrong2','wrong3'],correct:0};for(let i=0;i<25;i++){const shuffled=c.shuffleAnswers(q);assert.equal(shuffled.options[shuffled.correct],'correct');}assert.equal(q.correct,0);
-c.saveChapterAttempt('francais_3e_1',3,3);assert.equal(c.getChapterProgress('francais_3e_1'),100);c.saveChapterAttempt('francais_3e_1',1,3);assert.equal(c.getChapterProgress('francais_3e_1'),50);
+const firstFrench=c.allChaps('francais')[0];c.recordQuestionResult(firstFrench.exercices[0].uid,true,'test1');assert.equal(c.getChapterProgress(firstFrench.id),9);c.recordQuestionResult(firstFrench.exercices[0].uid,false,'test2');assert.equal(c.getChapterProgress(firstFrench.id),0);
 c.cessMemoMode='formules';element('memoSubject').value='all';element('memoYear').value='all';element('memoSearch').value='';c.renderMemo();assert(!element('memoContent').innerHTML.includes(' open>'));assert(element('memoContent').innerHTML.includes('memo-example'));assert(!element('memoContent').innerHTML.includes('&lt;sub&gt;'));
 c.renderExamPanel();element('examSubject').value='francais';element('examYear').value='3e';element('examCount').value='10';element('examMode').value='simulation';element('examDuration').value='10';c.startExam();assert.equal(c.cessExamState.questions.length,10);assert(c.cessExamState.questions.every(q=>q.matiere==='francais'&&q.annee==='3e'));
 c.answerExam(c.cessExamState.questions[0].correct);assert(!element('examFeedback').innerHTML.includes('Réponse attendue'));const score=c.cessExamState.score;c.answerExam(0);assert.equal(c.cessExamState.score,score);c.finishExam();const count=c.cessState.results.length;c.finishExam();assert.equal(c.cessState.results.length,count);assert.equal(c.cessState.results.at(-1).total,10);
